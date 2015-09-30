@@ -1,0 +1,52 @@
+ Lagrangian Particle Tracer -------------------------------
+ 
+       L          A      G G G    P P P       A   T T T T  
+      L         A A    G         P     P    A A     T      
+     L        A   A   G   G G   P P P P   A   A    T       
+    L       A A A A  G     G   P        A A A A   T        
+   L L L  A       A   G G G   P       A       A  T         
+ 
+ ----------------------------------------------------------
+    Ver.0.0  2005.09.24                                    
+    Ver.0.1  2010.01.24                                    
+    Ver.0.2  2010.01.24                                    
+                                 Coded by Nobuya NISHIMURA 
+ 
+ ======================= initial setting  =========================
+             npt = :      2500
+set particle range :  1.00E+06 ->  4.00E+08
+partilce move area :  1.00E+04 ->  4.00E+08
+ 
+----- grid information -----
+Spherical Coordinate
+      x1 x x2 x n3 :  300 x   60 x    1
+          x1-range :  5.00E+04 ->  3.97E+08
+          x2-range :  1.31E-02 ->  1.56E+00
+                   (      0.75 ->     89.25 )
+          x3-range :  0.00E+00 ->  0.00E+00
+                   (      0.00 ->      0.00 )
+ 
+    total mass part:   2.04844E+00
+    total mass grid:   2.04844E+00
+             ratio :   1.00000
+ ======================= tracing particles  =======================
+#     step        ti          dt   pt(move)    pt(in)   pt(out)
+         1  6.8480E-05  6.9515E-05      2500         0         0
+         2  1.3799E-04  6.9514E-05      2500         0         0
+         3  2.0751E-04  6.9512E-05      2500         0         0
+         4  2.7702E-04  6.9510E-05      2500         0         0
+         5  3.4652E-04  6.9508E-05      2500         0         0
+     10000  2.5062E-01  1.7881E-06      2500         0         0
+     20000  2.6622E-01  1.4305E-06      2500         0         0
+     30000  2.7830E-01  1.1623E-06      2500         0         0
+     40000  2.8933E-01  1.0729E-06      2500         0         0
+     50000  2.9974E-01  1.0431E-06      2500         0         0
+     60000  3.0981E-01  1.0133E-06      2500         0         0
+     70000  3.1961E-01  9.5367E-07      2500         0         0
+     80000  3.2910E-01  9.5367E-07      2500         0         0
+     90000  3.3836E-01  8.9407E-07      2500         0         0
+   calculation step:     99999
+             output:       199
+lagpat: Normal Termination
+255.65user 20.12system 16:51.63elapsed 27%CPU (0avgtext+0avgdata 24992maxresident)k
+78969976inputs+160288outputs (0major+1690minor)pagefaults 0swaps
