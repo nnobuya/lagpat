@@ -51,7 +51,8 @@ subroutine ofile
 
   !..movie
   open(65, file = '../res/anim_set.dat', action = 'write')
-  open(66, file = '../res/anim.dat'    , action = 'write')
+  write(f_name,'("../res/anim/anim_", i4.4, ".dat")') n_init
+  open(66, file = f_name, action = 'write')
 
 
   !..log files

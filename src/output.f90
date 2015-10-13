@@ -15,7 +15,9 @@ subroutine output(istg, ti, dt, ipt, &
   !..local
   integer:: npt_in, npt_out, npt_num
   integer:: i
-  double precision:: x, y
+  real(8):: x, y
+  character:: f_name*100
+
 
 
   !..physical quantities
@@ -42,14 +44,17 @@ subroutine output(istg, ti, dt, ipt, &
 
   if ( mod(istg,n_anim) == 0 ) then
 
+     close(66)
+
+     write(f_name, '("../res/anim/anim_", i4.4, ".dat")') istg
+     open(66, file = f_name, action = 'write')
+
      do i = 1, npt
-        if ( ist_pt(i) /= 0 ) cycle
+        if (ist_pt(i) /= 0) cycle
         x = x_pt(1,i) *sin(x_pt(2,i))
         y = x_pt(1,i) *cos(x_pt(2,i))
-        write(66,'(1p2e11.3)') x, y
+        write(66,'(1p, *(2e11.3))') x, y
      end do
-     write(66,*)
-     write(66,*)
 
      n_anim_out = n_anim_out + 1
 
