@@ -70,10 +70,10 @@ contains
     else
        ihyd0 = ihyd1
        ti0 = ti1
-       d_fld0(1:nx1,1:nx2,1:nx3)        = d_fld1(1:nx1,1:nx2,1:nx3)
-       t_fld0(1:nx1,1:nx2,1:nx3)        = t_fld1(1:nx1,1:nx2,1:nx3)
+        d_fld0(1:nx1,1:nx2,1:nx3)        =  d_fld1(1:nx1,1:nx2,1:nx3)
+        t_fld0(1:nx1,1:nx2,1:nx3)        =  t_fld1(1:nx1,1:nx2,1:nx3)
        ye_fld0(1:nx1,1:nx2,1:nx3)       = ye_fld1(1:nx1,1:nx2,1:nx3)
-       v_fld0(1:ndim,1:nx1,1:nx2,1:nx3) = v_fld1(1:ndim,1:nx1,1:nx2,1:nx3)
+        v_fld0(1:ndim,1:nx1,1:nx2,1:nx3) =  v_fld1(1:ndim,1:nx1,1:nx2,1:nx3)
     end if
 
 
@@ -90,20 +90,12 @@ contains
 
 
     !..set fld
+     d_fld(1:nx1,1:nx2,1:nx3)          =  d_fld0(1:nx1,1:nx2,1:nx3)
+     t_fld(1:nx1,1:nx2,1:nx3)          =  t_fld0(1:nx1,1:nx2,1:nx3)
+    ye_fld(1:nx1,1:nx2,1:nx3)          = ye_fld0(1:nx1,1:nx2,1:nx3)
 
-!    if( ier == 0 ) then
-       d_fld(1:nx1,1:nx2,1:nx3)          = d_fld0(1:nx1,1:nx2,1:nx3)
-       t_fld(1:nx1,1:nx2,1:nx3)          = t_fld0(1:nx1,1:nx2,1:nx3)
-       ye_fld(1:nx1,1:nx2,1:nx3)         = ye_fld0(1:nx1,1:nx2,1:nx3)
-       v_fld(1:ndim,1:nx1,1:nx2,1:nx3)   = v_fld0(1:ndim,1:nx1,1:nx2,1:nx3)
-       v0_fld(1:ndim,1:nx1,1:nx2,1:nx3)  = v_fld0(1:ndim,1:nx1,1:nx2,1:nx3)
-!    else
-!       d_fld(1:nx1,1:nx2,1:nx3)         = d_fld1(1:nx1,1:nx2,1:nx3)
-!       t_fld(1:nx1,1:nx2,1:nx3)         = t_fld1(1:nx1,1:nx2,1:nx3)
-!       ye_fld(1:nx1,1:nx2,1:nx3)        = ye_fld1(1:nx1,1:nx2,1:nx3)
-!       v_fld(1:ndim,1:nx1,1:nx2,1:nx3)  = v_fld1(1:ndim,1:nx1,1:nx2,1:nx3)
-!       v0_fld(1:ndim,1:nx1,1:nx2,1:nx3) = v_fld1(1:ndim,1:nx1,1:nx2,1:nx3)
-!    end if
+    v0_fld(1:ndim,1:nx1,1:nx2,1:nx3)   = v_fld0(1:ndim,1:nx1,1:nx2,1:nx3)
+     v_fld(1:ndim,1:nx1,1:nx2,1:nx3)   = v_fld1(1:ndim,1:nx1,1:nx2,1:nx3)
 
 
     return
