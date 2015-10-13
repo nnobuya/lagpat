@@ -1,9 +1,9 @@
 #! /bin/sh
 
 
-n=0
+n=10
 
-until [ $n -gt 178 ]
+until [ $n -gt 380 ]
 #until [ $n -gt 10 ]
 do
 
@@ -19,8 +19,8 @@ do
 se te post eps color 'Helvetica' 18
 se ou "./eps/pt.${no}.eps"
 se si sq
-se xr [0:500]
-se yr [0:500]
+se xr [0:1000]
+se yr [0:1000]
 se xtics 0, 500
 se ytics 0, 500
 se mxtics 5

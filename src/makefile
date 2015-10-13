@@ -10,7 +10,8 @@
 
 FC	:= ifort
 
-FCFLAGS	:= -O3 #-check all -warn all -traceback
+FCFLAGS	:= -O3
+#FCFLAGS	:= -check all -warn all -traceback
 
 PRG	:= lagpat
 

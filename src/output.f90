@@ -65,7 +65,7 @@ subroutine output(istg, ti, dt, ipt, &
           & 3x, "pt(move)", 4x, "pt(in)", 3x, "pt(out)")')
   end if
 
-  if( mod(istg,10000) == 0 .or. istg <= 5 ) &
+  if( mod(istg,100) == 0 .or. istg <= 5 ) &
        & write(*,'(i10,1p2e12.4,3i10)') &
        & istg, ti, dt, npt_num, npt_in, npt_out
 

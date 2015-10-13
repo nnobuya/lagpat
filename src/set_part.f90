@@ -10,30 +10,33 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
   double precision, intent(out):: time, x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt)
 
   !..local
-  real            :: ti_in, fld_in(1:nx1,1:nx2,1:nx3)
-  double precision:: d_fld(1:nx1,1:nx2,1:nx3)
-  integer:: i, i_tmp, j_tmp, ier, ihyd
+  real(8):: d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3), dummy(1:14)
+  integer:: i, j, k, i_tmp, j_tmp, ier, i1, i2, i3
 
 
   !..initial position
   if ( k_zoku == 0 ) then
 
      !! for first calculation
-     read(54, iostat = ier) ihyd, ti_in
+     read(50, iostat = ier) time, dummy(1:4)
      if (ier /= 0) stop 'fld_set(): bad in data'
 
-     time = dble(ti_in)
+     do k = 1, nx3
+        do j = 1, nx2
+           do i = 1, nx1
+              read(50) i1, i2, dummy(1:2), d_fld(i,j,k), dvol(i,j,k), &
+                   & dummy(3:14), i3
+           end do
+        end do
+     end do
 
-     read(54) fld_in(1:nx1,1:nx2,1:nx3)
-
-     d_fld(1:nx1,1:nx2,1:nx3) = dble( fld_in(1:nx1,1:nx2,1:nx3) )
-
-     rewind(54)
+     rewind(50)
 
      !! initial stage
      istage = 0
      istat_pt(1:npt) = 0
 
+     write(*,*) '###### Caution!!  Please modify init_part###'
      call init_part( d_fld(:,:,:), id(:,:), dma(:), x_pt(:,:) )
      !   in: d_fld
      !  out: dma, rad_pt, the_pt

@@ -2,6 +2,8 @@ subroutine logo
 
   implicit none
 
+  write(*,*)
+  write(*,*)
   write(*,*) 'Lagrangian Particle Tracer -------------------------------'
   write(*,*)
   write(*,*) '      L          A      G G G    P P P       A   T T T T  '
@@ -14,6 +16,7 @@ subroutine logo
   write(*,*) '   Ver.0.0  2005.09.24                                    '
   write(*,*) '   Ver.0.1  2010.01.24                                    '
   write(*,*) '   Ver.0.2  2010.01.24                                    '
+  write(*,*) '   Ver.0.3  2015.10.13                                    '
   write(*,*) '                                Coded by Nobuya NISHIMURA '
   write(*,*)
   write(*,*) &

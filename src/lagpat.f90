@@ -9,6 +9,7 @@
 !             2009/08/25                                               !
 !             2010/01/24                                               !
 !             2012/07/24                                               !
+!             2015/10/13                                               !
 !                                                                      !
 ! input : hydro Result: LAGPAT/lag_*.dat                               !
 !         ./in.dat                                                     !
@@ -22,7 +23,7 @@
 program lagpat
 
   use mod_cnst, only: npt, ndim
-  use mod_set , only: int_t, i_test, last_lp, &
+  use mod_set , only: int_t, i_test, last_lp, n_init, n_fini, &
        & d_fld, t_fld, ye_fld, v_fld, v0_fld, set_data
   use mod_fld , only: dt_max, fld
 
@@ -37,7 +38,7 @@ program lagpat
   double precision, dimension(1:ndim,0:4,1:npt):: v_pt_p
 
   !..local
-  integer:: istg, n_anim_out = 0
+  integer:: istg, ihyd, n_anim_out = 0
   integer:: ier
   double precision :: ti, dt0, dt_in, dt = 0.d0
 
@@ -56,22 +57,33 @@ program lagpat
   !..open files
   call ofile
 
-  !..set fild data
+  !..set hydro data
   call set_data
 
-  call set_part( istg, ti, ist_pt(:), id(:,:), x_pt(:,:), v_pt(:,:) )
+  call set_part(istg, ti, ist_pt(:), id(:,:), x_pt(:,:), v_pt(:,:))
   !  out: all
+
 
   close(41)
   close(42)
   close(60)
   close(91)
 
+  !     pre-process                                                    !
+  ! ------------------------------------------------------------------ !
 
-  call fld( ier, d_fld(:,:,:), t_fld(:,:,:), ye_fld(:,:,:), &
+
+
+  ! ------------------------------------------------------------------ !
+  !                                                                    !
+  !     first-step                                                     !
+  !                                                                    !
+  ! ------------------------------------------------------------------ !
+
+  ihyd = 11
+  call fld(ihyd, d_fld(:,:,:), t_fld(:,:,:), ye_fld(:,:,:), &
        & v_fld(:,:,:,:), v0_fld(:,:,:,:) )
   ! out: all
-
 
   call hokan_main(1, dt_max, ist_pt(:), ipt(:,:), x_pt(:,:), &
        & d_fld(:,:,:), t_fld(:,:,:), ye_fld(:,:,:), &
@@ -87,9 +99,10 @@ program lagpat
 
   if( i_test == 1 ) stop '### finish test  ###'
 
-
-  !     pre-process                                                    !
+  !     first-step                                                     !
   ! ------------------------------------------------------------------ !
+
+
 
   ! ------------------------------------------------------------------ !
   !                                                                    !
@@ -97,15 +110,14 @@ program lagpat
   !                                                                    !
   ! ------------------------------------------------------------------ !
 
-  main_lp: do
 
-     istg = istg + 1
+  main_lp: do ihyd = n_init + 1, n_fini - 1
 
      ! --------------------------------------------------------------- !
      !     output                                                      !
      ! --------------------------------------------------------------- !
 
-     call output( istg, ti, dt, ipt(:,:), ist_pt(:), x_pt(:,:), &
+     call output(ihyd, ti, dt, ipt(:,:), ist_pt(:), x_pt(:,:), &
           & d_pt(:), t_pt(:), ye_pt(:), v_pt(:,:), n_anim_out )
      !    in: others
      ! inout: n_anim_out
@@ -139,11 +151,11 @@ program lagpat
      !     read                                                        !
      ! --------------------------------------------------------------- !
 
-     call fld(ier, d_fld(:,:,:), t_fld(:,:,:), ye_fld(:,:,:), &
+     call fld(ihyd, d_fld(:,:,:), t_fld(:,:,:), ye_fld(:,:,:), &
           & v_fld(:,:,:,:), v0_fld(:,:,:,:))
      !  out: all
 
-     if( ier /= 0 .or. (last_lp > 0 .and. istg > last_lp) ) exit main_lp
+     !if( ier /= 0 .or. (last_lp > 0 .and. istg > last_lp) ) exit main_lp
 
      !     read                                                        !
      ! --------------------------------------------------------------- !
@@ -157,7 +169,7 @@ program lagpat
      !     hokan                                                       !
      ! --------------------------------------------------------------- !
 
-     if ( int_t == 2 ) then
+     if (int_t == 2) then
         dt_in = dt0
      else
         dt_in = dt

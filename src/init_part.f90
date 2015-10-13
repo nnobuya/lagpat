@@ -6,22 +6,21 @@ subroutine init_part( d_fld, id, dma, x_pt )
   implicit none
 
   !..io
-  double precision, intent(in) :: d_fld(1:nx1,1:nx2,1:nx3)
-  integer, intent(out)         :: id(1:ndim,1:npt)
-  double precision, intent(out):: dma(1:npt), x_pt(1:ndim,1:npt)
+  real(8), intent(in) :: d_fld(1:nx1,1:nx2,1:nx3)
+  integer, intent(out):: id(1:ndim,1:npt)
+  real(8), intent(out):: dma(1:npt), x_pt(1:ndim,1:npt)
 
   !..local
-  double precision:: &
+  real(8):: &
        & dma_in(npt_rad,npt_the), rad_pt(npt_rad,npt_the), &
        & the_pt(npt_rad, npt_the)
-  double precision:: rad_pt0(0:npt_rad), rma_pt0(0:npt_rad), &
+  real(8):: rad_pt0(0:npt_rad), rma_pt0(0:npt_rad), &
        & the_in, the_out, rma_in, rma_ou, dr, dthe, total_mass, &
        & rad_in(1:nx1), dens(1:nx1), rma(1:nx1), &
        & x, y, h
 
   !..temporaly
   integer :: i, j, k, l
-
 
   rad_in(1:nx1) = x_fld( 1, 1:nx1, max(1,nx2/2), max(1,nx3/2) )
   dens(1:nx1)   = d_fld(    1:nx1, max(1,nx2/2), max(1,nx3/2) )
@@ -124,7 +123,6 @@ subroutine init_part( d_fld, id, dma, x_pt )
   end do rma_in_lp
 
 
-
   total_mass = sum( dma_in(1:npt_rad,1:npt_the) )
 
 
@@ -172,7 +170,7 @@ subroutine init_part( d_fld, id, dma, x_pt )
   write(60,'(a,6x,a3,3x,a2,3x,a2,3x,a2,4x,a4,12x,a6,10x,a5,11x,a3)') &
        & '#', 'npt', 'x1', 'x2', 'x3', 'mass', 'radius', 'theta', 'phi'
 
-  k = 0
+  l = 0
 
   do k = 1, 1
      do j = 1, npt_the
@@ -182,8 +180,6 @@ subroutine init_part( d_fld, id, dma, x_pt )
         end do
      end do
   end do
-
-
 
   return
 
