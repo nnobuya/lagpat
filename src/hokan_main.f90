@@ -1,6 +1,6 @@
-subroutine hokan_main( mode, dt, ist_pt, ipt, x_pt, &
-     & d_fld, t_fld, ye_fld, v0_fld, v_fld, &
-     & d_pt, t_pt, ye_pt, v_pt, v_pt_p )
+subroutine hokan_main(mode, dt, ist_pt, ipt, x_pt, &
+     & d_fld, t_fld, s_fld, ye_fld, v0_fld, v_fld, &
+     & d_pt, t_pt, s_pt, ye_pt, v_pt, v_pt_p)
 
   use mod_cnst, only: npt, ndim
   use mod_set , only: nx1, nx2, nx3, int_t
@@ -9,18 +9,18 @@ subroutine hokan_main( mode, dt, ist_pt, ipt, x_pt, &
 
   !..io
   integer, intent(in)         :: mode, ist_pt(npt)
-  double precision, intent(in):: dt, x_pt(1:ndim,1:npt)
-  double precision, dimension(1:nx1,1:nx2,1:nx3), intent(in):: &
-       & d_fld, t_fld, ye_fld
-  double precision, dimension(1:ndim,1:nx1,1:nx2,1:nx3), intent(in):: &
+  real(8), intent(in):: dt, x_pt(1:ndim,1:npt)
+  real(8), dimension(1:nx1,1:nx2,1:nx3), intent(in):: &
+       & d_fld, t_fld, s_fld, ye_fld
+  real(8), dimension(1:ndim,1:nx1,1:nx2,1:nx3), intent(in):: &
        & v0_fld, v_fld
-  double precision, intent(out):: d_pt(1:npt), t_pt(1:npt), ye_pt(1:npt), &
+  real(8), intent(out):: d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt), &
        & v_pt(1:ndim,1:npt), v_pt_p(1:ndim,0:4,1:npt)
   integer, intent(inout):: ipt(1:ndim,1:npt)
 
   !..local
-  double precision:: x_pt_p(1:ndim,1:npt)
-  double precision, dimension(1:ndim,1:npt):: fac, fac_p
+  real(8):: x_pt_p(1:ndim,1:npt)
+  real(8), dimension(1:ndim,1:npt):: fac, fac_p
   integer:: ipt_p(1:ndim,1:npt)
   integer:: i
 
@@ -76,9 +76,9 @@ subroutine hokan_main( mode, dt, ist_pt, ipt, x_pt, &
   end do
 
 
-  call hokan_rhotye( ist_pt(:), ipt(:,:), fac(:,:), &
-       & d_fld(:,:,:), t_fld(:,:,:), ye_fld(:,:,:), &
-       & d_pt(:), t_pt(:), ye_pt(:) )
+  call hokan_rhotye(ist_pt(:), ipt(:,:), fac(:,:), &
+       & d_fld(:,:,:), t_fld(:,:,:), s_fld(:,:,:), ye_fld(:,:,:), &
+       & d_pt(:), t_pt(:), s_pt(:), ye_pt(:))
   ! out: t_pt, d_pt
 
   !     hokan                                                    !

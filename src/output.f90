@@ -1,5 +1,5 @@
 subroutine output(istg, ti, dt, ipt, &
-     & ist_pt, x_pt, d_pt, t_pt, ye_pt, v_pt, n_anim_out )
+     & ist_pt, x_pt, d_pt, t_pt, s_pt, ye_pt, v_pt, n_anim_out)
 
   use mod_cnst, only: npt, ndim
   use mod_set , only: nout_lpt, n_anim
@@ -8,8 +8,9 @@ subroutine output(istg, ti, dt, ipt, &
 
   !..io
   integer, intent(in):: istg, ist_pt(1:npt), ipt(1:ndim,1:npt)
-  double precision, intent(in):: ti, dt, &
-       & x_pt(1:ndim,npt), v_pt(ndim,npt), d_pt(npt), t_pt(npt), ye_pt(npt)
+  real(8), intent(in):: ti, dt, &
+       & x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), &
+       & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt)
   integer, intent(inout):: n_anim_out
 
   !..local
@@ -49,11 +50,14 @@ subroutine output(istg, ti, dt, ipt, &
      write(f_name, '("../res/anim/anim_", i4.4, ".dat")') istg
      open(66, file = f_name, action = 'write')
 
+     write(66,'("#", 3x, "X", 11x, "Y",11x,  "de", 10x, &
+          & "te", 10x, "s", 10x, "ye")')
      do i = 1, npt
         if (ist_pt(i) /= 0) cycle
         x = x_pt(1,i) *sin(x_pt(2,i))
         y = x_pt(1,i) *cos(x_pt(2,i))
-        write(66,'(1p, *(2e11.3))') x, y
+        write(66,'(1p, *(2e12.4))') &
+             & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i)
      end do
 
      n_anim_out = n_anim_out + 1

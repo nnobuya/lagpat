@@ -2,7 +2,7 @@
 '../../../../Efix/MRIrun60m'
 
 #steps    init,      end,
-            11       399
+            11       500
 
  k_zoku, i_test,  last_lp, int_t, int_x, nin, nou
       0       0         0      2      1    1    2

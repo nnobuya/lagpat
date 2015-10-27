@@ -1,5 +1,5 @@
-subroutine hokan_rhotye( istat_pt, ipt, fac, d_fld, t_fld, ye_fld, &
-     & d_pt, t_pt, ye_pt )
+subroutine hokan_rhotye(istat_pt, ipt, fac, d_fld, t_fld, s_fld, ye_fld, &
+     & d_pt, t_pt, s_pt, ye_pt)
 
   use mod_cnst, only: npt, ndim
   use mod_set , only: nx1, nx2, nx3, nin, nou
@@ -8,14 +8,14 @@ subroutine hokan_rhotye( istat_pt, ipt, fac, d_fld, t_fld, ye_fld, &
 
   !..io
   integer, intent(in) :: istat_pt(1:npt), ipt(1:ndim,1:npt)
-  double precision, intent(in) :: fac(1:ndim,1:npt), &
+  real(8), intent(in) :: fac(1:ndim,1:npt), &
        & d_fld(1:nx1,1:nx2,1:nx3), t_fld(1:nx1,1:nx2,1:nx3), &
-       & ye_fld(1:nx1,1:nx2,1:nx3)
-  double precision, intent(out):: d_pt(1:npt), t_pt(1:npt), ye_pt(1:npt)
+       & s_fld(1:nx1,1:nx2,1:nx3), ye_fld(1:nx1,1:nx2,1:nx3)
+  real(8), intent(out):: d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt)
 
   !..local
   integer:: ip, i, j, i1(nin:nou), i2(nin:nou), i3(nin:nou)
-  double precision:: y(nin:nou,nin:nou,nin:nou)
+  real(8):: y(nin:nou,nin:nou,nin:nou)
 
 
   ! ------------------------------------------------------------ !
@@ -36,20 +36,23 @@ subroutine hokan_rhotye( istat_pt, ipt, fac, d_fld, t_fld, ye_fld, &
      !! density
      y(nin:nou,nin:nou,nin:nou) &
           & = d_fld( i1(nin:nou), i2(nin:nou), i3(nin:nou) )
-
-     call hokan ( ndim, y(:,:,:), fac(:,ip), d_pt(ip) )
+     call hokan(ndim, y(:,:,:), fac(:,ip), d_pt(ip))
 
      !! temperature
      y(nin:nou,nin:nou,nin:nou) &
-          & = t_fld( i1(nin:nou), i2(nin:nou), i3(nin:nou) )
+          & = t_fld(i1(nin:nou), i2(nin:nou), i3(nin:nou))
+     call hokan(ndim, y(:,:,:), fac(:,ip), t_pt(ip))
 
-     call hokan ( ndim, y(:,:,:), fac(:,ip), t_pt(ip) ) 
+     !! entropy
+     y(nin:nou,nin:nou,nin:nou) &
+          & = s_fld(i1(nin:nou), i2(nin:nou), i3(nin:nou))
+     call hokan(ndim, y(:,:,:), fac(:,ip), s_pt(ip))
+
 
      !! ye
      y(nin:nou,nin:nou,nin:nou) &
-          & = ye_fld( i1(nin:nou), i2(nin:nou), i3(nin:nou) )
-
-     call hokan ( ndim, y(:,:,:), fac(:,ip), ye_pt(ip) ) 
+          & = ye_fld(i1(nin:nou), i2(nin:nou), i3(nin:nou))
+     call hokan(ndim, y(:,:,:), fac(:,ip), ye_pt(ip)) 
 
 
   end do

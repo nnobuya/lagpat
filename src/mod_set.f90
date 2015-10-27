@@ -8,7 +8,7 @@ module mod_set
   public:: k_zoku, i_test, last_lp, int_t, int_x, nin, nou, &
        & nout_lpt, n_anim, n_init, n_fini, &
        & r_in, r_out, bound_in, bound_out, set_param, nx1, nx2, nx3, &
-       & d_fld, t_fld, ye_fld, x_fld, dx_fld, dma, v_fld, v0_fld, &
+       & d_fld, t_fld, s_fld, ye_fld, x_fld, dx_fld, dma, v_fld, v0_fld, &
        & set_data, path
 
   integer:: n_init, n_fini
@@ -22,7 +22,7 @@ module mod_set
 
   !..Grid & field data (hydro results)
 
-  real(8), allocatable:: d_fld(:,:,:), t_fld(:,:,:), ye_fld(:,:,:)
+  real(8), allocatable:: d_fld(:,:,:), t_fld(:,:,:), s_fld(:,:,:), ye_fld(:,:,:)
   real(8), allocatable:: dx_fld(:,:)
   real(8), dimension(:,:,:,:), allocatable:: x_fld, v_fld, v0_fld
 
@@ -97,7 +97,8 @@ contains
     nx_max = max( max( nx1, nx2 ), nx3 )
 
     allocate( x_fld(ndim,nx1,nx2,nx3), dx_fld(ndim,nx_max), &
-         & d_fld(nx1,nx2,nx3), t_fld(nx1,nx2,nx3), ye_fld(nx1,nx2,nx3), &
+         & d_fld(nx1,nx2,nx3), t_fld(nx1,nx2,nx3), &
+         & s_fld(nx1,nx2,nx3), ye_fld(nx1,nx2,nx3), &
          & v_fld(ndim,nx1,nx2,nx3), v0_fld(ndim,nx1,nx2,nx3), &
          & stat = ier)
 
