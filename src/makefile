@@ -9,6 +9,7 @@
 # ====================================================================== #
 
 FC	:= ifort
+FC	:= gfortran
 
 FCFLAGS	:= -O3
 #FCFLAGS	:= -check all -warn all -traceback

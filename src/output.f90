@@ -42,7 +42,6 @@ subroutine output(istg, ti, dt, ipt, &
 
   end if out_cond
 
-
   if ( mod(istg,n_anim) == 0 ) then
 
      close(66)
@@ -56,10 +55,11 @@ subroutine output(istg, ti, dt, ipt, &
         if (ist_pt(i) /= 0) cycle
         x = x_pt(1,i) *sin(x_pt(2,i))
         y = x_pt(1,i) *cos(x_pt(2,i))
-        write(66,'(1p, *(2e12.4))') &
+        write(66,'(1p, *(e12.4))') &
              & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i)
      end do
 
+     write(65,'(f7.1)') ti *1000.0
      n_anim_out = n_anim_out + 1
 
   end if

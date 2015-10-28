@@ -106,7 +106,6 @@ program lagpat
   ! ------------------------------------------------------------------ !
 
 
-
   ! ------------------------------------------------------------------ !
   !                                                                    !
   !     particle tracing: LagPaT main                                  !
@@ -213,8 +212,8 @@ program lagpat
   !     closing                                                        !
   ! ------------------------------------------------------------------ !
 
-  write(65,'(a20,i10)') 'calculation step:', istg
-  write(65,'(a20,i10)') 'output:', n_anim_out
+  !write(65,'(a20,i10)') 'calculation step:', istg
+  !write(65,'(a20,i10)') 'output:', n_anim_out
   close(65)
 
   write(*,'(a20,i10)') 'calculation step:', istg
