@@ -7,9 +7,8 @@ module mod_cnst
 
 
   !..part. num. and dimension
-  integer, parameter:: npt     = 10000
   integer, parameter:: npt_rad = 100, npt_the = 100, ndim = 3
-  !integer, parameter:: nin = 1, nou = 2  !! for hokan grid
+  integer, parameter:: npt     = npt_rad *npt_the
 
 
   !..const.

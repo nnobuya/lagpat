@@ -10,6 +10,7 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
   double precision, intent(out):: time, x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt)
 
   !..local
+  real(8):: total_mass
   real(8):: d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3), dummy(1:14)
   integer:: i, j, k, i_tmp, j_tmp, ier, i1, i2, i3
 
@@ -36,10 +37,11 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
      istage = 0
      istat_pt(1:npt) = 0
 
-     write(*,*) '###### Caution!!  Please modify init_part###'
-     call init_part( d_fld(:,:,:), id(:,:), dma(:), x_pt(:,:) )
-     !   in: d_fld
+     call init_part( d_fld(:,:,:), dvol(:,:,:), id(:,:), dma(:), x_pt(:,:) )
+     !   in: d_fld, dvol
      !  out: dma, rad_pt, the_pt
+
+     stop 'db at set_part'
 
   else if( k_zoku == 1 ) then
      !! continue
@@ -56,6 +58,9 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
      !! error
      stop '### Error: "k_zoku" isn''t 0 or 1.  ###'
   end if
+
+
+  stop 'db: set_part'
 
 
   return

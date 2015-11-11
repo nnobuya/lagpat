@@ -1,4 +1,4 @@
-subroutine init_part( d_fld, id, dma, x_pt )
+subroutine init_part(d_fld, dvol, id, dma, x_pt)
 
   use mod_cnst, only: npt, ndim, npt_rad, npt_the, pi, rm_sol
   use mod_set , only: r_in, r_out, nx1, nx2, nx3, x_fld
@@ -6,63 +6,58 @@ subroutine init_part( d_fld, id, dma, x_pt )
   implicit none
 
   !..io
-  real(8), intent(in) :: d_fld(1:nx1,1:nx2,1:nx3)
+  real(8), intent(in) :: d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3)
   integer, intent(out):: id(1:ndim,1:npt)
   real(8), intent(out):: dma(1:npt), x_pt(1:ndim,1:npt)
 
   !..local
   real(8):: &
        & dma_in(npt_rad,npt_the), rad_pt(npt_rad,npt_the), &
-       & the_pt(npt_rad, npt_the)
+       & the_pt(npt_rad, npt_the),&
+       & vol_pt(npt_rad,npt_the), d_pt(npt_rad,npt_the), &
+       & cell_rd(npt_rad,npt_the,1:4), cell_the(npt_rad,npt_the,1:4)
+  real(8):: vol_dr(1:npt_rad)
   real(8):: rad_pt0(0:npt_rad), rma_pt0(0:npt_rad), &
        & the_in, the_out, rma_in, rma_ou, dr, dthe, total_mass, &
        & rad_in(1:nx1), dens(1:nx1), rma(1:nx1), &
        & x, y, h
+  integer:: ipt(1:ndim), i1(1:2), i2(1:2), i3(1:2)
+  real(8):: x_cell(1:4), y_cell(1:4), total_mass_grid, &
+       & vel_pt(1:ndim), fac(1:ndim), xpt(1:ndim), fld_in(1:2,1:2,1:2)
 
   !..temporaly
   integer :: i, j, k, l
 
-  rad_in(1:nx1) = x_fld( 1, 1:nx1, max(1,nx2/2), max(1,nx3/2) )
-  dens(1:nx1)   = d_fld(    1:nx1, max(1,nx2/2), max(1,nx3/2) )
 
 
-  !..mass coordinate
-  rma(1) = dens(1) *4.d0 /3.d0 *pi *rad_in(1)**3
-  do i = 2, nx1
-     dr = rad_in(i) - rad_in(i-1)
-     rma(i) = rma(i-1) + 4.d0 *pi *rad_in(i)**2 *dens(i) *dr
-  end do
+  ! ------------------------------------------------------------------ !
+  !     set the initial position and cell of particle                  !
+  ! ------------------------------------------------------------------ !
 
-  rma(1:nx1) = rma(1:nx1) /rm_sol
-
-  !..set initial particle position
-  !!rad
-  if ( r_out == r_in ) then
+  !..Radial
+  if (r_out == r_in) then
      rad_pt(1:npt_rad,1:npt_the) = r_out
-  else
-     dr = ( r_out - r_in ) /dble(npt_rad)
+  else if (r_out > r_in) then
+
+     dr = (r_out - r_in) /dble(npt_rad)
      do j = 1, npt_the
         rad_pt(1,j) = r_in + 0.5 *dr
         do i = 2, npt_rad
            rad_pt(i,j) = rad_pt(i-1,j) + dr
         end do
      end do
+  else
+     write(*,*) 'Rin > Rout'
+     stop 'error'
   end if
 
-  rad_pt0(0)       = r_in
-  rad_pt0(npt_rad) = r_out
-  do i = 1, npt_rad - 1
-     rad_pt0(i) = rad_pt0(i-1) + dr
-  end do
 
-
-  !!theta
+  !..Theta
   the_in  = x_fld(2,  1,  1,  1)
   the_out = x_fld(2,nx1,nx2,nx3)
-
-  if ( the_in == the_out) then
+  if (the_in == the_out) then
      the_pt(1:npt_rad,1:npt_the) = the_in
-  else
+  else if (the_in < the_out) then
      dthe = ( the_out - the_in ) /dble(npt_the)
      do i = 1, npt_rad
         the_pt(i,1) = the_in + 0.5 *dthe
@@ -70,10 +65,99 @@ subroutine init_part( d_fld, id, dma, x_pt )
            the_pt(i,j) = the_pt(i,j-1) + dthe
         end do
      end do
+  else
+     write(*,*) 'Rin > Rout'
+     stop 'error'
   end if
 
 
+  !..cell
+  cell_rd(1:npt_rad,1:npt_the,1) = rad_pt(1:npt_rad,1:npt_the) - 0.5d0 *dr
+  cell_rd(1:npt_rad,1:npt_the,2) = rad_pt(1:npt_rad,1:npt_the) - 0.5d0 *dr
+  cell_rd(1:npt_rad,1:npt_the,3) = rad_pt(1:npt_rad,1:npt_the) + 0.5d0 *dr
+  cell_rd(1:npt_rad,1:npt_the,4) = rad_pt(1:npt_rad,1:npt_the) + 0.5d0 *dr
+
+  cell_the(1:npt_rad,1:npt_the,1) = the_pt(1:npt_rad,1:npt_the) - 0.5d0 *dthe
+  cell_the(1:npt_rad,1:npt_the,2) = the_pt(1:npt_rad,1:npt_the) + 0.5d0 *dthe
+  cell_the(1:npt_rad,1:npt_the,3) = the_pt(1:npt_rad,1:npt_the) - 0.5d0 *dthe
+  cell_the(1:npt_rad,1:npt_the,4) = the_pt(1:npt_rad,1:npt_the) + 0.5d0 *dthe
+
+  !..volume
+
+  do i = 1, npt_rad
+     vol_dr(i) = 4.0/3.0 *pi *(cell_rd(i,1,4)**3 - cell_rd(i,1,1)**3)
+  end do
+
+
+
+  do i = 1, npt_rad
+     do j = 1, npt_the
+        vol_pt(i,j) = vol_dr(i)/dble(npt_the)
+     end do
+  end do
+
+  !print *, sum(vol_pt)/(4.0/3.0 *pi *(r_out**3 - r_in**3)),sum(vol_dr)/(4.0/3.0 *pi *(r_out**3 - r_in**3))
+
   !!check
+  write(42,*) '# initial position and cell'
+  do j = 1, npt_the, 10
+     do i = 1, npt_rad, 10
+        x = rad_pt(i,j) *sin(the_pt(i,j))
+        y = rad_pt(i,j) *cos(the_pt(i,j))
+        x_cell(1:4) = cell_rd(i,j,1:4) *sin(cell_the(i,j,1:4))
+        y_cell(1:4) = cell_rd(i,j,1:4) *cos(cell_the(i,j,1:4))
+        write(42,'(1p, *(e14.5))') x, y, (x_cell(k), y_cell(k), k = 1, 4)
+        !write(42,'(1p, *(e14.5))') x, y, x_cell(1), y_cell(1)
+     end do
+  end do
+
+  ! ------------------------------------------------------------------ !
+
+
+
+  ! ------------------------------------------------------------------ !
+  !     set particle's mass                                            !
+  ! ------------------------------------------------------------------ !
+
+  vel_pt(1:ndim) = 0.d0
+  do j = 1, npt_the
+     do i = 1, npt_rad
+        xpt(1) = rad_pt(i,j)
+        xpt(2) = the_pt(i,j)
+        xpt(3) = 0.d0
+        call search(1, xpt(1:ndim), vel_pt(1:ndim), fac(1:ndim), ipt(1:ndim))
+
+        do k = 1, 2
+           l = k - 1
+           i1(k) = max( min( ipt(1) + l, nx1 ), 1 )
+           i2(k) = max( min( ipt(2) + l, nx2 ), 1 )
+           i3(k) = max( min( ipt(3) + l, nx3 ), 1 )
+        end do
+
+        fld_in(1:2,1:2,1:2) &
+             & = d_fld(i1(1:2), i2(1:2), i3(1:2))
+        call hokan(ndim, fld_in, fac(1:ndim), d_pt(i,j))
+
+        !write(100,'(1p, *(e14.5))') d_pt(i,j), d_fld(ipt(1),ipt(2),ipt(3))
+
+     end do
+  end do
+
+
+  !..dma
+  dma_in(1:npt_rad,1:npt_the) = &
+       & d_pt(1:npt_rad,1:npt_the) *vol_pt(1:npt_rad,1:npt_the)
+  total_mass = sum(dma_in) /rm_sol
+
+  !                                                                    !
+  ! ------------------------------------------------------------------ !
+
+
+
+  ! ------------------------------------------------------------------ !
+  !     check                                                          !
+  ! ------------------------------------------------------------------ !
+
   write(42,*) '# initial position'
   do j = 1, npt_the
      do i = 1, npt_rad
@@ -84,52 +168,22 @@ subroutine init_part( d_fld, id, dma, x_pt )
   end do
 
 
-  !..set particle mass
-  rad_pt0_lp: do i = 0, npt_rad
-     if      ( rad_pt0(i) <     rad_in(1) ) then
-!        stop 'r_in is too small'
-     else if ( rad_in(nx1)  <= rad_pt0(i) ) then
-        h = ( rma(nx1) - rma(nx1-1) ) /( rad_in(nx1) - rad_in(nx1-1) )
-        rma_pt0(i) = rma(nx1) + h *( rad_pt0(i) - rad_in(nx1) )
-     else
-        do j = 1, nx1-1
-           if ( rad_in(j) <= rad_pt0(i) .and. rad_pt0(i) < rad_in(j+1) ) then
-              h = ( rma(j+1) - rma(j) ) /( rad_in(j+1) - rad_in(j) )
-              rma_pt0(i) = rma(j) + h *( rad_pt0(i) - rad_in(j) )
-           end if
-        end do
-     end if
-  end do rad_pt0_lp
-
-  rma_in = rma_pt0(0)
-  rma_ou = rma_pt0(npt_rad)
-
-
-  do i = 1, npt_rad
-     dma_in(i,1) = ( rma_pt0(i) - rma_pt0(i-1) ) /dble(npt_the)
+  !..total mass by grid
+  total_mass_grid = 0.d0
+  do j = 1, nx2
+     do i = 1, nx1
+        if (r_in <= x_fld(1,i,j,1) .and. x_fld(1,i,j,1) <= r_out) then
+           total_mass_grid = total_mass_grid + d_fld(i,j,1) *dvol(i,j,1)
+        end if
+     end do
   end do
-
-  do j = 2, npt_the
-     dma_in(1:npt_rad,j) = dma_in(1:npt_rad,1)
-  end do
+  total_mass_grid = total_mass_grid/rm_sol
 
 
-  rma_in_lp: do i = 1, nx1 - 1
-     if ( rad_in(i) <= r_in .and. r_in < rad_in(i+1) ) then
-        h = ( rma(i+1) - rma(i) ) /( rad_in(i+1) - rad_in(i) )
-        rma_in = rma(i) + h *( r_in - rad_in(i) )
-        exit rma_in_lp
-     end if
-  end do rma_in_lp
+  write(*,'("Total mass (particle)  :",1p, e14.5)') total_mass
+  write(*,'("Total mass (grid-based):",1pe14.5)')   total_mass_grid
+  write(*,'(10x, "ratio:",f10.5)') total_mass /total_mass_grid
 
-
-  total_mass = sum( dma_in(1:npt_rad,1:npt_the) )
-
-
-  !..massage
-  write(*,'(a20,1pe14.5)') 'total mass part:', total_mass
-  write(*,'(a20,1pe14.5)') 'total mass grid:', rma_ou - rma_in
-  write(*,'(a20,f10.5)') 'ratio :', total_mass /( rma_ou - rma_in )
 
   !..check output
   write(41,'(a15,1p2e14.5)') 'range:  cm ',  r_in, r_out
@@ -140,7 +194,15 @@ subroutine init_part( d_fld, id, dma, x_pt )
   end do
 
 
-  !..set
+  !                                                                    !
+  ! ------------------------------------------------------------------ !
+
+
+
+  ! ------------------------------------------------------------------ !
+  !     set particle variable                                          !
+  ! ------------------------------------------------------------------ !
+
   k = 0
   do j = 1, npt_the
      do i = 1, npt_rad
@@ -155,7 +217,6 @@ subroutine init_part( d_fld, id, dma, x_pt )
         x_pt(1,k) = rad_pt(i,j)
         x_pt(2,k) = the_pt(i,j)
         x_pt(3,k) = 0.d0
-
      end do
   end do
 
@@ -176,10 +237,15 @@ subroutine init_part( d_fld, id, dma, x_pt )
      do j = 1, npt_the
         do i = 1, npt_rad
            l = l + 1
-           write(60,'(i10,3i5,1p4e16.8)') l, i, j, k, dma_in(i,j), x_pt(1:ndim,l)
+           write(60,'(i10, 3i5, 1p, *(4e16.8))') &
+                & l, i, j, k, dma_in(i,j), x_pt(1:ndim,l)
         end do
      end do
   end do
+
+  !                                                                    !
+  ! ------------------------------------------------------------------ !
+
 
   return
 
