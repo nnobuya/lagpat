@@ -41,8 +41,6 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
      !   in: d_fld, dvol
      !  out: dma, rad_pt, the_pt
 
-     stop 'db at set_part'
-
   else if( k_zoku == 1 ) then
      !! continue
 
@@ -59,8 +57,6 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
      stop '### Error: "k_zoku" isn''t 0 or 1.  ###'
   end if
 
-
-  stop 'db: set_part'
 
 
   return

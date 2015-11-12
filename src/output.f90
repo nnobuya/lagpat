@@ -14,6 +14,7 @@ subroutine output(istg, ti, dt, ipt, &
   integer, intent(inout):: n_anim_out
 
   !..local
+  integer, save:: iout = 0
   integer:: npt_in, npt_out, npt_num
   integer:: i
   real(8):: x, y
@@ -74,7 +75,13 @@ subroutine output(istg, ti, dt, ipt, &
           & 3x, "pt(move)", 4x, "pt(in)", 3x, "pt(out)")')
   end if
 
-  if( mod(istg,100) == 0 .or. istg <= 5 ) &
+  iout = iout + 1
+  if (iout == 1) then
+     write(*,*)
+     write(*,'(" -----------------------------------", &
+     & "----------------------------------")')
+  end if
+  if( mod(iout,100) == 0 .or. iout <= 10 ) &
        & write(*,'(i10,1p2e12.4,3i10)') &
        & istg, ti, dt, npt_num, npt_in, npt_out
 

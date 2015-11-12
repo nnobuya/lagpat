@@ -146,8 +146,8 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
 
   !..dma
   dma_in(1:npt_rad,1:npt_the) = &
-       & d_pt(1:npt_rad,1:npt_the) *vol_pt(1:npt_rad,1:npt_the)
-  total_mass = sum(dma_in) /rm_sol
+       & d_pt(1:npt_rad,1:npt_the) *vol_pt(1:npt_rad,1:npt_the)/rm_sol
+  total_mass = sum(dma_in)
 
   !                                                                    !
   ! ------------------------------------------------------------------ !
@@ -177,7 +177,7 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
         end if
      end do
   end do
-  total_mass_grid = total_mass_grid/rm_sol
+  total_mass_grid = total_mass_grid /rm_sol
 
 
   write(*,'("Total mass (particle)  :",1p, e14.5)') total_mass
@@ -237,7 +237,7 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
      do j = 1, npt_the
         do i = 1, npt_rad
            l = l + 1
-           write(60,'(i10, 3i5, 1p, *(4e16.8))') &
+           write(60,'(i10, 3i5, 1p, *(e16.8))') &
                 & l, i, j, k, dma_in(i,j), x_pt(1:ndim,l)
         end do
      end do
