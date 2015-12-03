@@ -5,20 +5,20 @@ program lpt_post
   integer, parameter:: ndim = 3
   integer, parameter:: ndt_ex = 100
   real(8), parameter:: ti_ini = 1.d-2, ti_fin = 1.d4
-  real(8), parameter:: te_nse = 9.d9
+  real(8), parameter:: te_nse_cond = 9.d9
 
   !..main
-  integer:: npt = 10000
-  integer:: istg, ipt, ndt, idt
+  integer:: istg, ndt, npt
   real(8):: dt, dt_ex
   integer, allocatable:: ist_pt(:,:), ndt_pt(:)
   real(8), allocatable:: ti(:), &
        & de_pt(:,:), te_pt(:,:), en_pt(:,:), &
-       & ye_pt(:,:), x_pt(:,:,:), v_pt(:,:,:)
-  real(8):: ti_ex(1:ndt_ex), de_ex, te_ex, en_ex, ye_ex
+       & ye_pt(:,:), x_pt(:,:,:), v_pt(:,:,:), rma_pt(:)
+  real(8):: ti0, de0, te0, en0, ye0, rd0, vr0
+  real(8):: ti_ex(1:ndt_ex), de_ex, te_ex, en_ex, ye_ex, rd_ex
 
-  integer:: n_nse
-  real(8):: ti_nse, de_nse, en_nse, ye_nse
+  integer:: n_nse, num_nse
+  real(8):: ti_nse, de_nse, te_nse, en_nse, ye_nse, rd_nse, vr_nse
 
   real(8):: h
   real(4):: dt_in, ti_in
@@ -26,7 +26,8 @@ program lpt_post
        & x_in(:,:), v_in(:,:)
 
   character:: ofile*100
-  integer:: i, ier
+  real(8):: r1, r2, r3, r4
+  integer:: i, ier, ipt, idt, i1, i2, i3, i4
 
 
   !..make dt ext
@@ -39,10 +40,6 @@ program lpt_post
 
   ti_ex(1:ndt_ex) = 10.d0**ti_ex(1:ndt_ex)
 
-  do i = 1, ndt_ex
-     write(100,'(i5, e14.5)') i, ti_ex(i)
-  end do
-
 
   !..open
   open(50, file = '../res/move.dat', &
@@ -51,9 +48,17 @@ program lpt_post
        & form = 'unformatted', action = 'read')
   open(52, file = '../res/stat_lpt.dat', &
        & form = 'unformatted', action = 'read')
+  open(53, file = '../res/set.dat', action = 'read')
+
+  open(61, file = 'peak.dat'    , action = 'write')
+  open(62, file = 'pt_eject.dat', action = 'write')
 
 
-  open(61, file = 'peak.dat', action = 'write')
+  read(53,*)
+  read(53,*) npt, i1, i2, i3
+  read(53,*)
+  read(53,*)
+  read(53,*)
 
 
   ndt = 0
@@ -72,7 +77,11 @@ program lpt_post
   allocate(ti(1:ndt), ist_pt(1:npt,1:ndt), ndt_pt(1:npt), &
        & de_pt(1:npt,1:ndt), te_pt(1:npt,1:ndt), &
        & en_pt(1:npt,1:ndt), ye_pt(1:npt,1:ndt), &
-       & x_pt(1:ndim,1:npt,1:ndt), v_pt(1:ndim,1:npt,1:ndt))
+       & x_pt(1:ndim,1:npt,1:ndt), v_pt(1:ndim,1:npt,1:ndt), rma_pt(1:npt))
+
+  do ipt = 1, npt
+     read(53,*) i1, i2, i3, i4, rma_pt(ipt), r1, r2, r3
+  end do
 
   write(*,'("- reading tracer data", i10, "steps")') ndt
 
@@ -97,10 +106,12 @@ program lpt_post
      en_pt(1:npt,idt) = dble(en_in(1:npt))
      ye_pt(1:npt,idt) = dble(ye_in(1:npt))
 
-     if (mod(istg,100) == 0) write(*,*) istg, ti(idt), idt
+     if (mod(istg,500) == 0 .or. idt <= 10) &
+          & write(*,'(i10, f8.1, "  ms")') istg, ti(idt) *1000.0
 
   end do
   close(51)
+
 
   deallocate(de_in, te_in, en_in, ye_in)
 
@@ -109,13 +120,10 @@ program lpt_post
   ndt_pt(1:npt) = ndt
   do ipt = 1, npt
      do idt = 1, ndt
-        if (ist_pt(ipt,idt) /= 0) then
-           ndt_pt(ipt) = idt
-           cycle
-        end if
+        if (ist_pt(ipt,idt) /= 0) exit        
+        ndt_pt(ipt) = idt
      end do
   end do
-
 
   do ipt = 1, npt
      write(61,'(1p, *(e14.5))') &
@@ -128,6 +136,8 @@ program lpt_post
 
   write(*,'("- writing tracer data")')
 
+  num_nse = 0
+
   do ipt = 1, npt
 
      if (mod(ipt,1000) == 0) write(*,'(2i10)') ipt, npt
@@ -138,23 +148,45 @@ program lpt_post
 
      do idt = 1, ndt_pt(ipt)
         write(60,'(1p, *(e15.7))') ti(idt), &
-             & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt)
+             & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt),&
+             & x_pt(1,ipt,idt)
      end do
      close(60)
 
 
-     if (maxval(te_pt(ipt,1:ndt)) < te_nse) then
-        !print *, 'check later'
-        cycle
+     if (maxval(te_pt(ipt,1:ndt_pt(idt))) < te_nse_cond) then
+
+
+        lp_te_search: do idt = ndt_pt(ipt), 1, -1
+           if (te_pt(ipt,idt) >= maxval(te_pt(ipt,1:ndt_pt(idt)))) then
+              n_nse = idt
+              exit lp_te_search
+           end if
+        end do lp_te_search
+
+
+        !if (n_nse == 1)then
+        !   print *, 'okashiinodeha'
+        !end if
+
+        ti_nse = ti(n_nse)
+        de_nse = de_pt(ipt,n_nse)
+        te_nse = te_pt(ipt,n_nse)
+        en_nse = en_pt(ipt,n_nse)
+        ye_nse = ye_pt(ipt,n_nse)
+        rd_nse = x_pt(1,ipt,n_nse)
      else
 
-        print *, 'hokan'
+        num_nse = num_nse + 1
 
-        do idt = ndt_pt(ipt), 1, -1
-           if (te_pt(ipt,idt) >= te_nse) then
+        lp_nse_search: do idt = ndt_pt(ipt), 1, -1
+           if (te_pt(ipt,idt) >= te_nse_cond) then
               n_nse = idt
+              exit lp_nse_search
            end if
-        end do
+        end do lp_nse_search
+
+        te_nse = te_nse_cond
 
         h = (te_nse - te_pt(ipt,idt)) &
              & /(te_pt(ipt,n_nse + 1) - te_pt(ipt,n_nse))
@@ -162,26 +194,55 @@ program lpt_post
         ti_nse = ti(n_nse) + h *(ti(n_nse + 1) - ti(n_nse))
         de_nse = de_pt(ipt,n_nse) &
              & + h *(de_pt(ipt,n_nse + 1) - de_pt(ipt,n_nse))
+        en_nse = en_pt(ipt,n_nse) &
+             & + h *(en_pt(ipt,n_nse + 1) - en_pt(ipt,n_nse))
         ye_nse = ye_pt(ipt,n_nse) &
              & + h *(ye_pt(ipt,n_nse + 1) - ye_pt(ipt,n_nse))
 
+        rd_nse = x_pt(1,ipt,n_nse) &
+             & + h *(x_pt(1,ipt,n_nse + 1) - x_pt(1,ipt,n_nse))
+        vr_nse = v_pt(1,ipt,n_nse) &
+             & + h *(v_pt(1,ipt,n_nse + 1) - v_pt(1,ipt,n_nse))
+
      end if
+
+
+     write(62,'(1p, *(e15.7))') ye_nse, en_nse, rma_pt(ipt)
 
 
      write(ofile,'("./tracer/hydro_", i5.5, ".dat")') ipt
      open(60, file = ofile, action = 'write')
 
-     write(60,'(1p, *(e15.7))') ti_nse, de_nse, te_nse, ye_nse
+     write(60,'(1p, *(e15.7))') ti_nse, de_nse, te_nse, ye_nse, rd_nse
      do idt = n_nse + 1, ndt_pt(ipt)
         write(60,'(1p, *(e15.7))') ti(idt), &
-             & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt)
+             & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt), x_pt(1,ipt,idt)
      end do
-     close(60)
 
+     ti0 = ti(ndt_pt(ipt))
+     de0 = de_pt(ipt,ndt_pt(ipt))
+     te0 = te_pt(ipt,ndt_pt(ipt))
+     en0 = en_pt(ipt,ndt_pt(ipt))
+     ye0 = ye_pt(ipt,ndt_pt(ipt))
+     rd0 = x_pt(1,ipt,ndt_pt(ipt))
+     vr0 = v_pt(1,ipt,ndt_pt(ipt))
+
+     do idt = 1, ndt_ex
+
+        rd_ex = rd0 + vr0*ti_ex(idt)
+
+        de_ex = max(2.e0, de0 *(rd0/rd_ex)**3)
+        te_ex = max(2.e8, te0 *(rd0/rd_ex))
+        ye_ex = ye0 *exp(-(ti_ex(idt) - ti0))
+        write(60,'(1p, *(e15.7))') &
+             & ti0 + ti_ex(idt), de_ex, te_ex, ye_ex, rd_ex
+     end do
+
+     close(60)
 
   end do
 
-
+  print *, num_nse, npt
 
   stop 'normal termination'
 
