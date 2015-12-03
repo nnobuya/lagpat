@@ -3,18 +3,39 @@ program lpt_post
   implicit none
 
   integer, parameter:: ndim = 3
+  integer, parameter:: ndt_ex = 100
+  real(8), parameter:: ti_ini = 1.d-2, ti_fin = 1.d4
 
   integer:: npt = 10000
   integer:: istg, ipt, ndt, idt
-  real(4):: dt
+  real(8):: dt, dt_ex
   integer, allocatable:: ist_pt(:,:)
-  real(4), allocatable:: ti(:), &
+  real(8), allocatable:: ti(:), &
        & de_pt(:,:), te_pt(:,:), en_pt(:,:), &
        & ye_pt(:,:), x_pt(:,:,:), v_pt(:,:,:)
+  real(8):: ti_ex(1:ndt_ex), de_ex, te_ex, en_ex, ye_ex
+
+  real(4):: dt_in, ti_in
+  real(4), allocatable:: de_in(:), te_in(:), en_in(:), ye_in(:), &
+       & x_in(:,:), v_in(:,:)
 
   character:: ofile*100
-  integer:: ier
+  integer:: i, ier
 
+
+  !..make dt ext
+  dt_ex = (log10(ti_fin) - log10(ti_ini)) /real(ndt_ex - 1)
+
+  ti_ex(1) = log10(ti_ini)
+  do i = 2, ndt_ex
+     ti_ex(i) = ti_ex(i-1) + dt_ex
+  end do
+
+  ti_ex(1:ndt_ex) = 10.d0**ti_ex(1:ndt_ex)
+
+  do i = 1, ndt_ex
+     write(100,'(i5, e14.5)') i, ti_ex(i)
+  end do
 
 
   !..open
@@ -39,6 +60,9 @@ program lpt_post
   rewind(52)
 
 
+  allocate(de_in(1:npt), te_in(1:npt), en_in(1:npt), ye_in(1:npt), &
+       & x_in(1:ndim,1:npt), v_in(1:ndim,1:npt))
+
   allocate(ti(1:ndt), ist_pt(1:npt,1:ndt), &
        & de_pt(1:npt,1:ndt), te_pt(1:npt,1:ndt), &
        & en_pt(1:npt,1:ndt), ye_pt(1:npt,1:ndt), &
@@ -48,20 +72,31 @@ program lpt_post
 
   do idt = 1, ndt
 
-     read(50) istg, ti(idt), dt
-     read(50) x_pt(1:ndim,1:npt,idt), v_pt(1:ndim,1:npt,idt)
+     read(50) istg, ti_in, dt_in
+     read(50) x_in(1:ndim,1:npt), v_in(1:ndim,1:npt)
 
-     read(51) istg, ti(idt), dt
-     read(51) de_pt(1:npt,idt), te_pt(1:npt,idt), &
-          & en_pt(1:npt,idt), ye_pt(1:npt,idt)
+     read(51) istg, ti_in, dt_in
+     read(51) de_in(1:npt), te_in(1:npt), en_in(1:npt), ye_in(1:npt)
 
-     read(52) istg, ti(idt), dt
+     read(52) istg, ti_in, dt_in
      read(52) ist_pt(1:npt,idt)
+
+     !..convert real(4) to real(8)
+     ti(idt) = dble(ti_in)
+     x_pt(1:ndim,1:npt,idt) = dble(x_in(1:ndim,1:npt))
+     v_pt(1:ndim,1:npt,idt) = dble(v_in(1:ndim,1:npt))
+
+     de_pt(1:npt,idt) = dble(de_in(1:npt))
+     te_pt(1:npt,idt) = dble(te_in(1:npt))
+     en_pt(1:npt,idt) = dble(en_in(1:npt))
+     ye_pt(1:npt,idt) = dble(ye_in(1:npt))
 
      if (mod(istg,100) == 0) write(*,*) istg, ti(idt)
 
   end do
   close(51)
+
+  deallocate(de_in, te_in, en_in, ye_in)
 
   do ipt = 1, npt
      write(61,'(1p, *(e14.5))') &
