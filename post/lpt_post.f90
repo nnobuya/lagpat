@@ -8,7 +8,7 @@ program lpt_post
   real(8), parameter:: te_nse = 9.d9
 
   !..main
-  integer:: npt = 10000
+  integer:: npt = 10000 !10000
   integer:: istg, ipt, ndt, idt
   real(8):: dt, dt_ex
   integer, allocatable:: ist_pt(:,:), ndt_pt(:)
@@ -74,7 +74,7 @@ program lpt_post
        & en_pt(1:npt,1:ndt), ye_pt(1:npt,1:ndt), &
        & x_pt(1:ndim,1:npt,1:ndt), v_pt(1:ndim,1:npt,1:ndt))
 
-  write(*,'("- reading tracer data")')
+  write(*,'("- reading tracer data", i10, "steps")') ndt
 
   do idt = 1, ndt
 
@@ -97,13 +97,14 @@ program lpt_post
      en_pt(1:npt,idt) = dble(en_in(1:npt))
      ye_pt(1:npt,idt) = dble(ye_in(1:npt))
 
-     if (mod(istg,100) == 0) write(*,*) istg, ti(idt)
+     if (mod(istg,100) == 0) write(*,*) istg, ti(idt), idt
 
   end do
   close(51)
 
   deallocate(de_in, te_in, en_in, ye_in)
 
+  write(*,'("- end reading tracer data")')
 
   ndt_pt(1:npt) = ndt
   do ipt = 1, npt
@@ -143,9 +144,11 @@ program lpt_post
 
 
      if (maxval(te_pt(ipt,1:ndt)) < te_nse) then
-        print *, 'check later'
+        !print *, 'check later'
         cycle
      else
+
+        print *, 'hokan'
 
         do idt = ndt_pt(ipt), 1, -1
            if (te_pt(ipt,idt) >= te_nse) then
