@@ -35,7 +35,8 @@ subroutine output(istg, ti, dt, ipt, &
 
      !..rhotye
      write(63) istg, real(ti), real(dt)
-     write(63) real(d_pt(1:npt)), real(t_pt(1:npt)), real(ye_pt(1:npt))
+     write(63) real(d_pt(1:npt)), real(t_pt(1:npt)), &
+     & real(s_pt(1:npt)), real(ye_pt(1:npt))
 
      !..status
      write(64) istg, real(ti), real(dt)

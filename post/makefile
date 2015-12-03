@@ -1,4 +1,5 @@
 fc	:= ifort
+fc	:= gfortran
 
 fflags	:= -O3
 

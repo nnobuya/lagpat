@@ -30,6 +30,8 @@ subroutine ofile
   open(41, file = '../res/part_mass.log', action='write')
   open(42, file = '../res/init_part.dat', action='write')
 
+  open(42, file = '../res/init_part.dat', action='write')
+
   !..particle motion
   open(60, file = '../res/set.dat'  , action = 'write')
 

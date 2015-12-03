@@ -24,7 +24,8 @@ program lagpat
 
   use mod_cnst, only: npt, ndim
   use mod_set , only: int_t, i_test, last_lp, n_init, n_fini, &
-       & d_fld, t_fld, s_fld, ye_fld, v_fld, v0_fld, set_data
+       & d_fld, t_fld, s_fld, ye_fld, v_fld, v0_fld, set_data, &
+       & dma
   use mod_fld , only: dt_max, fld
 
   implicit none
@@ -39,8 +40,10 @@ program lagpat
 
   !..local
   integer:: istg, ihyd, n_anim_out = 0
-  integer:: ier
+  integer:: i, ier
   real(8) :: ti, dt0, dt_in, dt = 0.d0
+  real(8) :: total
+
 
   ti = 0.d0
 
@@ -99,6 +102,14 @@ program lagpat
 
   dt0 = dt_max
   dt  = dt_max
+
+
+  !..temporary
+  total = sum(dma(1:npt))
+  do i = 1, npt
+     write(100,'(1p, *(e15.7))') ye_pt(i), dma(i), dma(i)/total
+  end do
+
 
   if( i_test == 1 ) stop '### finish test  ###'
 
