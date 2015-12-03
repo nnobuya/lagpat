@@ -8,7 +8,7 @@ program lpt_post
   real(8), parameter:: te_nse = 9.d9
 
   !..main
-  integer:: npt = 10000 !10000
+  integer:: npt = 10000
   integer:: istg, ipt, ndt, idt
   real(8):: dt, dt_ex
   integer, allocatable:: ist_pt(:,:), ndt_pt(:)
@@ -138,7 +138,7 @@ program lpt_post
 
      do idt = 1, ndt_pt(ipt)
         write(60,'(1p, *(e15.7))') ti(idt), &
-        & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt)
+             & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt)
      end do
      close(60)
 
@@ -157,15 +157,27 @@ program lpt_post
         end do
 
         h = (te_nse - te_pt(ipt,idt)) &
-        & /(te_pt(ipt,n_nse + 1) - te_pt(ipt,n_nse))
+             & /(te_pt(ipt,n_nse + 1) - te_pt(ipt,n_nse))
 
-        ti_nse = ti(n_nse)        + h *(ti(n_nse + 1)      - ti(n_nse))
+        ti_nse = ti(n_nse) + h *(ti(n_nse + 1) - ti(n_nse))
         de_nse = de_pt(ipt,n_nse) &
              & + h *(de_pt(ipt,n_nse + 1) - de_pt(ipt,n_nse))
         ye_nse = ye_pt(ipt,n_nse) &
              & + h *(ye_pt(ipt,n_nse + 1) - ye_pt(ipt,n_nse))
 
      end if
+
+
+     write(ofile,'("./tracer/hydro_", i5.5, ".dat")') ipt
+     open(60, file = ofile, action = 'write')
+
+     write(60,'(1p, *(e15.7))') ti_nse, de_nse, te_nse, ye_nse
+     do idt = n_nse + 1, ndt_pt(ipt)
+        write(60,'(1p, *(e15.7))') ti(idt), &
+             & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt)
+     end do
+     close(60)
+
 
   end do
 
