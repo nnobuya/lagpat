@@ -1,13 +1,13 @@
 #! /bin/sh
 
 
-nskip=10
-nini=11
+nskip=20
+nini=2500
 #nfin=100
 
 n=$nini
 m=0
-nout=11
+nout=2500
 
 while read time
 do
