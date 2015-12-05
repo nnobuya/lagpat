@@ -22,8 +22,9 @@ for line in open('./in/pt_list.dat'):
         no1 = no1 - 10000
 
     file1 = in_path + '/hydro_' + '{0:05d}'.format(no1) + '.dat'
-    file2 = dir_path + '/hydro_' + '{0:05d}'.format(no2) + '.in'
+    file2 = dir_path + '/hydro_' + '{0:05d}'.format(no2) + '.dat'
 
+    print(file1 + ' --> ' + file2)
     subprocess.call(['cp', file1, file2])
 
 exit()
