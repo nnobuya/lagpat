@@ -52,6 +52,7 @@ program lpt_post
 
   open(61, file = 'peak.dat'    , action = 'write')
   open(62, file = 'pt_eject.dat', action = 'write')
+  open(63, file = 'hydr_nse.dat', action = 'write')
 
 
   read(53,*)
@@ -213,7 +214,12 @@ program lpt_post
      write(ofile,'("./tracer/hydro_", i5.5, ".dat")') ipt
      open(60, file = ofile, action = 'write')
 
-     write(60,'(1p, *(e15.7))') ti_nse, de_nse, te_nse, ye_nse, rd_nse
+
+     write(60,'("#", 3x, "ti [s]", 5x, "de [g/cc]", "te [k]", "ra [cm]")')
+     write(60,'(1p, *(e15.7))') ti_nse, de_nse, te_nse, rd_nse
+
+     write(63,'(1p, *(e18.10))') ti_nse, de_nse, te_nse, ye_nse
+
      do idt = n_nse + 1, ndt_pt(ipt)
         write(60,'(1p, *(e15.7))') ti(idt), &
              & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt), x_pt(1,ipt,idt)
@@ -229,18 +235,23 @@ program lpt_post
 
      do idt = 1, ndt_ex
 
-        rd_ex = rd0 + vr0*ti_ex(idt)
+        rd_ex = rd0 + vr0 *ti_ex(idt)
 
-        de_ex = max(2.e0, de0 *(rd0/rd_ex)**3)
-        te_ex = max(2.e8, te0 *(rd0/rd_ex))
+        de_ex = max(2.e1, de0 *(rd0/rd_ex)**3)
+        te_ex = max(2.e6, te0 *(rd0/rd_ex))
         ye_ex = ye0 *exp(-(ti_ex(idt) - ti0))
         write(60,'(1p, *(e15.7))') &
-             & ti0 + ti_ex(idt), de_ex, te_ex, ye_ex, rd_ex
+             & max(ti_fin,ti0 + ti_ex(idt)), de_ex, te_ex, rd_ex
+
+        if (ti_fin >= ti0 + ti_ex(idt)) exit
+
      end do
 
      close(60)
 
   end do
+
+  close(63)
 
   print *, num_nse, npt
 

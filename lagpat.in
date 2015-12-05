@@ -1,8 +1,8 @@
-B1;95;0c1;95;0c# file path
+# file path
 '/home/nishmrnb/work250/mri_sn/Efix/MRIrun60m'
 
 #steps    init,      end,
-          2500      5000
+          4000      7024
 
  k_zoku, i_test,  last_lp, int_t, int_x, nin, nou
       0       0         0      2      1    1    2
