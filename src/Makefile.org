@@ -14,6 +14,8 @@ FC	:= ifort
 FCFLAGS	:= -O3
 #FCFLAGS	:= -check all -warn all -traceback
 
+EXE	:= ../lagpat
+
 PRG	:= lagpat
 
 MAIN	:= $(PRG:%=%.f90)
@@ -36,9 +38,9 @@ LIBMOD	:= $(OBJMOD:%.o=$(LIBPRG)(%.o))
 
 #=============================================================================
 
-all:	$(PRG)
+all:	$(EXE)
 
-$(PRG):	%: %.f90 $(LIBPRG) $(LIBOBJ) $(LIBMOD)
+$(EXE):	$(LIBPRG) $(LIBOBJ) $(LIBMOD)
 	$(FC) $(FCFLAGS)  -o $@ $< -L. $(LIBPRG)
 
 $(LIBPRG): $(LIBOBJ)
