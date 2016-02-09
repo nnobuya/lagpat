@@ -61,7 +61,7 @@ subroutine output(istg, ti, dt, ipt, &
              & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i)
      end do
 
-     write(65,'(f7.1)') ti *1000.0
+     write(65,'(i10, 1p, e15.7)') istg, ti *1000.0
      n_anim_out = n_anim_out + 1
 
   end if

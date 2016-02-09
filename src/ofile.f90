@@ -34,8 +34,8 @@ subroutine ofile
   ! ------------------------------------------------------------------ !
 
   !..settings
-  open(40, file = './res/init_part.dat', action = 'write')
-  open(41, file = './res/fini_part.dat', action = 'write')
+  open(40, file = './res/part_init.dat', action = 'write')
+  open(41, file = './res/part_fini.dat', action = 'write')
 
   !..particle motion
   !open(60, file = './res/set.dat'  , action = 'write')
