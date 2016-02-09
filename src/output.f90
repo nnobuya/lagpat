@@ -48,7 +48,7 @@ subroutine output(istg, ti, dt, ipt, &
 
      close(66)
 
-     write(f_name, '("../res/anim/anim_", i4.4, ".dat")') istg
+     write(f_name, '("./res/anim/anim_", i4.4, ".dat")') istg
      open(66, file = f_name, action = 'write')
 
      write(66,'("#", 3x, "X", 11x, "Y",11x,  "de", 10x, &

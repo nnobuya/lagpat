@@ -8,7 +8,7 @@ module mod_set
   public:: k_zoku, i_test, last_lp, int_t, int_x, nin, nou, &
        & nout_lpt, n_anim, n_init, n_fini, &
        & r_in, r_out, bound_in, bound_out, set_param, nx1, nx2, nx3, &
-       & d_fld, t_fld, s_fld, ye_fld, x_fld, dx_fld, dma, v_fld, v0_fld, &
+       & d_fld, t_fld, s_fld, ye_fld, x_fld, dx_fld, v_fld, v0_fld, &
        & set_data, path
 
   integer:: n_init, n_fini
@@ -26,8 +26,6 @@ module mod_set
   real(8), allocatable:: dx_fld(:,:)
   real(8), dimension(:,:,:,:), allocatable:: x_fld, v_fld, v0_fld
 
-  real(8):: dma(1:npt)
-
 contains
 
 
@@ -39,11 +37,11 @@ contains
 
 
     !..calculation Parametar form './in.dat'
-
-    open(io, file = '../lagpat.in', action = 'read')
-
     read(io,*)
     read(io,*) path
+    read(io,*)
+    read(io,*)
+    read(io,*) nx1, nx2, nx3
     read(io,*)
     read(io,*)
     read(io,*) n_init, n_fini
@@ -56,8 +54,7 @@ contains
     read(io,*)
     read(io,*)
     read(io,*) nout_lpt, n_anim
-
-    close(io)
+    read(io,*)
 
     !..check
     if(     r_in > r_out     ) stop 'error: bad data #1 set_param @mod_set'
@@ -90,13 +87,13 @@ contains
 
     !..grid for hydro result
     !..set grid
-    nx1 = 576
-    nx2 = 128
-    nx3 = 1
+    !nx1 = 576
+    !nx2 = 128
+    !nx3 = 1
 
-    nx_max = max( max( nx1, nx2 ), nx3 )
+    nx_max = max(max( nx1, nx2 ), nx3)
 
-    allocate( x_fld(ndim,nx1,nx2,nx3), dx_fld(ndim,nx_max), &
+    allocate(x_fld(ndim,nx1,nx2,nx3), dx_fld(ndim,nx_max), &
          & d_fld(nx1,nx2,nx3), t_fld(nx1,nx2,nx3), &
          & s_fld(nx1,nx2,nx3), ye_fld(nx1,nx2,nx3), &
          & v_fld(ndim,nx1,nx2,nx3), v0_fld(ndim,nx1,nx2,nx3), &

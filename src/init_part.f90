@@ -99,15 +99,14 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
   !print *, sum(vol_pt)/(4.0/3.0 *pi *(r_out**3 - r_in**3)),sum(vol_dr)/(4.0/3.0 *pi *(r_out**3 - r_in**3))
 
   !!check
-  write(42,*) '# initial position and cell'
+  write(70,*) '# initial position and cell'
   do j = 1, npt_the, 10
      do i = 1, npt_rad, 10
         x = rad_pt(i,j) *sin(the_pt(i,j))
         y = rad_pt(i,j) *cos(the_pt(i,j))
         x_cell(1:4) = cell_rd(i,j,1:4) *sin(cell_the(i,j,1:4))
         y_cell(1:4) = cell_rd(i,j,1:4) *cos(cell_the(i,j,1:4))
-        write(42,'(1p, *(e14.5))') x, y, (x_cell(k), y_cell(k), k = 1, 4)
-        !write(42,'(1p, *(e14.5))') x, y, x_cell(1), y_cell(1)
+        write(70,'(1p, *(e14.5))') x, y, (x_cell(k), y_cell(k), k = 1, 4)
      end do
   end do
 
@@ -158,14 +157,15 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
   !     check                                                          !
   ! ------------------------------------------------------------------ !
 
-  write(42,*) '# initial position'
+  write(70,*) '# initial position'
   do j = 1, npt_the
      do i = 1, npt_rad
         x = rad_pt(i,j) *sin(the_pt(i,j))
         y = rad_pt(i,j) *cos(the_pt(i,j))
-        write(42,'(1p2e14.5)') x, y
+        write(70,'(1p2e14.5)') x, y
      end do
   end do
+  close(70)
 
 
   !..total mass by grid
@@ -186,12 +186,12 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
 
 
   !..check output
-  write(41,'(a15,1p2e14.5)') 'range:  cm ',  r_in, r_out
-  write(41,'(a15,1p2e14.5)') 'range: Msol', rma_in, rma_ou
-  write(41,*) '   #     Mr            rad           Density'
-  do i = 1, nx1
-     write(41,'(i5,1p3e14.5)') i, rma(i), rad_in(i), dens(i)
-  end do
+  !write(41,'(a15,1p2e14.5)') 'range:  cm ',  r_in, r_out
+  !write(41,'(a15,1p2e14.5)') 'range: Msol', rma_in, rma_ou
+  !write(41,*) '   #     Mr            rad           Density'
+  !do i = 1, nx1
+  !   write(41,'(i5,1p3e14.5)') i, rma(i), rad_in(i), dens(i)
+  !end do
 
 
   !                                                                    !
@@ -222,27 +222,27 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
 
   if ( k /= npt ) stop 'ini_part: error'
 
-  !..write
-  write(60,'(a26)') '#      npt, nx1, nx2, nx3,'
-  write(60,'(i10,3i5)') npt, npt_rad, npt_the, 1
-  write(60,*)
-  write(60,*)
+  if (.false.) then
+     !..write
+     write(60,'(a26)') '#      npt, nx1, nx2, nx3,'
+     write(60,'(i10,3i5)') npt, npt_rad, npt_the, 1
+     write(60,*)
+     write(60,*)
 
-  write(60,'(a,6x,a3,3x,a2,3x,a2,3x,a2,4x,a4,12x,a6,10x,a5,11x,a3)') &
-       & '#', 'npt', 'x1', 'x2', 'x3', 'mass', 'radius', 'theta', 'phi'
+     write(60,'(a,6x,a3,3x,a2,3x,a2,3x,a2,4x,a4,12x,a6,10x,a5,11x,a3)') &
+     & '#', 'npt', 'x1', 'x2', 'x3', 'mass', 'radius', 'theta', 'phi'
 
-  l = 0
-
-  do k = 1, 1
-     do j = 1, npt_the
-        do i = 1, npt_rad
-           l = l + 1
-           write(60,'(i10, 3i5, 1p, *(e16.8))') &
-                & l, i, j, k, dma_in(i,j), x_pt(1:ndim,l)
+     l = 0
+     do k = 1, 1
+        do j = 1, npt_the
+           do i = 1, npt_rad
+              l = l + 1
+              write(60,'(i10, 3i5, 1p, *(e16.8))') &
+              & l, i, j, k, dma_in(i,j), x_pt(1:ndim,l)
+           end do
         end do
      end do
-  end do
-
+  end if
   !                                                                    !
   ! ------------------------------------------------------------------ !
 

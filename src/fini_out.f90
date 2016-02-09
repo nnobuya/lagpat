@@ -1,27 +1,32 @@
-subroutine fini_out( istg, ti, ist_pt, id, x_pt, v_pt )
+subroutine fini_out(io, istg, ti, ist_pt, id, dma, &
+     & x_pt, v_pt, d_pt, t_pt, ye_pt, en_pt)
 
   use mod_cnst, only: npt, ndim
-  use mod_set , only: dma
 
   implicit none
 
   !..io
-  integer         , intent(in):: istg, ist_pt(npt), id(1:ndim,1:npt)
-  double precision, intent(in):: ti, x_pt(ndim,npt), v_pt(ndim,npt)
+  integer, intent(in):: io, istg, ist_pt(npt), id(1:ndim,1:npt)
+  real(8), intent(in):: ti, dma(1:npt), x_pt(ndim,npt), v_pt(ndim,npt), &
+       & d_pt(1:npt), t_pt(1:npt), ye_pt(1:npt), en_pt(1:npt)
 
   !..local
-  integer:: i
+  integer:: ipt
 
 
   !..for next stage
-  write(90,*) '#'
-  write(90,*) ti, istg
-  write(90,*)
-  write(90,*)
+  write(io,'("#", 10x, "time", 6x, "step")')
+  write(io,'("#", 1p, e14.7, i10)') ti, istg
+  write(io,'(a1, a9, 4a7, *(a18))') &
+       & '#', 'npt', 'x1', 'x2', 'x3', 'stat', &
+       & 'Mass', 'x(1)', 'x(2)', 'x(3)', 'v(1)', 'v(2)', 'v(3)',&
+       & 'Density',  'Temperature', 'Ye', 'Entropy'
 
-  do i = 1, npt
-     write(90,'(i10,3i5,1p7e18.10,i5)') &
-          & i, id(1:ndim,i), dma(i), x_pt(1:ndim,i), v_pt(1:ndim,i), ist_pt(i)
+  do ipt = 1, npt
+     write(io,'(i10, 4i7, 1p, *(e18.10))') &
+          & ipt, id(1:ndim,ipt), ist_pt(ipt), &
+          & dma(ipt), x_pt(1:ndim,ipt), v_pt(1:ndim,ipt), &
+          & d_pt(ipt), t_pt(ipt), ye_pt(ipt), en_pt(ipt)
   end do
 
 

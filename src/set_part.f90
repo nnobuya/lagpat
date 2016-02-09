@@ -1,13 +1,13 @@
-subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
+subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
 
   use mod_cnst, only: npt, ndim
-  use mod_set , only: k_zoku, dma, nx1, nx2, nx3
+  use mod_set , only: k_zoku, nx1, nx2, nx3
 
   implicit none
 
   !..io
   integer, intent(out):: istage, id(1:ndim,1:npt), istat_pt(npt)
-  double precision, intent(out):: time, x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt)
+  real(8), intent(out):: time, x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), dma(1:npt)
 
   !..local
   real(8):: total_mass
@@ -16,7 +16,7 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
 
 
   !..initial position
-  if ( k_zoku == 0 ) then
+  if (k_zoku == 0) then
 
      !! for first calculation
      read(50, iostat = ier) time, dummy(1:4)
@@ -37,7 +37,7 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
      istage = 0
      istat_pt(1:npt) = 0
 
-     call init_part( d_fld(:,:,:), dvol(:,:,:), id(:,:), dma(:), x_pt(:,:) )
+     call init_part(d_fld(:,:,:), dvol(:,:,:), id(:,:), dma(:), x_pt(:,:))
      !   in: d_fld, dvol
      !  out: dma, rad_pt, the_pt
 
@@ -56,7 +56,6 @@ subroutine set_part( istage, time, istat_pt, id, x_pt, v_pt )
      !! error
      stop '### Error: "k_zoku" isn''t 0 or 1.  ###'
   end if
-
 
 
   return

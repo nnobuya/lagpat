@@ -30,7 +30,7 @@ subroutine dt_chk( time, dt, istat_pt, ipt, v_pt, x_pt )
 
   end do
 
-  write(70,'(1p3e14.5)') &
+  write(71,'(1p3e14.5)') &
        & time, maxval(di_pt(1:npt)), maxval(dj_pt(1:npt))
 
 

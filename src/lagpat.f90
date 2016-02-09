@@ -24,29 +24,23 @@ program lagpat
 
   use mod_cnst, only: npt, ndim
   use mod_set , only: int_t, i_test, last_lp, n_init, n_fini, &
-       & d_fld, t_fld, s_fld, ye_fld, v_fld, v0_fld, set_data, &
-       & dma
+       & d_fld, t_fld, s_fld, ye_fld, v_fld, v0_fld, set_data
   use mod_fld , only: dt_max, fld
 
   implicit none
 
   !..main
-  integer:: ist_pt(1:npt), ipt(1:ndim,1:npt)
-
-  integer:: id(1:ndim,1:npt)
-  real(8), dimension(1:npt)           :: d_pt, t_pt, s_pt, ye_pt
-  real(8), dimension(1:ndim,1:npt)    :: x_pt, v_pt
-  real(8), dimension(1:ndim,0:4,1:npt):: v_pt_p
+  integer, allocatable:: ist_pt(:), ipt(:,:), id(:,:)
+  real(8), allocatable, dimension(:):: d_pt, t_pt, s_pt, ye_pt, dma
+  real(8), allocatable:: x_pt(:,:), v_pt(:,:), v_pt_p(:,:,:)
 
   !..local
   integer:: istg, ihyd, n_anim_out = 0
   integer:: i, ier
-  real(8) :: ti, dt0, dt_in, dt = 0.d0
-  real(8) :: total
+  real(8):: ti, dt0, dt_in, dt = 0.d0
 
 
   ti = 0.d0
-
 
   ! ------------------------------------------------------------------ !
   !                                                                    !
@@ -60,17 +54,16 @@ program lagpat
   !..open files
   call ofile
 
+  allocate(ist_pt(1:npt), ipt(1:ndim,1:npt), id(1:ndim,1:npt), &
+       & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt), &
+       & dma(1:npt), x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), &
+       & v_pt_p(1:ndim,0:4,1:npt))
+
   !..set hydro data
   call set_data
 
-  call set_part(istg, ti, ist_pt(:), id(:,:), x_pt(:,:), v_pt(:,:))
+  call set_part(istg, ti, ist_pt(:), id(:,:), x_pt(:,:), v_pt(:,:), dma(:))
   !  out: all
-
-
-  close(41)
-  close(42)
-  close(60)
-  close(91)
 
   !     pre-process                                                    !
   ! ------------------------------------------------------------------ !
@@ -103,15 +96,17 @@ program lagpat
   dt0 = dt_max
   dt  = dt_max
 
-
   !..temporary
-  total = sum(dma(1:npt))
-  do i = 1, npt
-     write(100,'(1p, *(e15.7))') ye_pt(i), dma(i), dma(i)/total
-  end do
+  !total = sum(dma(1:npt))
+  !do i = 1, npt
+  !   write(100,'(1p, *(e15.7))') ye_pt(i), dma(i), dma(i)/total
+  !end do
 
+  call fini_out(40, istg + 1, ti, ist_pt(:), id(:,:), dma(:), &
+       & x_pt(:,:), v_pt(:,:), d_pt(:), t_pt(:), ye_pt(:), s_pt(:) )
+  close(40)
 
-  if( i_test == 1 ) stop '### finish test  ###'
+  if (i_test == 1) stop '### finish test  ###'
 
   !     first-step                                                     !
   ! ------------------------------------------------------------------ !
@@ -141,7 +136,6 @@ program lagpat
      call status( x_pt(:,:), ist_pt(:) )
      !  in: rad_pt
      ! i&o: ist_pt
-
 
      !     update                                                      !
      ! --------------------------------------------------------------- !
@@ -203,16 +197,12 @@ program lagpat
      
   end do main_lp
 
-  close(51)
-  close(52)
-  close(53)
-  close(54)
-  close(55)
-  close(56)
-
   close(61)
   close(62)
   close(63)
+  close(64)
+
+  close(71)
 
   !     particle tracing: LagPaT main                                  !
   ! ------------------------------------------------------------------ !
@@ -233,9 +223,10 @@ program lagpat
   write(*,'(a20,i10)') 'calculation step:', istg
   write(*,'(a20,i10)') 'output:', n_anim_out
 
-  call fini_out( istg, ti, ist_pt(:), id(:,:), x_pt(:,:), v_pt(:,:) )
+  call fini_out(41, istg + 1, ti, ist_pt(:), id(:,:), dma(:), &
+       & x_pt(:,:), v_pt(:,:), d_pt(:), t_pt(:), ye_pt(:), s_pt(:))
 
-  close(90)
+  close(41)
 
   write(*,'(" -----------------------------------", &
   & "----------------------------------")')

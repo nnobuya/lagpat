@@ -11,8 +11,12 @@
 FC	:= ifort
 #FC	:= gfortran
 
-FCFLAGS	:= -O3
-#FCFLAGS	:= -check all -warn all -traceback
+ifeq ($(FC), ifort)
+	FCFLAGS	:= -O3
+	#FCFLAGS := -check all -warn all -traceback
+else
+	FCFLAGS	:= -O3 -fopenmp #-fconvert=big-endian
+endif
 
 EXE	:= ../lagpat
 
