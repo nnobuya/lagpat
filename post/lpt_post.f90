@@ -42,13 +42,13 @@ program lpt_post
 
 
   !..open
-  open(50, file = '../res/move.dat', &
+  open(50, file = './lpt/move.dat', &
        & form = 'unformatted', action = 'read')
-  open(51, file = '../res/hydro.dat', &
+  open(51, file = './lpt/hydro.dat', &
        & form = 'unformatted', action = 'read')
-  open(52, file = '../res/stat_lpt.dat', &
+  open(52, file = './lpt/stat_lpt.dat', &
        & form = 'unformatted', action = 'read')
-  open(53, file = '../res/set.dat', action = 'read')
+  open(53, file = './lpt/set.dat', action = 'read')
 
   open(61, file = './res/peak.dat'     , action = 'write')
   open(62, file = './res/pt_eject.dat' , action = 'write')
