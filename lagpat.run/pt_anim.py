@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 
 Test = False
+nstp = 10
 
 stp = []; ti = []
 for line in open('./res/anim_set.dat'):
@@ -10,7 +11,8 @@ for line in open('./res/anim_set.dat'):
     stp.append(int(dat[0]))
     ti.append(float(dat[1]))
 
-for n in range(len(stp)):
+for n in range(0,len(stp),nstp):
+
     x = []; y = []; ye = []
     no = '{0:04d}'.format(stp[n])
 
@@ -28,12 +30,16 @@ for n in range(len(stp)):
     ax.set_aspect(1)
 
     plt.plot(x, y, 'o', c = 'b', markersize = 2, markeredgewidth = 0)
+
+    plt.xlim(0,2000)
+    plt.ylim(0,2000)
+
     plt.xlabel('X, km')
     plt.ylabel('Y, km')
 
     plt.title('Time = ' + '{0:10.1f}'.format(ti[n]) + ' ms' + '  (' + no + ')')
 
-    plt.savefig('./anim/pt' + no + '.pdf')
+    plt.savefig('./anim/pt' + no + '.png')
     plt.close()
 
     if Test:
