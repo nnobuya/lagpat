@@ -14,6 +14,7 @@ do
 
     mkdir ./res
     mkdir ./res/anim
+    mkdir ./res/lpt
     mkdir ./anim
 
     time ./lagpat
