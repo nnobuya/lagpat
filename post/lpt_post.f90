@@ -70,11 +70,12 @@ program lpt_post
 
   npt = -3
   do
-     read(53,iostat=ier)
+     read(53,*,iostat=ier)
      if (ier /= 0) exit
-     read(53)
      npt = npt + 1
   end do
+
+  write(*,'("npt =", i10, 5x, "ndt =", i10)') npt, ndt
 
   rewind(52)
   rewind(53)
@@ -91,11 +92,14 @@ program lpt_post
   ! ------------------------------------------------------------------ !
 
 
+  read(53,*)
+  read(53,*)
+  read(53,*)
   do ipt = 1, npt
      read(53,*) ii(1:5), rma_pt(ipt), rr(1:10)
   end do
 
-  write(*,'("- reading tracer data", i10, "steps")') ndt
+  write(*,'("- reading tracer data", i10, " Steps")') ndt
 
   do idt = 1, ndt
 
@@ -118,7 +122,7 @@ program lpt_post
      en_pt(1:npt,idt) = dble(en_in(1:npt))
      ye_pt(1:npt,idt) = dble(ye_in(1:npt))
 
-     if (mod(istg,500) == 0 .or. idt <= 10) &
+     if (mod(istg,100) == 0 .or. idt <= 10) &
           & write(*,'(i10, f8.1, "  ms")') istg, ti(idt) *1000.0
 
   end do
