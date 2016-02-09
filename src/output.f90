@@ -23,28 +23,24 @@ subroutine output(istg, ti, dt, ipt, &
 
 
   !..physical quantities
-  out_cond: if( istg == 1 .or. mod(istg,nout_lpt) == 0 ) then
+  out_cond: if (istg == 1 .or. mod(istg,nout_lpt) == 0) then
 
-     !..position
-     write(61) istg, real(ti), real(dt)
-     write(61) ipt(1:ndim,1:npt)
+     close(60)
 
-     !..motion
-     write(62) istg, real(ti), real(dt)
-     write(62) real(x_pt(1:ndim,1:npt)), real(v_pt(1:ndim,1:npt))
+     write(f_name, '("./res/lpt/lpt_", i4.4, ".dat")') istg
+     open(60, file = f_name, form = 'unformatted', action = 'write')
 
-     !..rhotye
-     write(63) istg, real(ti), real(dt)
-     write(63) real(d_pt(1:npt)), real(t_pt(1:npt)), &
-     & real(s_pt(1:npt)), real(ye_pt(1:npt))
-
-     !..status
-     write(64) istg, real(ti), real(dt)
-     write(64) ist_pt(1:npt)
+     !..lpt data
+     write(60) istg, real(ti), real(dt)
+     write(60) ipt(1:ndim,1:npt)
+     write(60) ist_pt(1:npt)
+     write(60) real(x_pt(1:ndim,1:npt)), real(v_pt(1:ndim,1:npt))
+     write(60) real(d_pt(1:npt)), real(t_pt(1:npt)), &
+          & real(s_pt(1:npt)), real(ye_pt(1:npt))
 
   end if out_cond
 
-  if ( mod(istg,n_anim) == 0 ) then
+  if (istg == 1 .or. mod(istg,n_anim) == 0) then
 
      close(66)
 

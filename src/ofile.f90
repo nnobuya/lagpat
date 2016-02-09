@@ -37,27 +37,12 @@ subroutine ofile
   open(40, file = './res/part_init.dat', action = 'write')
   open(41, file = './res/part_fini.dat', action = 'write')
 
-  !..particle motion
-  !open(60, file = './res/set.dat'  , action = 'write')
-
-  !! position
-  open(61, file = './res/posi_lpt.dat', &
-       & form = 'unformatted', action = 'write')
-
-  !! moving
-  open(62, file = './res/move.dat', &
-       & form = 'unformatted', action = 'write')
-
-  !! Density, Temperature, Ye
-  open(63, file = './res/hydro.dat', &
-       & form = 'unformatted', action = 'write')
-
-  !! Status
-  open(64, file = './res/stat_lpt.dat', &
-       & form = 'unformatted', action = 'write')
-
   !..movie
+  write(f_name,'("./res/lpt/lpt_", i4.4, ".dat")') n_init
+  open(60, file = f_name, form = 'unformatted', action = 'write')
+
   open(65, file = './res/anim_set.dat', action = 'write')
+
   write(f_name,'("./res/anim/anim_", i4.4, ".dat")') n_init
   open(66, file = f_name, action = 'write')
 
