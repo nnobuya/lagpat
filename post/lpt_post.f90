@@ -26,8 +26,8 @@ program lpt_post
        & x_in(:,:), v_in(:,:)
 
   character:: ofile*100
-  real(8):: r1, r2, r3, r4
-  integer:: i, ier, ipt, idt, i1, i2, i3, i4
+  real(8):: rr(1:10)
+  integer:: i, ier, ipt, idt, ii(1:5)
 
 
   !..make dt ext
@@ -48,19 +48,17 @@ program lpt_post
        & form = 'unformatted', action = 'read')
   open(52, file = './lpt/stat_lpt.dat', &
        & form = 'unformatted', action = 'read')
-  open(53, file = './lpt/set.dat', action = 'read')
+  open(53, file = './lpt/part_init.dat', action = 'read')
 
   open(61, file = './res/peak.dat'     , action = 'write')
   open(62, file = './res/pt_eject.dat' , action = 'write')
   open(63, file = './res/hydro_nse.dat', action = 'write')
 
 
-  read(53,*)
-  read(53,*) npt, i1, i2, i3
-  read(53,*)
-  read(53,*)
-  read(53,*)
 
+  ! ------------------------------------------------------------------ !
+  !     set parameters                                                 !
+  ! ------------------------------------------------------------------ !
 
   ndt = 0
   do
@@ -69,8 +67,17 @@ program lpt_post
      read(52)
      ndt = ndt + 1
   end do
-  rewind(52)
 
+  npt = -3
+  do
+     read(53,iostat=ier)
+     if (ier /= 0) exit
+     read(53)
+     npt = npt + 1
+  end do
+
+  rewind(52)
+  rewind(53)
 
   allocate(de_in(1:npt), te_in(1:npt), en_in(1:npt), ye_in(1:npt), &
        & x_in(1:ndim,1:npt), v_in(1:ndim,1:npt))
@@ -80,8 +87,12 @@ program lpt_post
        & en_pt(1:npt,1:ndt), ye_pt(1:npt,1:ndt), &
        & x_pt(1:ndim,1:npt,1:ndt), v_pt(1:ndim,1:npt,1:ndt), rma_pt(1:npt))
 
+  !     set parameters                                                 !
+  ! ------------------------------------------------------------------ !
+
+
   do ipt = 1, npt
-     read(53,*) i1, i2, i3, i4, rma_pt(ipt), r1, r2, r3
+     read(53,*) ii(1:5), rma_pt(ipt), rr(1:10)
   end do
 
   write(*,'("- reading tracer data", i10, "steps")') ndt
