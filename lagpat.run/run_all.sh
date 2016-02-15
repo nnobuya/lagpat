@@ -1,9 +1,14 @@
 #! /bin/sh
 
+if [ $# -ne 2 ]; then
+    echo 'Type start # to finish #: e.g., ./run_all.sh 1 2'
+    exit
+fi
+
 rm -rf ./res
 rm -rf ./anim
 
-for n in `seq 1 2`
+for n in `seq $1 $2`
 do
     echo $n
 

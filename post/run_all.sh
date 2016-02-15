@@ -1,11 +1,16 @@
 #! /bin/sh
 
+if [ $# -ne 2 ]; then
+    echo 'Type start # to finish #: e.g., ./run_all.sh 1 2'
+    exit
+fi
+
 rm -rf ./res
 mkdir  ./res
 
-for no in `seq 1 2`
+for no in `seq $1 $2`
 do
-    rm ./lpt
+    rm -rf ./lpt
     ln -s ../res.$no  ./lpt
 
     rm -rf  ./tracer

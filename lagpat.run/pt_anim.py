@@ -1,24 +1,33 @@
 #! /usr/bin/env python
 
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 
+res = '.2'
+
 Test = False
-nstp = 10
+nstp = 1
 
 stp = []; ti = []
-for line in open('./res/anim_set.dat'):
+for line in open('./res' + res + '/anim_set.dat'):
     dat = line.split()
     stp.append(int(dat[0]))
     ti.append(float(dat[1]))
 
+nout = -1
 for n in range(0,len(stp),nstp):
 
     x = []; y = []; ye = []
-    no = '{0:04d}'.format(stp[n])
+
+    nout += 1
+    no     = '{0:04d}'.format(stp[n])
+    no_out = '{0:04d}'.format(nout)
 
     print(no)
 
-    for line in open('./res/anim/anim_' + no + '.dat'):
+    for line in open('./res' + res + '/anim/anim_' + no + '.dat'):
         dat = line.split()
         if dat[0] != '#':
             x.append(1.e-5 *float(dat[0]))
@@ -39,7 +48,8 @@ for n in range(0,len(stp),nstp):
 
     plt.title('Time = ' + '{0:10.1f}'.format(ti[n]) + ' ms' + '  (' + no + ')')
 
-    plt.savefig('./anim/pt' + no + '.png')
+    plt.savefig('./anim' + res + '/pt' + no_out + '.png')
+    #plt.savefig('./anim' + res + '/pt' + no + '.gif')
     plt.close()
 
     if Test:
