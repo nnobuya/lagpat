@@ -19,6 +19,8 @@ if True:
                   '$l$-MRI-L0.50',
                   '$l$-MRI-L0.75',
                   '$l$-MRI-L1.25']
+    #mdl_list   = ['30m']
+    #list_label = ['$h$-MRI']
 else:
     mdl_list  = ['mri_60m', 'mri_30m']
     name_list = ['l', 'h']
@@ -29,7 +31,7 @@ else:
 nye = 111
 ns  = 101
 
-fac_cut = 2.e-4
+fac_cut = 1.e-5
 
 ye_grid = np.linspace(0.0,  0.55, nye)
 s_grid  = np.linspace(0.0,  50.0, ns )
@@ -73,7 +75,7 @@ for mdl in range(len(mdl_list)):
             if s_grid[i2] <= s[mdl][n] and s[mdl][n] < s_grid[i2 + 1]:
                 break
 
-        pt_grid[i2][i1].append(n)
+        pt_grid[i2][i1].append(n+1)
         pt_fact[i2][i1].append(fac[mdl][n])
         fac_grid[i2][i1] += fac[mdl][n]
 
@@ -146,6 +148,9 @@ for mdl in range(len(mdl_list)):
 
     plt.close()
 
+
+if not Plot:
+    exit()
 
 print('plotting histogram')
 
