@@ -30,7 +30,7 @@ for mdl in range(len(list)):
 
     
     name = list[mdl].split('_')[-1]
-    out = open('./pt_list_' + name, 'w')
+    out = open('./res/pt_list_' + name, 'w')
 
     for i in range(len(n_pt)):
         out.write('{0:>10}'.format(n_pt[i][0]) + '\n')

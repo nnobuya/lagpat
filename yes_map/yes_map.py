@@ -8,11 +8,17 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 
+Plot = False
+
 #out = open('./ye_s.dat','w')
 
 if True:
     mdl_list  = ['30m', '60m', 'L0.50', 'L0.75', 'L1.25']
-    list_label = ['$h$-MRI', '$l$-MRI', '$l$-MRI-L0.50', '$l$-MRI-L0.75', '$l$-MRI-L1.25']
+    list_label = ['$h$-MRI',
+                  '$l$-MRI',
+                  '$l$-MRI-L0.50',
+                  '$l$-MRI-L0.75',
+                  '$l$-MRI-L1.25']
 else:
     mdl_list  = ['mri_60m', 'mri_30m']
     name_list = ['l', 'h']
@@ -89,10 +95,8 @@ for mdl in range(len(mdl_list)):
 
     outf.close()
 
-    #out_pt = open('./res/large_' + name_list[mdl]  + '.dat', 'w')
-    #out_pt.close()
-    #print(ncount)
-
+    if not Plot:
+        continue
 
     ### format #########################
     plt.rcParams['font.serif'] = 'Times'
