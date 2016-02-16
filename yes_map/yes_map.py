@@ -8,11 +8,11 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 
-Plot = False
+Plot = True
 
 #out = open('./ye_s.dat','w')
 
-if True:
+if False:
     mdl_list  = ['30m', '60m', 'L0.50', 'L0.75', 'L1.25']
     list_label = ['$h$-MRI',
                   '$l$-MRI',
@@ -21,6 +21,9 @@ if True:
                   '$l$-MRI-L1.25']
     #mdl_list   = ['30m']
     #list_label = ['$h$-MRI']
+elif True:
+    mdl_list   = ['L0.50']
+    list_label =['$l$-MRI-L0.50']
 else:
     mdl_list  = ['mri_60m', 'mri_30m']
     name_list = ['l', 'h']
@@ -38,19 +41,21 @@ s_grid  = np.linspace(0.0,  50.0, ns )
 
 
 #################################################################
-ye = []; s = []; ma = []; fac = []
+ye = []; s = []; ma = []; fac = []; no = []
 
 for mdl in mdl_list:
-    ye_in = []; s_in = []; ma_in = []
+    ye_in = []; s_in = []; ma_in = []; no_in = []
     for line in open('./in/pt_ej_' + mdl + '.dat'):
         dat = line.split()
-        ye_in.append(float(dat[0]))
-        s_in.append(float(dat[1]))
-        ma_in.append(float(dat[2]))
+        no_in.append(int(dat[0]))
+        ye_in.append(float(dat[1]))
+        s_in.append(float(dat[2]))
+        ma_in.append(float(dat[3]))
 
     total  = sum(ma_in)
     fac_in = [ r1 /total for r1 in ma_in ]
 
+    no.append(no_in)
     ye.append(ye_in)
     s.append(s_in)
     ma.append(ma_in)
@@ -75,7 +80,7 @@ for mdl in range(len(mdl_list)):
             if s_grid[i2] <= s[mdl][n] and s[mdl][n] < s_grid[i2 + 1]:
                 break
 
-        pt_grid[i2][i1].append(n+1)
+        pt_grid[i2][i1].append(no[mdl][n])
         pt_fact[i2][i1].append(fac[mdl][n])
         fac_grid[i2][i1] += fac[mdl][n]
 
@@ -122,7 +127,7 @@ for mdl in range(len(mdl_list)):
     ### format #########################
 
     plt.xlim(0.1,0.5)
-    plt.ylim(5,30)
+    plt.ylim(5,40)
 
     plt.xticks([0.1, 0.2, 0.3, 0.4, 0.5])
     plt.yticks([0, 10, 20, 30])
