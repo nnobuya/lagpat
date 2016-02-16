@@ -16,7 +16,7 @@ program nse
   open(40,file='./in/part.ame.fz4421', action = 'read')
   open(41,file='./in/part.z4071'     , action = 'read')
 
-  open(51,file='./in/table.in', action = 'read')
+  open(51,file='./table.in', action = 'read')
 
   call set_nuclei
   call set_rhot(51)

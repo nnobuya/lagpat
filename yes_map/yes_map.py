@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 
-Plot = True
+Plot = False
 
 #out = open('./ye_s.dat','w')
 
@@ -22,6 +22,11 @@ if False:
     #mdl_list   = ['30m']
     #list_label = ['$h$-MRI']
 elif True:
+    mdl_list  = ['L0.50', 'L0.75', 'L1.25']
+    list_label = ['$l$-MRI-L0.50',
+                  '$l$-MRI-L0.75',
+                  '$l$-MRI-L1.25']
+elif False:
     mdl_list   = ['L0.50']
     list_label =['$l$-MRI-L0.50']
 else:
