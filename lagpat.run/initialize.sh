@@ -1,11 +1,11 @@
 #! /bin/sh
 
-rm -rf ./res
+rm -rf ./res*
 mkdir ./res
 mkdir ./res/anim
 mkdir ./res/lpt
 
-rm -rf anim
+rm -rf anim*
 mkdir  anim
 
 exit
