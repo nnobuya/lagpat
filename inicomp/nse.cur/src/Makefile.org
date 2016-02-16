@@ -1,0 +1,54 @@
+# ====================================================================== #
+#                                                                        #
+#            Makefile for NETWORK                                        #
+#                   2007.05.29 by NISHIMURA, Nobuya                      #
+#                                                                        #
+#            update log:                                                 #
+#              2008.07.01                                                #
+#                - modified for module build (N.N.)                      #
+# ====================================================================== #
+
+FC	:= ifort
+
+FCFLAGS	:= -O3 #-check all -warn all
+
+EXE	:= ../nse
+
+PRG	:= nse
+
+MAIN	:= $(PRG:%=%.f90)
+
+MODNAME	:= mod_const mod_set
+
+SRCMOD	:= $(MODNAME:%=%.f90)
+
+MOD	:= $(MODNAME:%=%.mod)
+
+OBJMOD	:= $(MODNAME:%=%.o)
+
+SRC	:= $(filter-out $(SRCMAIN) $(SRCMOD), $(wildcard *.f90))
+
+OBJ	:= $(SRC:%.f90=%.o)
+
+LIBPRG	:= lib$(PRG).a
+
+LIBOBJ	:= $(OBJ:%.o=$(LIBPRG)(%.o))
+
+LIBMOD	:= $(OBJMOD:%.o=$(LIBPRG)(%.o))
+
+#=============================================================================
+
+all:	$(EXE)
+
+$(EXE):	%: $(LIBPRG) $(LIBOBJ) $(LIBMOD)
+	$(FC) $(FCFLAGS)  -o $@ $< -L. $(LIBPRG) $(LIB)
+
+$(LIBPRG): $(LIBOBJ)
+
+$(LIBOBJ): $(LIBMOD)
+
+%.o: %.f90
+	$(FC) -c $(FCFLAGS) $<
+
+clean:
+	rm -f *.o *~ $(LIBPRG) $(MOD) $(NTWK) $(PRG) fort.* *__*.*
