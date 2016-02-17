@@ -1,0 +1,10 @@
+
+[param]
+
+#ndir = 48
+ndir = 10
+n_pt = 120
+path = /home/nobuya/code/ntwk
+reac = z4071
+ntwk_in = ./ntwk.in
+
