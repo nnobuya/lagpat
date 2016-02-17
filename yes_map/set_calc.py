@@ -15,6 +15,10 @@ list = stdout_data[0].split()
 
 for mdl in range(len(list)):
 
+    ## check file name
+    if list[mdl][0:5] != 'large':
+        continue
+
     n_pt = []; f_pt = []
 
     for line in open('./res/' + list[mdl]):
