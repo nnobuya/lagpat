@@ -25,6 +25,7 @@ do
     mv  ./hydro_nse.dat   ./hydro_nse.$no.dat  
     mv  ./peak.dat        ./peak.$no.dat
     mv  ./pt_eject.dat    ./pt_eject.$no.dat
+    mv  ./bad_traj.dat    ./bad_traj.$no.dat
     cd ../
 done
 

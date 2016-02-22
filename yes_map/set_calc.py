@@ -21,12 +21,15 @@ for mdl in range(len(list)):
     if list[mdl][0:5] != 'large':
         continue
 
-    n_pt = []; f_pt = []; rma_pt = []
+    n_pt = []; f_pt = []; rma_pt = []; ye_pt = []; en_pt = []
 
     for line in open('./res/' + list[mdl]):
 
         dat = line.split()
         ndat = (len(dat) - 6) /2
+
+        ye_pt.append(float(dat[2]))
+        en_pt.append(float(dat[3]))
 
         n_in = []; f_in = []
         for i in range(ndat):
@@ -54,7 +57,8 @@ for mdl in range(len(list)):
         for j in range(len(n_pt[i])):
             mass_ej  = rma_pt[i] /float(len(n_pt[i]))
             total_ej += mass_ej 
-            out.write('{0:>10}{1:15.7e}'.format(n_pt[i][j], mass_ej) + '\n')
+            out.write('{0:>10}{1:15.7e}'.format(n_pt[i][j], mass_ej))
+            out.write('{0:15.7e}{1:15.7e}'.format(ye_pt[i], en_pt[i]) + '\n')
     out.close()
 
     print(total_ej)

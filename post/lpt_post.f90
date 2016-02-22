@@ -20,7 +20,7 @@ program lpt_post
   integer:: n_nse, num_nse
   real(8):: ti_nse, de_nse, te_nse, en_nse, ye_nse, rd_nse, vr_nse
 
-  real(8):: h
+  real(8):: h, t9_chk
   real(4):: dt_in, ti_in
   real(4), allocatable:: de_in(:), te_in(:), en_in(:), ye_in(:), &
        & x_in(:,:), v_in(:,:)
@@ -53,6 +53,7 @@ program lpt_post
   open(61, file = './res/peak.dat'     , action = 'write')
   open(62, file = './res/pt_eject.dat' , action = 'write')
   open(63, file = './res/hydro_nse.dat', action = 'write')
+  open(64, file = './res/bad_traj.dat' , action = 'write')
 
 
 
@@ -249,6 +250,8 @@ program lpt_post
      rd0 = x_pt(1,ipt,ndt_pt(ipt))
      vr0 = v_pt(1,ipt,ndt_pt(ipt))
 
+     t9_chk = 0.d0
+
      do idt = 1, ndt_ex
 
         rd_ex = rd0 + vr0 *ti_ex(idt)
@@ -259,15 +262,21 @@ program lpt_post
         write(60,'(1p, *(e15.7))') &
              & min(ti_fin,ti0 + ti_ex(idt)), de_ex, te_ex, rd_ex
 
+        t9_chk = max(t9_chk,te_ex)
+
         if (ti0 + ti_ex(idt) >= ti_fin) exit
 
      end do
+
+     if (t9_chk > te_nse_cond) &
+          & write(64,'(i10, 1p, 2e14.5)') ipt, t9_chk, te_ex
 
      close(60)
 
   end do
 
   close(63)
+  close(64)
 
   print *, num_nse, npt
 

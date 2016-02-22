@@ -8,6 +8,7 @@ mdl_list = ['../res.1', '../res.2']
 npt = 0
 ye = []; en = []; rma = []; no = []
 for n in range(len(mdl_list)):
+
     for line in open(mdl_list[n] + '/part_fini.dat'):
 
         dat = line.split()
@@ -28,10 +29,12 @@ for n in range(len(mdl_list)):
             Read = False
 
         if Read:
-            no.append(npt)
-            ye.append(float(dat[14]))
-            en.append(float(dat[15]))
-            rma.append(float(dat[5]))
+            vr = float(dat[9])
+            if vr > 0:
+                no.append(npt)
+                ye.append(float(dat[14]))
+                en.append(float(dat[15]))
+                rma.append(float(dat[5]))
 
 print('- total particles    : ' + '{0:10d}'.format(npt))
 print('- total ejecta       : ' + '{0:10d}'.format(len(ye)))

@@ -21,14 +21,11 @@ if False:
                   '$l$-MRI-L1.25']
     #mdl_list   = ['30m']
     #list_label = ['$h$-MRI']
-elif False:
+elif True:
     mdl_list  = ['L0.50', 'L0.75', 'L1.25']
     list_label = ['$l$-MRI-L0.50',
                   '$l$-MRI-L0.75',
                   '$l$-MRI-L1.25']
-elif True:
-    mdl_list  = ['L0.75']
-    list_label = ['$l$-MRI-L0.75']
 elif False:
     mdl_list   = ['L0.50']
     list_label =['$l$-MRI-L0.50']

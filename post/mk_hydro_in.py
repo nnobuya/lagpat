@@ -15,7 +15,7 @@ no2 = 0
 for line in open('./in/pt_list.dat'):
     no2 += 1
 
-    no1 = int(line)
+    no1 = int(line.split()[0])
 
     if no1 <= no_pt1:
         in_path = './tracer.1'
