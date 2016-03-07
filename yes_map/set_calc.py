@@ -4,7 +4,16 @@ import subprocess
 import sys
 
 
-nselec = 1
+if   len(sys.argv) == 1:
+    nselec = 1
+elif len(sys.argv) == 2:
+    nselec = int(sys.argv[1])
+else:
+    print('bad arguments')
+    exit()
+
+print('Set nselec = ' + str(nselec))
+
 
 proc = subprocess.Popen(['ls', './res'],
                         stdout = subprocess.PIPE,

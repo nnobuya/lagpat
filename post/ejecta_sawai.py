@@ -5,6 +5,7 @@ rad_bnd_in = 2.e7
 
 mdl_list = ['../res.1', '../res.2']
 
+
 npt = 0
 ye = []; en = []; rma = []; no = []
 for n in range(len(mdl_list)):
