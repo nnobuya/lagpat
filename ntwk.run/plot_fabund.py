@@ -5,6 +5,11 @@ def normal(x):
     y = [ r /total for r in x ]
     return y
 
+Plot = False
+
+na_all = 250
+nz_all = 100
+
 fac = []
 for line in open('./pt_list.dat'):
     dat = line.split()
@@ -45,24 +50,41 @@ for i in range(len(x[0])):
         x_ave[i] += x[mdl][i] *fac[mdl]
 
 
-ia = [ i + 1 for i in range(300)]
-xa = [ 0.0   for i in range(300)]
+ia = [ i + 1 for i in range(na_all)]
+xa = [ 0.0   for i in range(na_all)]
+
+iz = [ i + 1 for i in range(nz_all)]
+xz = [ 0.0   for i in range(nz_all)]
 
 for j in range(len(ia)):
     for i in range(len(a)):
         if a[i] == ia[j]:
             xa[j] += x_ave[i]
 
-ya = [ r1 /float(i1) for i1, r1 in zip(ia, xa) ]
+for j in range(len(iz)):
+    for i in range(len(z)):
+        if z[i] == iz[j]:
+            xz[j] += x_ave[i]
 
-out = open('./fabund_ave.dat', 'w')
-out.write('{0:<5}{1:>18}{2:>18}'.format('#', 'X', 'Y') + '\n')
+ya = [ r1 /float(i1) for i1, r1 in zip(ia, xa) ]
+yz = [ r1 /float(i1) for i1, r1 in zip(iz, xz) ]
+
+out = open('./fabund_ave_a.dat', 'w')
+out.write('{0:<5}{1:>18}{2:>18}\n'.format('#', 'X', 'Y'))
 for i in range(len(ia)):
-    out.write('{0:>5d}{1:18.10e}{2:18.10e}'.format(ia[i], xa[i], ya[i]) + '\n')
+    out.write('{0:>5d}{1:18.10e}{2:18.10e}\n'.format(ia[i], xa[i], ya[i]))
 out.close()
 
-import matplotlib.pyplot as plt
+out = open('./fabund_ave_z.dat', 'w')
+out.write('{0:<5}{1:>18}{2:>18}\n'.format('#', 'X', 'Y'))
+for i in range(len(iz)):
+    out.write('{0:>5d}{1:18.10e}{2:18.10e}\n'.format(iz[i], xz[i], yz[i]))
+out.close()
 
+if not Plot:
+    exit()
+
+import matplotlib.pyplot as plt
 
 plt.plot(ia, ya   , 'o-')
 
