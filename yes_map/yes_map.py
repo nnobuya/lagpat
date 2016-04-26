@@ -27,8 +27,8 @@ elif False:
                   '$l$-MRI-L0.75',
                   '$l$-MRI-L1.25']
 elif True:
-    mdl_list   = ['BGrun']
-    list_label =['BGrun']
+    mdl_list   = ['mri', 'BG_L0.50', 'L0.50']
+    list_label = ['BG', 'BG_L0.50', 'L0.50']
 else:
     mdl_list  = ['mri_60m', 'mri_30m']
     name_list = ['l', 'h']

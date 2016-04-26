@@ -4,6 +4,7 @@
 rad_bnd_in = 2.e7
 
 mdl_list = ['../res.1', '../res.2']
+#mdl_list = ['../res.1']
 
 
 npt = 0
