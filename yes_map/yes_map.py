@@ -12,21 +12,21 @@ Plot = False
 
 #out = open('./ye_s.dat','w')
 
-if False:
-    mdl_list  = ['30m', '60m', 'L0.50', 'L0.75', 'L1.25']
-    list_label = ['$h$-MRI',
-                  '$l$-MRI',
-                  '$l$-MRI-L0.50',
-                  '$l$-MRI-L0.75',
-                  '$l$-MRI-L1.25']
-    #mdl_list   = ['30m']
-    #list_label = ['$h$-MRI']
+if True:
+    mdl_list  = ['L0.40', 'L0.50', 'L0.60', 'L0.75', 'L1.25']
+    list_label = ['$h$-MRI', 
+                  'MRI',
+                  'MRI-L0.40',
+                  'MRI-L0.50',
+                  'MRI-L0.60',
+                  'MRI-L0.75',
+                  'MRI-L1.25']
 elif False:
     mdl_list  = ['L0.50', 'L0.75', 'L1.25']
     list_label = ['$l$-MRI-L0.50',
                   '$l$-MRI-L0.75',
                   '$l$-MRI-L1.25']
-elif True:
+elif False:
     mdl_list   = ['mri', 'BG_L0.50', 'L0.50']
     list_label = ['BG', 'BG_L0.50', 'L0.50']
 else:

@@ -1,14 +1,20 @@
 #! /usr/bin/env python
 
+import sys
+
+
+
+if len(sys.argv) != 3:
+    exit('You need to specify models.\n   e.g. ./ejecta_sawai.py 1 2')
+
+mdl_list = []
+for n in range(int(sys.argv[1]), int(sys.argv[2])+1):
+    mdl_list.append('./res.' + str(n))
 
 rad_bnd_in = 2.e7
 
-mdl_list = ['../res.1', '../res.2']
-#mdl_list = ['../res.1']
 
-
-npt = 0
-ye = []; en = []; rma = []; no = []
+npt = 0; ye = []; en = []; rma = []; no = []
 for n in range(len(mdl_list)):
 
     for line in open(mdl_list[n] + '/part_fini.dat'):
@@ -37,6 +43,10 @@ for n in range(len(mdl_list)):
                 ye.append(float(dat[14]))
                 en.append(float(dat[15]))
                 rma.append(float(dat[5]))
+
+    print('  number of ejecta {0:2d}: {0:7d}'.format(n+1,npt))
+
+print('-'*50)
 
 print('- total particles    : ' + '{0:10d}'.format(npt))
 print('- total ejecta       : ' + '{0:10d}'.format(len(ye)))

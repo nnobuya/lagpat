@@ -1,11 +1,21 @@
 #! /bin/sh
 
-rm -rf ./res*
-mkdir ./res
-mkdir ./res/anim
-mkdir ./res/lpt
+path=$HOME/code/lagpat/
 
-rm -rf anim*
-mkdir  anim
+echo 'all clean'
+
+# renewal directory
+rm -rf  ./res*  ./anim* ./traj*
+
+## execute
+rm -f ./lagpat
+ln -s $path/lagpat
+
+rm -f ./mk_traj.sh
+ln -s $path/lagpat.run/mk_traj.sh
+
+rm -f ./lpt_post
+ln -s $path/post/lpt_post
+
 
 exit

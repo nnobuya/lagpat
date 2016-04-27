@@ -160,7 +160,7 @@ program lpt_post
      if (mod(ipt,1000) == 0) write(*,'(2i10)') ipt, npt
 
      !..original hydro data
-     write(ofile,'("./tracer/hydro_", i5.5, ".org")') ipt
+     write(ofile,'("./traj/hydro_", i5.5, ".org")') ipt
      open(60, file = ofile, action = 'write')
 
      do idt = 1, ndt_pt(ipt)
@@ -227,7 +227,7 @@ program lpt_post
      write(62,'(1p, *(e15.7))') ye_nse, en_nse, rma_pt(ipt)
 
 
-     write(ofile,'("./tracer/hydro_", i5.5, ".dat")') ipt
+     write(ofile,'("./traj/hydro_", i5.5, ".dat")') ipt
      open(60, file = ofile, action = 'write')
 
 
