@@ -7,7 +7,7 @@ fi
 
 run_lagpat=true
 run_traj=true
-
+run_eject=ture
 
 #----- run lagpat ------------------------------------------ #
 if $run_lagpat; then
@@ -75,7 +75,15 @@ if $run_traj; then
     rm -f  ./lpt
     rm -rf ./res
 
+    ./ejecta_sawai.sh $1 $2
+
 fi
+
+
+if $run_eject; then
+fi
+
+
 
 
 exit

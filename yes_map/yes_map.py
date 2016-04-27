@@ -8,19 +8,13 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 
-Plot = False
+Plot = True
 
 #out = open('./ye_s.dat','w')
 
 if True:
-    mdl_list  = ['L0.40', 'L0.50', 'L0.60', 'L0.75', 'L1.25']
-    list_label = ['$h$-MRI', 
-                  'MRI',
-                  'MRI-L0.40',
-                  'MRI-L0.50',
-                  'MRI-L0.60',
-                  'MRI-L0.75',
-                  'MRI-L1.25']
+    mdl_list  = ['30m']
+    list_label = ['$h$-MRI']
 elif False:
     mdl_list  = ['L0.50', 'L0.75', 'L1.25']
     list_label = ['$l$-MRI-L0.50',
@@ -50,7 +44,7 @@ ye = []; s = []; ma = []; fac = []; no = []
 
 for mdl in mdl_list:
     ye_in = []; s_in = []; ma_in = []; no_in = []
-    for line in open('./in/pt_ej_' + mdl + '.dat'):
+    for line in open('./pt_eject.dat'):
         dat = line.split()
         no_in.append(int(dat[0]))
         ye_in.append(float(dat[1]))
@@ -89,7 +83,7 @@ for mdl in range(len(mdl_list)):
         pt_fact[i2][i1].append(fac[mdl][n])
         fac_grid[i2][i1] += fac[mdl][n]
 
-    outf   = open('./res/large_' + mdl_list[mdl]  + '.dat', 'w')
+    outf   = open('./large.dat', 'w')
     ncount = 0
     for i in range(nye):
         for j in range(ns):
