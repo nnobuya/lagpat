@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import subprocess
+import numpy as np
 import sys
 
 
@@ -15,24 +16,14 @@ else:
 print('Set nselec = ' + str(nselec))
 
 
-proc = subprocess.Popen(['ls', './res'],
-                        stdout = subprocess.PIPE,
-                        stderr = subprocess.PIPE)
-
-stdout_data = proc.communicate()
-
-list = stdout_data[0].split()
-
+list = ['./large.dat']
 
 for mdl in range(len(list)):
 
-    ## check file name
-    if list[mdl][0:5] != 'large':
-        continue
-
     n_pt = []; f_pt = []; rma_pt = []; ye_pt = []; en_pt = []
 
-    for line in open('./res/' + list[mdl]):
+
+    for line in open(list[mdl]):
 
         dat = line.split()
         ndat = (len(dat) - 6) /2
@@ -47,18 +38,20 @@ for mdl in range(len(list)):
 
         rma_pt.append(sum(f_in))
 
-        nout = min(nselec,len(n_in))
-        #print(tmp1[0:nout])
+        sort = np.argsort(f_in)[::-1]
 
-        tmp1 = []; tmp2 = []
-        for i in range(nout):
+        tmp1 = []; tmp2 = []; icount = 0
+        for i in sort:
             tmp1.append(n_in[i])
             tmp2.append(f_in[i])
+
+            icount += 1
+            if icount == nselec: break
+
         n_pt.append(tmp1)
         f_pt.append(tmp2)
     
-    name = list[mdl].split('_')[-1]
-    out  = open('./res/pt_list_' + name, 'w')
+    out  = open('./pt_list.dat', 'w')
 
     total_ej = 0.0
 
@@ -66,8 +59,8 @@ for mdl in range(len(list)):
         for j in range(len(n_pt[i])):
             mass_ej  = rma_pt[i] /float(len(n_pt[i]))
             total_ej += mass_ej 
-            out.write('{0:>10}{1:15.7e}'.format(n_pt[i][j], mass_ej))
-            out.write('{0:15.7e}{1:15.7e}'.format(ye_pt[i], en_pt[i]) + '\n')
+            out.write('{0:>15}{1:20.10e}'.format(n_pt[i][j], mass_ej))
+            out.write('{0:20.10e}{1:20.10e}'.format(ye_pt[i], en_pt[i]) + '\n')
     out.close()
 
     print(total_ej)

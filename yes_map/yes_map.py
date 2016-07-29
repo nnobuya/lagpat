@@ -12,26 +12,26 @@ import sys
 Plot = True
 
 if True:
-    mdl_list   = [sys.argv[1]]
-    list_label = ['$h$-MRI']
+    if len(sys.argv) >= 2:
+        mdl_list   = [sys.argv[1]]
+    else:
+        mdl_list   = ['model']
+    list_label = ['tmp']
 else:
     mdl_list  = ['L0.50', 'L0.75', 'L1.25']
     list_label = ['$l$-MRI-L0.50',
                   '$l$-MRI-L0.75',
                   '$l$-MRI-L1.25']
 
-#print(sys.argv)
-
 
 ## grid setting
 nye = 111
-ns  = 101
+ns  = 99
 
 fac_cut = 1.e-5
 
 ye_grid = np.linspace(0.0,  0.55, nye)
-s_grid  = np.linspace(0.0,  50.0, ns )
-
+s_grid  = np.linspace(1.0,  50.0, ns )
 
 #################################################################
 ye = []; s = []; ma = []; fac = []; no = []
@@ -83,8 +83,13 @@ for mdl in range(len(mdl_list)):
         for j in range(ns):
             if fac_grid[j][i] >= fac_cut:
                 outf.write('{0:>5}{1:>5}'.format(i,j))
-                outf.write('{0:11.3e}{1:11.3e}'.format(ye_grid[i],s_grid[j]))
-                outf.write('{0:11.3e}'.format(fac_grid[j][i]) + '  |')
+
+                #outf.write('{0:11.3e}{1:11.3e}'.format(ye_grid[i],s_grid[j]))
+                #outf.write('{0:11.3e}'.format(fac_grid[j][i]) + '  |')
+
+                outf.write('{0:13.5e}{1:13.5e}'.format(ye_grid[i],s_grid[j]))
+                outf.write('{0:13.5e}'.format(fac_grid[j][i]) + '  |')
+
                 for n in range(len(pt_grid[j][i])):
                     outf.write('{0:>7}{1:14.5e}'.
                                format(pt_grid[j][i][n], pt_fact[j][i][n]))
@@ -109,12 +114,17 @@ for mdl in range(len(mdl_list)):
 
     ### format #########################
 
-    plt.xlim(0.1,0.5)
-    plt.ylim(5,40)
+    #plt.yticks([10, 20, 30])
+    plt.xticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5])
+    plt.yticks([5, 10, 15, 20, 25, 30])
 
-    plt.xticks([0.1, 0.2, 0.3, 0.4, 0.5])
-    plt.yticks([0, 10, 20, 30])
+    #plt.xlim(0.1, 0.5)
+    #plt.ylim(5  , 25)
 
+    plt.xlim(0.05, 0.55)
+    plt.ylim(2.5  , 27.5)
+
+    plt.grid(which = 'major', color = 'black', linestyle = ':')
 
     plt.contourf(x1, x2, fac_grid, col_range, cmap = 'hot_r')
     #plt.xlabel('$Y_{\\rm e, nse} (\\Delta Y_{\\rm e} =0.05)$')
@@ -127,7 +137,8 @@ for mdl in range(len(mdl_list)):
     plt.title('MRI-' + mdl_list[mdl])
 
     plt.colorbar(label='Mass fraction ($\\log_{10}$)')
-    plt.savefig('./yes_' + mdl_list[mdl] + '.pdf')
+    #plt.savefig('./yes_' + mdl_list[mdl] + '.pdf')
+    plt.savefig('./yes_map.pdf')
 
     plt.close()
 
@@ -154,7 +165,7 @@ plt.yscale('log')
 #plt.legend(loc=2,fontsize = 15)
 
 #plt.savefig('./fig/hist_ye.pdf')
-plt.savefig('./hist_ye_' + mdl_list[0] + '.pdf')
+plt.savefig('./hist_ye.pdf')
 
 plt.close()
 
@@ -174,7 +185,7 @@ plt.yscale('log')
 #plt.legend(loc=1)
 
 #plt.savefig('./fig/hist_s.pdf')
-plt.savefig('./hist_s_' + mdl_list[0] + '.pdf')
+plt.savefig('./hist_s.pdf')
 
 exit()
 
