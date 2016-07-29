@@ -127,7 +127,7 @@ for mdl in range(len(mdl_list)):
     plt.title('MRI-' + mdl_list[mdl])
 
     plt.colorbar(label='Mass fraction ($\\log_{10}$)')
-    plt.savefig('./fig/yes_' + mdl_list[mdl] + '.pdf')
+    plt.savefig('./yes_' + mdl_list[mdl] + '.pdf')
 
     plt.close()
 
@@ -154,7 +154,7 @@ plt.yscale('log')
 #plt.legend(loc=2,fontsize = 15)
 
 #plt.savefig('./fig/hist_ye.pdf')
-plt.savefig('./fig/hist_ye_' + mdl_list[0] + '.pdf')
+plt.savefig('./hist_ye_' + mdl_list[0] + '.pdf')
 
 plt.close()
 
@@ -174,7 +174,7 @@ plt.yscale('log')
 #plt.legend(loc=1)
 
 #plt.savefig('./fig/hist_s.pdf')
-plt.savefig('./fig/hist_s_' + mdl_list[0] + '.pdf')
+plt.savefig('./hist_s_' + mdl_list[0] + '.pdf')
 
 exit()
 
