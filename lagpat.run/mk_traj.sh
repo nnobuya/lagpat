@@ -75,7 +75,7 @@ if $run_traj; then
     rm -f  ./lpt
     rm -rf ./res
 
-    ./ejecta_sawai.sh $1 $2
+    ./ejecta_sawai.py $1 $2
 
 fi
 
