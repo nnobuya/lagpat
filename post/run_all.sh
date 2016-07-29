@@ -11,7 +11,7 @@ mkdir  ./res
 for no in `seq $1 $2`
 do
     rm -rf ./lpt
-    ln -s ../res.$no  ./lpt
+    ln -s ./res.$no  ./lpt
 
     rm -rf  ./tracer
     mkdir   ./tracer

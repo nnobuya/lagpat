@@ -5,28 +5,22 @@ matplotlib.use('Agg')
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+
+import sys
 
 
 Plot = True
 
-#out = open('./ye_s.dat','w')
-
 if True:
-    mdl_list  = ['30m']
+    mdl_list   = [sys.argv[1]]
     list_label = ['$h$-MRI']
-elif False:
+else:
     mdl_list  = ['L0.50', 'L0.75', 'L1.25']
     list_label = ['$l$-MRI-L0.50',
                   '$l$-MRI-L0.75',
                   '$l$-MRI-L1.25']
-elif False:
-    mdl_list   = ['mri', 'BG_L0.50', 'L0.50']
-    list_label = ['BG', 'BG_L0.50', 'L0.50']
-else:
-    mdl_list  = ['mri_60m', 'mri_30m']
-    name_list = ['l', 'h']
-    list_label = ['$l$-MRI', '$h$-MRI']
+
+#print(sys.argv)
 
 
 ## grid setting
@@ -105,23 +99,13 @@ for mdl in range(len(mdl_list)):
         continue
 
     ### format #########################
-    plt.rcParams['font.serif'] = 'Times'
+    plt.rcParams['font.serif'] = 'Times-New-Roman'
     plt.rcParams['font.size'] = 18
 
     x1, x2 = np.meshgrid(ye_grid, s_grid)
 
     col_range = np.linspace(-5.0, -1.0, 5)
 
-    xmajorLocator   = MultipleLocator(0.1)
-    xmajorFormatter = FormatStrFormatter('%3.1f')
-    xminorLocator   = MultipleLocator(0.05)
-
-    ymajorLocator   = MultipleLocator(10)
-    ymajorFormatter = FormatStrFormatter('%d')
-    yminorLocator   = MultipleLocator(5)
-
-    fig, ax = plt.subplots()
-    fig, ay = plt.subplots()
 
     ### format #########################
 
@@ -131,21 +115,16 @@ for mdl in range(len(mdl_list)):
     plt.xticks([0.1, 0.2, 0.3, 0.4, 0.5])
     plt.yticks([0, 10, 20, 30])
 
-    ax.xaxis.set_major_locator(xmajorLocator)
-    ax.xaxis.set_major_formatter(xmajorFormatter)
-    ax.xaxis.set_minor_locator(xminorLocator)
-
-    ay.yaxis.set_major_locator(ymajorLocator)
-    ay.yaxis.set_major_formatter(ymajorFormatter)
-    ay.yaxis.set_minor_locator(yminorLocator)
-
 
     plt.contourf(x1, x2, fac_grid, col_range, cmap = 'hot_r')
-    plt.xlabel('$Y_{\\rm e, nse} (\\Delta Y_{\\rm e} =0.05)$')
-    plt.ylabel('Entropy, $S_{\\rm nse} $($\\Delta S = 0.5$),'
-               + 'k$_{\\rm B}$ baryon$^{-1}$')
+    #plt.xlabel('$Y_{\\rm e, nse} (\\Delta Y_{\\rm e} =0.05)$')
+    #plt.ylabel('Entropy, $S_{\\rm nse} $($\\Delta S = 0.5$),'
+    #           + 'k$_{\\rm B}$ baryon$^{-1}$')
 
-    plt.title('${\\it' + mdl_list[mdl] + '}$' + '-MRI')
+    plt.xlabel('$Y_{\\rm e}$')
+    plt.ylabel('Entropy $S$, k$_{\\rm B}$ baryon$^{-1}$')
+
+    plt.title('MRI-' + mdl_list[mdl])
 
     plt.colorbar(label='Mass fraction ($\\log_{10}$)')
     plt.savefig('./fig/yes_' + mdl_list[mdl] + '.pdf')
@@ -164,17 +143,18 @@ for i in range(len(mdl_list)):
     plt.hist(ye[i], yebin,
              alpha = 0.3, weights = fac[i], label = list_label[i])
 
-plt.rcParams['font.serif'] = 'Times'
+plt.rcParams['font.serif'] = 'Times-New-Roman'
 plt.rcParams['font.size'] = 16
 
 plt.xlabel('$Y_{\\rm e}$')
 plt.ylabel('Mass fraction')
 plt.xlim(0, 0.52)
-plt.ylim(1.e-3,1.0)
+plt.ylim(1.e-4,1.0)
 plt.yscale('log')
-plt.legend(loc=2,fontsize = 15)
+#plt.legend(loc=2,fontsize = 15)
 
-plt.savefig('./fig/hist_ye.pdf')
+#plt.savefig('./fig/hist_ye.pdf')
+plt.savefig('./fig/hist_ye_' + mdl_list[0] + '.pdf')
 
 plt.close()
 
@@ -184,25 +164,17 @@ for i in range(len(mdl_list)):
     plt.hist(s[i], sbin,
              alpha = 0.5, weights = fac[i], label = list_label[i])
 
-
-xmajorLocator   = MultipleLocator(10)
-xmajorFormatter = FormatStrFormatter('%d')
-xminorLocator   = MultipleLocator(5)
-
-ax.xaxis.set_major_locator(xmajorLocator)
-ax.xaxis.set_major_formatter(xmajorFormatter)
-ax.xaxis.set_minor_locator(xminorLocator)
-
 plt.xticks([10, 20, 30, 40])
 
 plt.xlabel('Entropy')
 plt.ylabel('Mass fraction')
-plt.xlim(5, 20)
+plt.xlim(0, 30)
 plt.ylim(1.e-4,1)
 plt.yscale('log')
-plt.legend(loc=1)
+#plt.legend(loc=1)
 
-plt.savefig('./fig/hist_s.pdf')
+#plt.savefig('./fig/hist_s.pdf')
+plt.savefig('./fig/hist_s_' + mdl_list[0] + '.pdf')
 
 exit()
 
