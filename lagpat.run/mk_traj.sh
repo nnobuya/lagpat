@@ -1,13 +1,13 @@
 #! /bin/sh
 
-if [ $# -ne 2 ]; then
-    echo 'Type start # to finish #: e.g., ./run_all.sh 1 2'
+if [ $# -ne 3 ]; then
+    echo 'Type start # to finish #: e.g., ./run_all.sh L1.00 1 2'
     exit
 fi
 
 run_lagpat=true
 run_traj=true
-run_eject=ture
+run_eject=true
 
 #----- run lagpat ------------------------------------------ #
 if $run_lagpat; then
@@ -17,7 +17,7 @@ if $run_lagpat; then
     rm -rf ./res
     rm -rf ./anim
 
-    for n in `seq $1 $2`
+    for n in `seq $2 $3`
     do
 	echo $n
 
@@ -49,7 +49,7 @@ if $run_traj; then
 
     echo '- run traj'
 
-    for n in `seq $1 $2`
+    for n in `seq $2 $3`
     do
 
 	rm -rf ./traj
@@ -75,15 +75,19 @@ if $run_traj; then
     rm -f  ./lpt
     rm -rf ./res
 
-    ./ejecta_sawai.py $1 $2
-
 fi
 
 
 if $run_eject; then
+    ./ejecta_sawai.py $2 $3
+
+    ./yes_map.py $1
+
+    for no in `seq 1 3`
+    do
+	./set_calc.py  $no
+	mv  ./pt_list.dat  ./pt_list_$no.dat 
+    done
 fi
-
-
-
 
 exit
