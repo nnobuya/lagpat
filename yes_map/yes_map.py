@@ -38,7 +38,7 @@ ye = []; s = []; ma = []; fac = []; no = []
 
 for mdl in mdl_list:
     ye_in = []; s_in = []; ma_in = []; no_in = []
-    for line in open('./pt_eject_nse.dat'):
+    for line in open('./pt_eject.dat'):
         dat = line.split()
 
         if dat[0] == '#': continue
