@@ -7,7 +7,8 @@ fi
 
 run_lagpat=true
 run_traj=true
-run_eject=true
+run_eject=false
+run_ntwk_file=false
 
 #----- run lagpat ------------------------------------------ #
 if $run_lagpat; then
@@ -66,10 +67,9 @@ if $run_traj; then
 	rm  -rf     ./traj.$n
 	mv  ./traj  ./traj.$n
 
-	mv ./res/hydro_nse.dat ./res.$n/
-	mv ./res/peak.dat      ./res.$n/
-	mv ./res/pt_eject.dat  ./res.$n/
-	mv ./res/bad_traj.dat  ./res.$n/
+	mv ./res/peak.dat          ./res.$n/
+	mv ./res/pt_eject_nse.dat  ./res.$n/
+	mv ./res/bad_traj.dat      ./res.$n/
     done
 
     rm -f  ./lpt
@@ -79,6 +79,7 @@ fi
 
 
 if $run_eject; then
+
     ./ejecta_sawai.py $2 $3
 
     ./yes_map.py $1
@@ -89,5 +90,23 @@ if $run_eject; then
 	mv  ./pt_list.dat  ./pt_list_$no.dat 
     done
 fi
+
+
+if $run_ntwk_file; then
+
+    #for no in `seq 1 3`
+    for no in `seq 1 1`
+    do
+	rm -rf ./hydro.in
+	mkdir  ./hydro.in
+
+	./pt_ntwk_set.py $no
+
+	rm -rf hydro.in.$no
+	mv ./hydro.in ./hydro.in.$no
+    done
+
+fi
+
 
 exit

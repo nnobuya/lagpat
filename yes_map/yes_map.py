@@ -38,12 +38,15 @@ ye = []; s = []; ma = []; fac = []; no = []
 
 for mdl in mdl_list:
     ye_in = []; s_in = []; ma_in = []; no_in = []
-    for line in open('./pt_eject.dat'):
+    for line in open('./pt_eject_nse.dat'):
         dat = line.split()
+
+        if dat[0] == '#': continue
+
         no_in.append(int(dat[0]))
-        ye_in.append(float(dat[1]))
-        s_in.append(float(dat[2]))
-        ma_in.append(float(dat[3]))
+        ye_in.append(float(dat[6]))
+        s_in.append(float(dat[5]))
+        ma_in.append(float(dat[1]))
 
     total  = sum(ma_in)
     fac_in = [ r1 /total for r1 in ma_in ]

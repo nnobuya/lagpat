@@ -51,8 +51,7 @@ program lpt_post
   open(53, file = './lpt/part_init.dat', action = 'read')
 
   open(61, file = './res/peak.dat'     , action = 'write')
-  open(62, file = './res/pt_eject.dat' , action = 'write')
-  open(63, file = './res/hydro_nse.dat', action = 'write')
+  open(62, file = './res/pt_eject_nse.dat' , action = 'write')
   open(64, file = './res/bad_traj.dat' , action = 'write')
 
 
@@ -160,7 +159,7 @@ program lpt_post
      if (mod(ipt,1000) == 0) write(*,'(2i10)') ipt, npt
 
      !..original hydro data
-     write(ofile,'("./traj/hydro_", i5.5, ".org")') ipt
+     write(ofile,'("./traj/hydro_", i7.7, ".org")') ipt
      open(60, file = ofile, action = 'write')
 
      do idt = 1, ndt_pt(ipt)
@@ -224,10 +223,10 @@ program lpt_post
      end if
 
 
-     write(62,'(1p, *(e15.7))') ye_nse, en_nse, rma_pt(ipt)
+     write(62,'(1p, i10, *(e18.10))') ipt, rma_pt(ipt), &
+          & ti_nse, de_nse, te_nse, en_nse, ye_nse, rd_nse
 
-
-     write(ofile,'("./traj/hydro_", i5.5, ".dat")') ipt
+     write(ofile,'("./traj/hydro_", i7.7, ".dat")') ipt
      open(60, file = ofile, action = 'write')
 
 
@@ -235,7 +234,7 @@ program lpt_post
           & 5x, "te [k]", 5x, "ra [cm]")')
      write(60,'(1p, *(e15.7))') ti_nse, de_nse, te_nse, rd_nse
 
-     write(63,'(1p, *(e18.10))') ti_nse, de_nse, te_nse, ye_nse
+     !write(63,'(1p, *(e18.10))') ti_nse, de_nse, te_nse, ye_nse, en_nse, rd_nse
 
      do idt = n_nse + 1, ndt_pt(ipt)
         write(60,'(1p, *(e15.7))') ti(idt), &
@@ -275,7 +274,6 @@ program lpt_post
 
   end do
 
-  close(63)
   close(64)
 
   print *, num_nse, npt
