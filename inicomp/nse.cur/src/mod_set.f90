@@ -8,14 +8,15 @@ module mod_set
   public:: ndt, &
        & na, nz, nn, ra, rz, rn, na_ou, nn_ou, nz_ou, &
        & name, be, qm, spin, npt, cpt, ct9, &
-       & ti, de, te, ye, qm_n, qm_p, &
+       & no, ti, de, te, ye, qm_n, qm_p, &
        & set_nuclei, set_rhot
 
   !..rhot
   integer:: ndt
   real*8 :: ti_init, dt_init, ye_init
   real*8 :: temp_lim, t_min !! limit value
-  real*8, allocatable :: ti(:), de(:), te(:), ye(:)
+  integer, allocatable :: no(:)
+  real*8 , allocatable :: ti(:), de(:), te(:), ye(:)
 
 
   integer:: nn(1:nel), na(1:nel), nz(1:nel)
@@ -37,10 +38,11 @@ contains
 
     integer, intent(in):: io
 
-    real*8 :: r1
+    real*8 :: rma, en, rd
     integer:: i, j, ier
 
 
+    read(io,*)
     lp_ndt: do
        read(io,*,iostat = ier )
 
@@ -50,13 +52,14 @@ contains
     end do lp_ndt
 
 
-    allocate ( ti(1:ndt), de(1:ndt), te(1:ndt), ye(1:ndt), stat = ier)
+    allocate ( no(1:ndt), ti(1:ndt), de(1:ndt), te(1:ndt), ye(1:ndt), stat = ier)
     if(ier /= 0) stop 'qnse(): error'
 
     rewind(io)
 
+    read(io,*)
     do i = 1, ndt
-       read(io,*) ti(i), de(i), te(i), ye(i)
+       read(io,*) no(i), rma, ti(i), de(i), te(i), en, ye(i), rd
     end do
 
 

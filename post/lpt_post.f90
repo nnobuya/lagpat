@@ -122,7 +122,7 @@ program lpt_post
      en_pt(1:npt,idt) = dble(en_in(1:npt))
      ye_pt(1:npt,idt) = dble(ye_in(1:npt))
 
-     if (mod(istg,100) == 0 .or. idt <= 10) &
+     if (mod(istg,1000) == 0 .or. idt <= 10) &
           & write(*,'(i10, f8.1, "  ms")') istg, ti(idt) *1000.0
 
   end do
@@ -156,7 +156,7 @@ program lpt_post
 
   do ipt = 1, npt
 
-     if (mod(ipt,1000) == 0) write(*,'(2i10)') ipt, npt
+     if (mod(ipt,5000) == 0) write(*,'(2i10)') ipt, npt
 
      !..original hydro data
      write(ofile,'("./traj/hydro_", i7.7, ".org")') ipt

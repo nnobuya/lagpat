@@ -1,4 +1,4 @@
-subroutine output( istp, x )
+subroutine output( no, x )
 
   use mod_const, only: nel, nel_ou
   use mod_set  , only: nz, nn, na, nz_ou, nn_ou, na_ou
@@ -6,7 +6,7 @@ subroutine output( istp, x )
   implicit none
 
   !..io
-  integer         , intent(in):: istp
+  integer         , intent(in):: no
   double precision, intent(in):: x(1:nel)
 
   double precision:: tot, x_ou(1:nel)
@@ -14,7 +14,7 @@ subroutine output( istp, x )
   character:: fl*100
 
 
-  write(fl,'("./res/abund.in/abund.", i7.7, ".in")') istp
+  write(fl,'("./abund/abund_", i7.7, ".dat")') no
   open(60, file = fl, action = 'write')
 
   x_ou(1:nel_ou) = 0.d0

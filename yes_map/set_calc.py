@@ -18,6 +18,8 @@ print('Set nselec = ' + str(nselec))
 
 list = ['./large.dat']
 
+no = []
+
 for mdl in range(len(list)):
 
     n_pt = []; f_pt = []; rma_pt = []; ye_pt = []; en_pt = []
@@ -57,6 +59,7 @@ for mdl in range(len(list)):
 
     for i in range(len(n_pt)):
         for j in range(len(n_pt[i])):
+            no.append(n_pt[i][j])
             mass_ej  = rma_pt[i] /float(len(n_pt[i]))
             total_ej += mass_ej 
             out.write('{0:>15}{1:20.10e}'.format(n_pt[i][j], mass_ej))
@@ -64,5 +67,17 @@ for mdl in range(len(list)):
     out.close()
 
     print(total_ej)
+
+exit()
+
+print(' - make nse list')
+
+for line in open('./pt_eject.dat'):
+    dat = line.split()
+    if dat[0] == '#': continue
+
+    no_nse.append(int(dat[0]))
+
+print(no[:10])
 
 exit()

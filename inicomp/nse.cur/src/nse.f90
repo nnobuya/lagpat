@@ -1,7 +1,7 @@
 program nse
 
   use mod_const, only: nel
-  use mod_set  , only: ndt, ti, de, te, ye, set_nuclei, set_rhot
+  use mod_set  , only: ndt, no, ti, de, te, ye, set_nuclei, set_rhot
 
   implicit none
 
@@ -24,7 +24,7 @@ program nse
 
   main_loop: do istp = 1, ndt
 
-     if ( mod(istp,100) == 1 ) write(*,'(2i10)') istp, ndt
+     if ( mod(istp,1000) == 1 ) write(*,'(*(i10))') no(istp), istp, ndt
 
      call eq_nse( istp, te(istp) /1.d9, ye(istp), de(istp), &
           & rmu_p_lg, rmu_n_lg, x(1:nel) )
@@ -32,7 +32,7 @@ program nse
      ! out: x(:)
 
 
-     call output ( istp, x(1:nel) )
+     call output ( no(istp), x(1:nel) )
 
 
   end do main_loop

@@ -7,7 +7,7 @@ fi
 
 run_lagpat=true
 run_traj=true
-run_eject=false
+run_eject=true
 run_ntwk_file=false
 
 #----- run lagpat ------------------------------------------ #
@@ -81,6 +81,9 @@ fi
 if $run_eject; then
 
     ./ejecta_sawai.py $2 $3
+
+    rm -f ./pt_eject.dat
+    ln -s ./pt_eject_nse.dat ./pt_eject.dat
 
     ./yes_map.py $1
 
