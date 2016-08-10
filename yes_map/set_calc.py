@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 
-import subprocess
 import numpy as np
 import sys
 
@@ -68,16 +67,5 @@ for mdl in range(len(list)):
 
     print(total_ej)
 
-exit()
-
-print(' - make nse list')
-
-for line in open('./pt_eject.dat'):
-    dat = line.split()
-    if dat[0] == '#': continue
-
-    no_nse.append(int(dat[0]))
-
-print(no[:10])
 
 exit()

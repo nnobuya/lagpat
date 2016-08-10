@@ -5,10 +5,11 @@ if [ $# -ne 3 ]; then
     exit
 fi
 
-run_lagpat=true
-run_traj=true
-run_eject=true
-run_ntwk_file=false
+run_lagpat=false
+run_traj=false
+run_eject=false
+run_abund=true
+run_ntwk_file=true
 
 #----- run lagpat ------------------------------------------ #
 if $run_lagpat; then
@@ -94,22 +95,51 @@ if $run_eject; then
     done
 fi
 
+if $run_abund; then
+
+    rm -rf ./inicomp
+    mkdir  ./inicomp
+
+    cd ./inicomp
+
+    mkdir ./in
+    mkdir ./abund
+
+    # set code and data
+    ln -s $HOME/code/lagpat/inicomp/nse.cur/nse
+
+    cd ./in
+    ln -s $HOME/code/lagpat/inicomp/nse.cur/in/part.z4071
+    ln -s $HOME/code/lagpat/inicomp/nse.cur/in/part.ame.fz4421
+    cd ../
+
+    ln -s ../pt_eject_nse.dat ./table.in
+
+    ./nse
+
+    cd ../
+fi
+
+
 
 if $run_ntwk_file; then
 
-    #for no in `seq 1 3`
-    for no in `seq 1 1`
+    for no in `seq 1 3`
     do
-	rm -rf ./hydro.in
-	mkdir  ./hydro.in
+	rm -rf ./hydro.in ./abund.in ./hydro.in.$no ./abund.in.$no
+	mkdir  ./hydro.in ./abund.in
 
 	./pt_ntwk_set.py $no
 
-	rm -rf hydro.in.$no
 	mv ./hydro.in ./hydro.in.$no
+	mv ./abund.in ./abund.in.$no
     done
 
 fi
+
+
+exit
+
 
 
 exit
