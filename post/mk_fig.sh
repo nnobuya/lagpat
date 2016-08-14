@@ -24,7 +24,7 @@ do
 
 	    ln -sf ../data_conv/hydro_${mdl}_$no.dat ./res/hydro_new.dat
             ln -sf ../data_conv/shock_${mdl}_$no.dat ./res/shock.dat
-	    ./plot.py $mdl $time
+	    ./hydro_map.py $mdl $time
 	    mv ./fig/ye.pdf  ./fig/ye_${mdl}_${no}.pdf
 	    mv ./fig/e.pdf   ./fig/e_${mdl}_${no}.pdf
 	    mv ./fig/bet.pdf ./fig/bet_${mdl}_${no}.pdf
