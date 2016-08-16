@@ -5,8 +5,41 @@ import matplotlib.pyplot as plt
 import sys
 import math
 
+import matplotlib as mpl
+
 
 from matplotlib.colors import LinearSegmentedColormap
+
+def plot_setting(x):
+
+    f_size = 26
+
+    plt.colorbar()
+
+    plt.plot(x_shock, y_shock, 'w', linewidth = 4)
+    plt.ylim(0,1000)
+    plt.xlabel('Horizontal plane, km')
+    plt.ylabel('Polar axis, km')
+
+    plt.text(40, 1040, model, fontsize = f_size)
+
+    if   x == 'ye':
+        plt.text(1075,1050,'$Y_{\\rm e}$')
+        plt.savefig('./fig/ye.pdf')
+    elif x == 'entropy':
+        plt.text(1075,1050,'$S$')
+        plt.savefig('./fig/e.pdf')
+    elif x == 'beta':
+        plt.text(1000,1050,'$\\log_{10} \\beta_{\\rm p}$')
+        plt.savefig('./fig/bet.pdf')
+    else:
+        exit('error in function plot_setting')
+
+    plt.close()
+
+    return
+
+
 
 def generate_cmap(colors):
     values = range(len(colors))
@@ -16,6 +49,7 @@ def generate_cmap(colors):
     for v, c in zip(values, colors):
         color_list.append( ( v/ vmax, c) )
     return LinearSegmentedColormap.from_list('custom_cmap', color_list)
+
 
 
 
@@ -70,7 +104,7 @@ for j in range(ndat):
     for i in range(ndat):
         n += 1
         dat = File[n].split()
-        s[j][i]   = min(float(dat[2]),30.0)
+        s[j][i]   = min(float(dat[2]), 24.0)
         ye[j][i]  = float(dat[3])
         bet[j][i] = float(dat[4])
     n += 1
@@ -80,71 +114,33 @@ for j in range(ndat):
 x1, x2 = np.meshgrid(x,y)
 
 col_range = np.linspace(0.0, 0.5, 11)
-#col_range = np.linspace(0.1, 0.5, 9)
 
 
+mpl.rc('font', family = 'Times New Roman')
+#plt.rcParams['font.family']= 'Times-New-Roman'
+plt.rcParams['font.size']   = 19
 
-plt.rcParams['font.family']= 'Times-New-Roman'
-plt.rcParams['font.size']   = 20
 
 
 plt.contourf(x1, x2, ye, col_range, cmap = 'jet_r',extend = 'max')
-plt.colorbar(extendfrac='auto')
 
-plt.plot(x_shock, y_shock, 'w', linewidth = 2)
-
-plt.text(50,1050, model)
-plt.text(1075,1050,'$Y_{\\rm e}$')
-
-plt.ylim(0,1000)
-
-plt.xlabel('horizontal plane, km')
-plt.ylabel('polar axis, km')
-
-plt.savefig('./fig/ye.pdf')
-
-plt.close()
+plot_setting('ye')
 
 
 col_range = np.linspace(0, 24, 17)
 
 plt.contourf(x1, x2, s, col_range, cmap = 'hot', extend = 'max')
-plt.colorbar()
 
-plt.plot(x_shock, y_shock, 'w', linewidth = 2)
-
-plt.text(50, 1050, model)
-plt.text(1075,1050,'$S$')
-
-plt.ylim(0,1000)
-
-plt.xlabel('horizontal plane, km')
-plt.ylabel('polar axis, km')
-
-plt.savefig('./fig/e.pdf')
-plt.close()
-
+plot_setting('entropy')
 
 
 col_range = np.linspace(-2, 3, 11)
 
 cm = generate_cmap(['midnightblue', 'royalblue', 'white', 'mistyrose', 'salmon', 'darkred'])
 
-#plt.contourf(x1, x2, bet, col_range, cmap = 'Blues', extend = 'both')
 plt.contourf(x1, x2, bet, col_range, cmap = cm, extend = 'both')
-plt.colorbar()
 
-plt.plot(x_shock, y_shock, 'w', linewidth = 2)
+plot_setting('beta')
 
-plt.text(50, 1050, model)
-plt.text(1000,1050,'$\\log_{10} \\beta_{\\rm p}$')
-
-plt.ylim(0,1000)
-
-plt.xlabel('horizontal plane, km')
-plt.ylabel('polar axis, km')
-
-plt.savefig('./fig/bet.pdf')
-plt.close()
 
 exit()

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
-import matplotlib
-matplotlib.use('Agg')
+import matplotlib as mpl
+mpl.use('Agg')
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -107,8 +107,12 @@ for mdl in range(len(mdl_list)):
         continue
 
     ### format #########################
-    plt.rcParams['font.serif'] = 'Times-New-Roman'
-    plt.rcParams['font.size'] = 18
+    #plt.rcParams['font.serif'] = 'Times-New-Roman'
+    #plt.rcParams['font.size'] = 18
+
+    mpl.rc('font', family = 'Times New Roman')
+    plt.rcParams['font.size']   = 19
+
 
     x1, x2 = np.meshgrid(ye_grid, s_grid)
 
@@ -127,7 +131,7 @@ for mdl in range(len(mdl_list)):
     plt.xlim(0.05, 0.55)
     plt.ylim(2.5  , 27.5)
 
-    plt.grid(which = 'major', color = 'black', linestyle = ':')
+    plt.grid(which = 'major', color = 'black', linestyle = ':', linewidth = 1.5)
 
     plt.contourf(x1, x2, fac_grid, col_range, cmap = 'hot_r')
     #plt.xlabel('$Y_{\\rm e, nse} (\\Delta Y_{\\rm e} =0.05)$')
@@ -137,7 +141,7 @@ for mdl in range(len(mdl_list)):
     plt.xlabel('$Y_{\\rm e}$')
     plt.ylabel('Entropy $S$, k$_{\\rm B}$ baryon$^{-1}$')
 
-    plt.title('MRI-' + mdl_list[mdl])
+    plt.title(mdl_list[mdl])
 
     plt.colorbar(label='Mass fraction ($\\log_{10}$)')
     #plt.savefig('./yes_' + mdl_list[mdl] + '.pdf')
