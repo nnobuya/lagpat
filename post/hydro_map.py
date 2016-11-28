@@ -10,7 +10,7 @@ import matplotlib as mpl
 
 from matplotlib.colors import LinearSegmentedColormap
 
-def plot_setting(x):
+def plot_setting(x, mdl):
 
     f_size = 26
 
@@ -30,7 +30,8 @@ def plot_setting(x):
         plt.text(1075,1050,'$S$')
         plt.savefig('./fig/e.pdf')
     elif x == 'beta':
-        plt.text(1000,1050,'$\\log_{10} \\beta_{\\rm p}$')
+        if mdl == 'm':
+            plt.text(1000,1050,'$\\log_{10} \\beta_{\\rm p}$')
         plt.savefig('./fig/bet.pdf')
     else:
         exit('error in function plot_setting')
@@ -55,9 +56,8 @@ def generate_cmap(colors):
 
 dat = sys.argv
 
-
-model = '$' + dat[1] + '$-Model (' + dat[2] + 'ms)'
-
+model = '$' + dat[1] + '$-model (' + dat[2] + 'ms)'
+mdl   = dat[1]
 
 x_shock = []; y_shock = []
 for line in open('./res/shock.dat'):
@@ -68,7 +68,7 @@ for line in open('./res/shock.dat'):
 
     if x_tmp > 0.0:
         theta = np.arctan(x_tmp /y_tmp)
-        if theta > 0.98 *math.pi /2.0:
+        if theta > 0.90 *math.pi /2.0:
             break
 
     x_shock.append(float(dat[0]))
@@ -84,8 +84,6 @@ y_shock.append(0.0)
 File = open('./res/hydro_new.dat').readlines()
 
 ndat = int(File[0].split()[1])
-
-#print(ndat)
 
 s   = [ [ 0.0 for i1 in range(ndat) ] for i2 in range(ndat) ]
 ye  = [ [ 0.0 for i1 in range(ndat) ] for i2 in range(ndat) ]
@@ -110,37 +108,32 @@ for j in range(ndat):
     n += 1
 
 
+mpl.rc('font', family = 'Times New Roman')
 
 x1, x2 = np.meshgrid(x,y)
 
-col_range = np.linspace(0.0, 0.5, 11)
-
-
-mpl.rc('font', family = 'Times New Roman')
-#plt.rcParams['font.family']= 'Times-New-Roman'
 plt.rcParams['font.size']   = 19
 
 
-
+##### Ye #########################################################
+col_range = np.linspace(0.0, 0.5, 11)
 plt.contourf(x1, x2, ye, col_range, cmap = 'jet_r',extend = 'max')
+plot_setting('ye', mdl)
 
-plot_setting('ye')
 
 
+##### Entropy ####################################################
 col_range = np.linspace(0, 24, 17)
-
 plt.contourf(x1, x2, s, col_range, cmap = 'hot', extend = 'max')
+plot_setting('entropy', mdl)
 
-plot_setting('entropy')
 
 
+##### Beta #######################################################
 col_range = np.linspace(-2, 3, 11)
-
 cm = generate_cmap(['midnightblue', 'royalblue', 'white', 'mistyrose', 'salmon', 'darkred'])
-
 plt.contourf(x1, x2, bet, col_range, cmap = cm, extend = 'both')
-
-plot_setting('beta')
+plot_setting('beta', mdl)
 
 
 exit()

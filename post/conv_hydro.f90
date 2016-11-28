@@ -10,8 +10,8 @@ program conv
   !..main
   real(8), external:: f_intpol
   real(8):: rd(1:nrd), th(1:nth), r_shock(1:nx), r_old
-  real(8), dimension(1:nrd,1:nth):: x, y, s, ye, bet
-  real(8), dimension(1:nx,1:nx):: x1, y1, rd1, th1, s1, ye1, bet1
+  real(8), dimension(1:nrd,1:nth):: x, y, s, ye, bet, de
+  real(8), dimension(1:nx,1:nx):: x1, y1, rd1, th1, s1, ye1, bet1, de1
 
   real(8):: dx, t1, t2, h
   real(8):: r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, &
@@ -45,6 +45,7 @@ program conv
              & r16, r17, r18, r19, r20, r21, r22, r23, r24, r25
         x(i,j) = rd(i) *sin(th(j))
         y(i,j) = rd(i) *cos(th(j))
+        de(i,j)  = r5
         bet(i,j) = log10(r10 /(r20 + r21 + r24))
      end do
      read(50,*)
@@ -57,7 +58,7 @@ program conv
   do j = 1, nth
      do i = 1, nrd
         write(60,'(1p, *(e14.5))') &
-             & 1.d-5 *x(i,j), 1.d-5 *y(i,j), s(i,j), ye(i,j), bet(i,j)
+             & 1.d-5 *x(i,j), 1.d-5 *y(i,j), s(i,j), ye(i,j), bet(i,j), de(i,j)
      end do
      write(60,*)
   end do
@@ -124,6 +125,7 @@ program conv
            s1(i,j)   = s(ii,jj)
            ye1(i,j)  = ye(ii,jj)
            bet1(i,j) = bet(ii,jj)
+           de1(i,j)  = de1(ii,jj)
         else
 
            s1(i,j)  = f_intpol(s(ii,jj), s(ii+1,jj), s(ii,jj+1), &
@@ -134,6 +136,9 @@ program conv
 
            bet1(i,j) = f_intpol(bet(ii,jj), bet(ii+1,jj), bet(ii,jj+1), &
                 & bet(ii+1,jj+1), t1, t2)
+
+           de1(i,j)  = f_intpol(de(ii,jj), de(ii+1,jj), de(ii,jj+1), &
+                & de(ii+1,jj+1), t1, t2)
 
         end if
 
@@ -170,7 +175,7 @@ program conv
      do i = 1, nx
         write(61,'(1p, *(e14.5))') &
              & 1.d-5 *x1(i,j), 1.d-5 *y1(i,j), &
-             & s1(i,j), ye1(i,j), bet1(i,j)
+             & s1(i,j), ye1(i,j), bet1(i,j), de1(i,j)
      end do
      write(61,*)
   end do
