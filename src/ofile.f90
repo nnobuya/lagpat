@@ -1,11 +1,10 @@
 subroutine ofile
 
-  use mod_cnst, only: set_cnst
-  use mod_set , only: k_zoku, n_init, set_param, path
+  use mod_set , only: k_zoku, n_init, set_param, path, mode_run
 
   implicit none
 
-  character:: no*4, f_name*100
+  character:: no*10, f_name*100
 
   ! ------------------------------------------------------------------ !
   !     input                                                          !
@@ -15,15 +14,19 @@ subroutine ofile
 
   call set_param(15)
 
-  call set_cnst(15)
-
   close(15)
 
-  write(no,'(i4.4)') n_init
-  f_name = trim(adjustl(path)) // '/rpr' // no // '.dat'
+  if (mode_run == 1) then
+     write(no,'(i4.4)') n_init
+     f_name = trim(adjustl(path)) // '/rpr'  // trim(adjustl(no)) // '.dat'
+  else if (mode_run == 2) then
+     write(no,'(i6.6)') n_init
+     f_name = trim(adjustl(path)) // '/hydro_' // trim(adjustl(no)) // '.dat'
+  end if
 
   !..hydro results (initial)
-  open(50, file = f_name, form = 'unformatted', action = 'read')
+  open(50, file = f_name, form = 'unformatted', convert = 'big_endian', &
+       & action = 'read')
 
   !     input                                                          !
   ! ------------------------------------------------------------------ !

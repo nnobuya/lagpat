@@ -1,7 +1,6 @@
 subroutine hokan_vel( ipt, fac, v_fld, vpt )
 
-  use mod_cnst, only: npt, ndim
-  use mod_set , only: nx1, nx2, nx3, nin, nou
+  use mod_set , only: nx1, nx2, nx3, nin, nou, npt, ndim
 
   implicit none
 

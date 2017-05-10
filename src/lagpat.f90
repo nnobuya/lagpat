@@ -22,8 +22,8 @@
 
 program lagpat
 
-  use mod_cnst, only: npt, ndim
-  use mod_set , only: int_t, i_test, last_lp, n_init, n_fini, &
+  use mod_set , only: npt, ndim, &
+       & int_t, i_test, last_lp, n_init, n_fini, &
        & d_fld, t_fld, s_fld, ye_fld, v_fld, v0_fld, set_data
   use mod_fld , only: dt_max, fld
 
@@ -63,6 +63,8 @@ program lagpat
   call set_data
 
   call set_part(istg, ti, ist_pt(:), id(:,:), x_pt(:,:), v_pt(:,:), dma(:))
+  !call set_part(istg, ti, ist_pt, id, x_pt, v_pt, dma)
+
   !  out: all
 
   !     pre-process                                                    !
@@ -110,7 +112,6 @@ program lagpat
 
   !     first-step                                                     !
   ! ------------------------------------------------------------------ !
-
 
   ! ------------------------------------------------------------------ !
   !                                                                    !

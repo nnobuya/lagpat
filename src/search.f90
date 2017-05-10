@@ -1,7 +1,6 @@
 subroutine search( mode, xpt, vpt, fac, ipt )
 
-  use mod_cnst, only: ndim
-  use mod_set , only: nx1, nx2, nx3, x_fld
+  use mod_set , only: nx1, nx2, nx3, x_fld, ndim
 
   implicit none
 
@@ -56,7 +55,16 @@ subroutine search( mode, xpt, vpt, fac, ipt )
      end if
 
      if( nx3 >= 2 ) then
-        stop 'under constraction'
+        i      = 1
+        j      = 1
+        ipt(3) = 1
+        do k = 1, nx3 - 1
+           if( x_fld(3,i,j,k) >= xpt(3) ) exit
+           ipt(3) = k
+        end do
+
+        fac(3) = ( xpt(3) - x_fld(3,i,j,ipt(3)) ) &
+             & /( x_fld(3,i,j,ipt(3)+1) - x_fld(3,i,j,ipt(3)) )
      else
         ipt(3) = 1
         fac(3) = 0.d0
@@ -170,7 +178,52 @@ subroutine search( mode, xpt, vpt, fac, ipt )
 
 
      if ( nx3 >= 2 ) then
-        stop 'under constraction'
+
+        i = 1
+        j = 1
+        if ( xpt(3) >= x_fld(3,i,j,nx3-1)  ) then
+           ipt(3) = nx3 - 1
+        else if ( xpt(3) < x_fld(3,i,j,1) ) then
+           ipt(3) = 1
+        else
+           if ( vpt(3) >= 0 ) nd =  1
+           if ( vpt(3) <  0 ) nd = -1
+           ier = 0
+           lp_search_i3: do
+              if ( ( ipt(3) == 0 ) .or. ( ipt(3) == nx3 ) ) then
+                 ier = - 1
+                 exit lp_search_i3
+              else if ( ( x_fld(3,i,j,ipt(3)) <= xpt(3) ) &
+                   & .and. ( xpt(3) < x_fld(3,i,j,ipt(3)+1) ) ) then
+                 exit lp_search_i3
+              end if
+              ipt(3) = ipt(3) + nd
+           end do lp_search_i3
+
+           if ( ier /= 0 ) then
+              ipt(3) = ipt_in(3)
+              ier = 0
+              lp_search_i33: do
+
+                 if ( ( ipt(3) == 0 ) .or. ( ipt(3) == nx3 ) ) then
+                    ier = - 1
+                    exit lp_search_i33
+                 else if ( ( x_fld(3,i,j,ipt(3)) <= xpt(3) ) &
+                      &  .and. ( xpt(3) < x_fld(3,i,j,ipt(3)+1) ) ) then
+                    exit lp_search_i33
+                 end if
+                 ipt(3) = ipt(3) - nd
+              end do lp_search_i33
+           end if
+
+           if ( ier /= 0 ) stop 'error'
+
+        end if
+
+        ipt(3) = min( max(ipt(3),1), nx3 - 1 )
+        fac(3) = ( xpt(3) - x_fld(3,i,j,ipt(3)) ) &
+             & /( x_fld(3,i,j,ipt(3)+1) - x_fld(3,i,j,ipt(3)) )
+
      else
         ipt(3) = 1
         fac(3) = 0.d0

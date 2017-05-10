@@ -1,7 +1,7 @@
 subroutine fini_out(io, istg, ti, ist_pt, id, dma, &
      & x_pt, v_pt, d_pt, t_pt, ye_pt, en_pt)
 
-  use mod_cnst, only: npt, ndim
+  use mod_set, only: npt, ndim
 
   implicit none
 

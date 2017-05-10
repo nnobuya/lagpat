@@ -1,7 +1,6 @@
 subroutine dt_chk( time, dt, istat_pt, ipt, v_pt, x_pt )
 
-  use mod_cnst, only: npt, ndim
-  use mod_set , only: dx_fld
+  use mod_set , only: dx_fld, npt, ndim
 
   implicit none
 

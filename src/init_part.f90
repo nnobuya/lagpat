@@ -1,7 +1,8 @@
 subroutine init_part(d_fld, dvol, id, dma, x_pt)
 
-  use mod_cnst, only: npt, ndim, npt_rad, npt_the, pi, rm_sol
-  use mod_set , only: r_in, r_out, nx1, nx2, nx3, x_fld
+  use mod_cnst, only: pi, rm_sol
+  use mod_set , only: r_in, r_out, nx1, nx2, nx3, x_fld,npt, &
+       & ndim, npt_rad, npt_the
 
   implicit none
 

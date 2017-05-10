@@ -1,7 +1,7 @@
 subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
 
-  use mod_cnst, only: npt, ndim
-  use mod_set , only: nx1, nx2, nx3, int_t, x_fld
+  use mod_cnst, only: pi
+  use mod_set , only: nx1, nx2, nx3, int_t, x_fld, npt, ndim, mode_run
 
   implicit none
 
@@ -12,12 +12,21 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
   double precision, intent(inout):: x_pt(ndim,npt)
 
   double precision:: c1, c2, c3, c4
-  double precision:: the_min, the_max, v_comb(1:ndim)
+  double precision:: the_min, the_max, v_comb(1:ndim), theta, rd
   integer:: i
 
 
-  the_min = minval( x_fld(2,1:nx1,1:nx2,1:nx3) )
-  the_max = maxval( x_fld(2,1:nx1,1:nx2,1:nx3) )
+!  do i = 1, npt
+!     write(200,'(i10, 1p, 10e14.5)') i, x_pt(1:ndim,i), v_pt(1:ndim,i)*dt
+!  end do
+
+  if (mode_run == 1) then
+     the_min = minval( x_fld(2,1:nx1,1:nx2,1:nx3) )
+     the_max = maxval( x_fld(2,1:nx1,1:nx2,1:nx3) )
+  else if (mode_run == 1) then
+     the_min = 0.d0
+     the_max = pi /2.d0
+  end if
 
   do i = 1, npt
 
@@ -42,19 +51,36 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
         stop 'error: no method'
      end if
 
-     x_pt(1,i) = x_pt(1,i) + v_comb(1) *dt
-     if ( nx2 >= 2 ) x_pt(2,i) = x_pt(2,i) + v_comb(2) /x_pt(1,i) *dt
-     if ( nx3 >= 2 ) x_pt(3,i) = x_pt(3,i) + v_comb(3) /x_pt(1,i) *dt
-
-     !..avoid negative r
-     x_pt(1,i) = max(0.d0, x_pt(1,i))
-
-     if     ( x_pt(2,i) < the_min ) then
-        x_pt(2,i) = ( the_min - x_pt(2,i) )
-     else if( x_pt(2,i) > the_max ) then
-        x_pt(2,i) = 2.d0 *the_max - x_pt(2,i)
+     if (mode_run == 1) then
+        x_pt(1,i) = x_pt(1,i) + v_comb(1) *dt
+        if ( nx2 >= 2 ) x_pt(2,i) = x_pt(2,i) + v_comb(2) /x_pt(1,i) *dt
+        if ( nx3 >= 2 ) x_pt(3,i) = x_pt(3,i) + v_comb(3) /x_pt(1,i) *dt
+     else if (mode_run == 2) then
+        x_pt(1,i) = x_pt(1,i) + v_comb(1) *dt
+        if ( nx2 >= 2 ) x_pt(2,i) = x_pt(2,i) + v_comb(2) *dt
+        if ( nx3 >= 2 ) x_pt(3,i) = x_pt(3,i) + v_comb(3) *dt
      end if
 
+
+     !..avoid negative r
+     if (mode_run == 1) then
+        x_pt(1,i) = max(0.d0, x_pt(1,i))
+
+        if     ( x_pt(2,i) < the_min ) then
+           x_pt(2,i) = ( the_min - x_pt(2,i) )
+        else if( x_pt(2,i) > the_max ) then
+           x_pt(2,i) = 2.d0 *the_max - x_pt(2,i)
+        end if
+     else if (mode_run == 2) then
+        theta = atan(x_pt(1,i) /x_pt(3,i))
+        !rd    = sqrt(x_pt(1,i) *x_pt(1,i) + x_pt(3,i) *x_pt(3,i))
+        if (theta < the_min) then
+           theta = the_min - theta
+        else if (theta > the_max) then
+           theta = 2.d0 *the_max - theta
+        end if
+
+     end if
 
   end do
 

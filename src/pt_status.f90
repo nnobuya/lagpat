@@ -1,6 +1,6 @@
 subroutine pt_status(istat_pt, npt_in, npt_out, npt_num)
 
-  use mod_cnst, only: npt
+  use mod_set, only: npt
 
   implicit none
 

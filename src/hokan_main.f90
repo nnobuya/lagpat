@@ -2,8 +2,8 @@ subroutine hokan_main(mode, dt, ist_pt, ipt, x_pt, &
      & d_fld, t_fld, s_fld, ye_fld, v0_fld, v_fld, &
      & d_pt, t_pt, s_pt, ye_pt, v_pt, v_pt_p)
 
-  use mod_cnst, only: npt, ndim
-  use mod_set , only: nx1, nx2, nx3, int_t
+  use mod_set , only: nx1, nx2, nx3, int_t, npt, ndim
+
 
   implicit none
 

@@ -1,8 +1,7 @@
 subroutine output(istg, ti, dt, ipt, &
      & ist_pt, x_pt, d_pt, t_pt, s_pt, ye_pt, v_pt, n_anim_out)
 
-  use mod_cnst, only: npt, ndim
-  use mod_set , only: nout_lpt, n_anim
+  use mod_set , only: nout_lpt, n_anim, npt, ndim, mode_run
 
   implicit none
 
@@ -27,7 +26,7 @@ subroutine output(istg, ti, dt, ipt, &
 
      close(60)
 
-     write(f_name, '("./res/lpt/lpt_", i4.4, ".dat")') istg
+     write(f_name, '("./res/lpt/lpt_", i6.6, ".dat")') istg
      open(60, file = f_name, form = 'unformatted', action = 'write')
 
      !..lpt data
@@ -51,8 +50,13 @@ subroutine output(istg, ti, dt, ipt, &
           & "te", 10x, "s", 10x, "ye")')
      do i = 1, npt
         if (ist_pt(i) /= 0) cycle
-        x = x_pt(1,i) *sin(x_pt(2,i))
-        y = x_pt(1,i) *cos(x_pt(2,i))
+        if (mode_run == 1) then
+           x = x_pt(1,i) *sin(x_pt(2,i))
+           y = x_pt(1,i) *cos(x_pt(2,i))
+        else if (mode_run == 2) then
+           x = x_pt(1,i)
+           y = x_pt(3,i)
+        end if
         write(66,'(1p, *(e12.4))') &
              & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i)
      end do

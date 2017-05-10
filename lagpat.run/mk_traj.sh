@@ -5,11 +5,11 @@ if [ $# -ne 3 ]; then
     exit
 fi
 
-run_lagpat=false
+run_lagpat=true
 run_traj=false
 run_eject=false
-run_abund=true
-run_ntwk_file=true
+run_abund=false
+run_ntwk_file=false
 
 #----- run lagpat ------------------------------------------ #
 if $run_lagpat; then
@@ -24,8 +24,7 @@ if $run_lagpat; then
 	echo $n
 
 	cd ./in
-	rm -f  ./lagpat.in
-	ln -s  ./lagpat.in.$n  ./lagpat.in
+	ln -sf  ./lagpat.in.$n  ./lagpat.in
 	cd ../
 
 	mkdir ./anim

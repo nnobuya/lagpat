@@ -1,8 +1,7 @@
 subroutine hokan_rhotye(istat_pt, ipt, fac, d_fld, t_fld, s_fld, ye_fld, &
      & d_pt, t_pt, s_pt, ye_pt)
 
-  use mod_cnst, only: npt, ndim
-  use mod_set , only: nx1, nx2, nx3, nin, nou
+  use mod_set , only: nx1, nx2, nx3, nin, nou, npt, ndim
 
   implicit none
 
