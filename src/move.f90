@@ -16,10 +16,6 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
   integer:: i
 
 
-!  do i = 1, npt
-!     write(200,'(i10, 1p, 10e14.5)') i, x_pt(1:ndim,i), v_pt(1:ndim,i)*dt
-!  end do
-
   if (mode_run == 1) then
      the_min = minval( x_fld(2,1:nx1,1:nx2,1:nx3) )
      the_max = maxval( x_fld(2,1:nx1,1:nx2,1:nx3) )

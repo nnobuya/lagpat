@@ -16,7 +16,7 @@ subroutine output(istg, ti, dt, ipt, &
   integer, save:: iout = 0
   integer:: npt_in, npt_out, npt_num
   integer:: i
-  real(8):: x, y
+  real(8):: x, y, vr
   character:: f_name*100
 
 
@@ -50,15 +50,20 @@ subroutine output(istg, ti, dt, ipt, &
           & "te", 10x, "s", 10x, "ye")')
      do i = 1, npt
         if (ist_pt(i) /= 0) cycle
+
         if (mode_run == 1) then
            x = x_pt(1,i) *sin(x_pt(2,i))
            y = x_pt(1,i) *cos(x_pt(2,i))
+           vr = v_pt(1,i)
         else if (mode_run == 2) then
            x = x_pt(1,i)
            y = x_pt(3,i)
+           vr = sqrt(v_pt(1,i) *v_pt(1,i) + v_pt(3,i) *v_pt(3,i))
+           if (v_pt(1,i) < 0 .and. v_pt(3,i) < 0) vr = - vr
         end if
-        write(66,'(1p, *(e12.4))') &
-             & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i)
+
+        write(66,'(*(es12.4))') &
+             & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i), vr
      end do
 
      write(65,'(i10, 1p, e15.7)') istg, ti *1000.0

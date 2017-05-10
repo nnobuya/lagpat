@@ -20,7 +20,7 @@ subroutine status(x_pt, ist_pt)
      if (mode_run == 1) then
         rd = x_pt(1,i)
      else if (mode_run == 2) then
-        rd = sqrt(sum(x_pt(1:ndim,i) *x_pt(1:ndim,i)))
+        rd = sqrt(x_pt(1,i) *x_pt(1,i) + x_pt(3,i) *x_pt(3,i))
      end if
 
      if      ( rd > bound_out ) then
