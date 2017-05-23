@@ -46,8 +46,8 @@ subroutine output(istg, ti, dt, ipt, &
      write(f_name, '("./res/anim/anim_", i4.4, ".dat")') istg
      open(66, file = f_name, action = 'write')
 
-     write(66,'("#", 3x, "X", 11x, "Y",11x,  "de", 10x, &
-          & "te", 10x, "s", 10x, "ye")')
+     write(66,'("#", 3x, "X", 9x, "Y", 9x,  "de", 8x, &
+          & "te", 8x, "s", 8x, "ye", 8x, "rd")')
      do i = 1, npt
         if (ist_pt(i) /= 0) cycle
 
@@ -62,7 +62,7 @@ subroutine output(istg, ti, dt, ipt, &
            if (v_pt(1,i) < 0 .and. v_pt(3,i) < 0) vr = - vr
         end if
 
-        write(66,'(*(es12.4))') &
+        write(66,'(*(es10.2))') &
              & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i), vr
      end do
 

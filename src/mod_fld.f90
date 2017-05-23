@@ -114,6 +114,7 @@ contains
 
   subroutine rd_fld(ti, d_fld, t_fld, s_fld, ye_fld, v_fld)
 
+    use mod_cnst, only: v_c, r_mev
     use mod_set , only: nx1, nx2, nx3, ndim, mode_run
 
     implicit none
@@ -163,7 +164,8 @@ contains
        v_fld(2,1:nx1,j,1:nx3)  = dble(v2(1:nx1,1:nx3))
        v_fld(3,1:nx1,j,1:nx3)  = dble(v3(1:nx1,1:nx3))
 
-       v_fld(1:ndim,1:nx1,j,1:nx3) = 2.99792458d10 *v_fld(1:ndim,1:nx1,j,1:nx3)
+       t_fld(1:nx1,j,1:nx3)        = r_mev *t_fld(1:nx1,j,1:nx3)
+       v_fld(1:ndim,1:nx1,j,1:nx3) =   v_c *v_fld(1:ndim,1:nx1,j,1:nx3)
 
     end if
 
