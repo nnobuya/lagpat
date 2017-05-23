@@ -3,7 +3,8 @@ program conv
   implicit none
 
   !..param.
-  integer, parameter:: nrd = 576, nth = 128
+  !integer, parameter:: nrd = 576, nth = 128
+  integer, parameter:: nrd = 576, nth = 120
   integer, parameter:: nx  = 150
   real(8), parameter:: radius = 1.d8
 
