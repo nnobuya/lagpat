@@ -41,12 +41,20 @@ subroutine ofile
   open(41, file = './res/part_fini.dat', action = 'write')
 
   !..movie
-  write(f_name,'("./res/lpt/lpt_", i4.4, ".dat")') n_init
+  if      (mode_run == 1) then
+     write(f_name,'("./res/lpt/lpt_", i4.4, ".dat")') n_init
+  else if (mode_run == 2) then
+     write(f_name,'("./res/lpt/lpt_", i6.6, ".dat")') n_init
+  end if
   open(60, file = f_name, form = 'unformatted', action = 'write')
 
   open(65, file = './res/anim_set.dat', action = 'write')
 
-  write(f_name,'("./res/anim/anim_", i4.4, ".dat")') n_init
+  if      (mode_run == 1) then
+     write(f_name,'("./res/anim/anim_", i4.4, ".dat")') n_init
+  else if (mode_run == 2) then
+     write(f_name,'("./res/anim/anim_", i6.6, ".dat")') n_init
+  end if
   open(66, file = f_name, action = 'write')
 
 

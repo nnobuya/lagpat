@@ -26,16 +26,15 @@ subroutine output(istg, ti, dt, ipt, &
 
      close(60)
 
-     write(f_name, '("./res/lpt/lpt_", i6.6, ".dat")') istg
-     open(60, file = f_name, form = 'unformatted', action = 'write')
+     write(f_name, '("./res/lpt/traj_", i6.6, ".lpt")') istg
+     open(60, file = f_name, form = 'unformatted', &
+          & convert = 'little_endian', action = 'write')
 
      !..lpt data
-     write(60) istg, real(ti), real(dt)
-     write(60) ipt(1:ndim,1:npt)
-     write(60) ist_pt(1:npt)
-     write(60) real(x_pt(1:ndim,1:npt)), real(v_pt(1:ndim,1:npt))
-     write(60) real(d_pt(1:npt)), real(t_pt(1:npt)), &
-          & real(s_pt(1:npt)), real(ye_pt(1:npt))
+     write(60) istg, ti, dt
+     write(60) ipt(1:ndim,1:npt), ist_pt(1:npt), &
+          & x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), &
+          & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt)
 
   end if out_cond
 

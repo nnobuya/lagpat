@@ -5,8 +5,8 @@ if [ $# -ne 3 ]; then
     exit
 fi
 
-run_lagpat=true
-run_traj=false
+run_lagpat=false
+run_traj=true
 run_eject=false
 run_abund=false
 run_ntwk_file=false
@@ -53,19 +53,19 @@ if $run_traj; then
     for n in `seq $2 $3`
     do
 
-	rm -rf ./traj
-	mkdir  ./traj
+	rm  -rf ./traj.$n
+	mkdir   ./traj.$n
+
+	ln -sf ./traj.$n ./traj
 
 	rm -rf ./res
 	mkdir  ./res
 
-	rm -f lpt
-	ln -s ./res.$n ./lpt
+	ln -sf ./res.$n ./lpt
+
+	exit
 
 	time ./lpt_post
-
-	rm  -rf     ./traj.$n
-	mv  ./traj  ./traj.$n
 
 	mv ./res/peak.dat          ./res.$n/
 	mv ./res/pt_eject_nse.dat  ./res.$n/
