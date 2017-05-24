@@ -16,29 +16,23 @@ if $run_lagpat; then
 
     echo '- run lagpat'
 
-    rm -rf ./res
-    rm -rf ./anim
-
     for n in `seq $2 $3`
     do
 	echo $n
+
+	rm -rf ./res.$n
+	mkdir  ./res.$n
+	mkdir  ./res.$n/anim
+	mkdir  ./res.$n/lpt
+
+	ln -sf ./res.$n ./res
 
 	cd ./in
 	ln -sf  ./lagpat.in.$n  ./lagpat.in
 	cd ../
 
-	mkdir ./anim
-	mkdir ./res
-	mkdir ./res/anim
-	mkdir ./res/lpt
-
 	time ./lagpat
 
-	rm -rf ./anim.$n
-	rm -rf ./res.$n
-
-	mv ./anim ./anim.$n
-	mv ./res  ./res.$n
     done
 
     rm ./in/lagpat.in
@@ -94,6 +88,7 @@ if $run_eject; then
     done
 fi
 
+
 if $run_abund; then
 
     rm -rf ./inicomp
@@ -120,7 +115,6 @@ if $run_abund; then
 fi
 
 
-
 if $run_ntwk_file; then
 
     for no in `seq 1 3`
@@ -133,12 +127,7 @@ if $run_ntwk_file; then
 	mv ./hydro.in ./hydro.in.$no
 	mv ./abund.in ./abund.in.$no
     done
-
 fi
-
-
-exit
-
 
 
 exit
