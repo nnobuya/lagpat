@@ -42,9 +42,9 @@ subroutine ofile
 
   !..movie
   if      (mode_run == 1) then
-     write(f_name,'("./res/lpt/lpt_", i4.4, ".dat")') n_init
+     write(f_name,'("./res/lpt/traj_", i4.4, ".lpt")') n_init
   else if (mode_run == 2) then
-     write(f_name,'("./res/lpt/lpt_", i6.6, ".dat")') n_init
+     write(f_name,'("./res/lpt/traj_", i6.6, ".lpt")') n_init
   end if
   open(60, file = f_name, form = 'unformatted', action = 'write')
 

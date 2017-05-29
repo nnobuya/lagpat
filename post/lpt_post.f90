@@ -2,32 +2,33 @@ program lpt_post
 
   implicit none
 
+  !..param.
   integer, parameter:: ndim = 3
   integer, parameter:: ndt_ex = 100
-  real(8), parameter:: ti_ini = 1.d-2, ti_fin = 1.d4
-  real(8), parameter:: te_nse_cond = 9.d9
+  double precision, parameter:: ti_ini = 1.d-2, ti_fin = 1.d4
+  double precision, parameter:: te_nse_cond = 9.d9
 
   !..main
   integer:: istg, ndt, npt
-  real(8):: dt, dt_ex
+  double precision:: dt, dt_ex
   integer, allocatable:: ist_pt(:,:), ndt_pt(:)
-  real(8), allocatable:: ti(:), &
+  double precision, allocatable:: ti(:), &
        & de_pt(:,:), te_pt(:,:), en_pt(:,:), &
        & ye_pt(:,:), x_pt(:,:,:), v_pt(:,:,:), rma_pt(:)
-  real(8):: ti0, de0, te0, en0, ye0, rd0, vr0
-  real(8):: ti_ex(1:ndt_ex), de_ex, te_ex, en_ex, ye_ex, rd_ex
+  double precision:: ti0, de0, te0, en0, ye0, rd0, vr0
+  double precision:: ti_ex(1:ndt_ex), de_ex, te_ex, en_ex, ye_ex, rd_ex
 
   integer:: n_nse, num_nse
-  real(8):: ti_nse, de_nse, te_nse, en_nse, ye_nse, rd_nse, vr_nse
+  double precision:: ti_nse, de_nse, te_nse, en_nse, ye_nse, rd_nse, vr_nse
 
-  real(8):: h, t9_chk
+  double precision:: h, t9_chk
   real(4):: dt_in, ti_in
   real(4), allocatable:: de_in(:), te_in(:), en_in(:), ye_in(:), &
        & x_in(:,:), v_in(:,:)
 
-  character:: ofile*100
-  real(8):: rr(1:10)
-  integer:: i, ier, ipt, idt, ii(1:5)
+  character:: ch*10, ofile*100
+  double precision:: rr(1:10), r1, r2
+  integer:: i, ier, ipt, idt, ii(1:5), i1, i2
 
 
   !..make dt ext
@@ -42,23 +43,31 @@ program lpt_post
 
 
   !..open
-  open(50, file = './lpt/move.dat', &
-       & form = 'unformatted', action = 'read')
-  open(51, file = './lpt/hydro.dat', &
-       & form = 'unformatted', action = 'read')
-  open(52, file = './lpt/stat_lpt.dat', &
-       & form = 'unformatted', action = 'read')
-  open(53, file = './lpt/part_init.dat', action = 'read')
+  !open(50, file = './lpt/move.dat', &
+  !     & form = 'unformatted', action = 'read')
+  !open(51, file = './lpt/hydro.dat', &
+  !     & form = 'unformatted', action = 'read')
+  !open(52, file = './lpt/stat_lpt.dat', &
+  !     & form = 'unformatted', action = 'read')
+  open(51, file = './lpt/part_init.dat', action = 'read')
+  open(52, file = './lpt/part_fini.dat', action = 'read')
 
   open(61, file = './res/peak.dat'     , action = 'write')
   open(62, file = './res/pt_eject_nse.dat' , action = 'write')
   open(64, file = './res/bad_traj.dat' , action = 'write')
 
-
-
   ! ------------------------------------------------------------------ !
   !     set parameters                                                 !
   ! ------------------------------------------------------------------ !
+
+  read(51,*)
+  read(51,*) ch, r1, i1
+  read(52,*)
+  read(52,*) ch, r2, i2
+
+  ndt = i2 - i1 + 1
+  print *, ndt
+  stop 'db'
 
   ndt = 0
   do
@@ -112,7 +121,7 @@ program lpt_post
      read(52) istg, ti_in, dt_in
      read(52) ist_pt(1:npt,idt)
 
-     !..convert real(4) to real(8)
+     !..convert real(4) to double precision
      ti(idt) = dble(ti_in)
      x_pt(1:ndim,1:npt,idt) = dble(x_in(1:ndim,1:npt))
      v_pt(1:ndim,1:npt,idt) = dble(v_in(1:ndim,1:npt))

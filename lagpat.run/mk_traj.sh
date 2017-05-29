@@ -16,6 +16,8 @@ if $run_lagpat; then
 
     echo '- run lagpat'
 
+    rm -rf ./res
+
     for n in `seq $2 $3`
     do
 	echo $n
@@ -44,6 +46,9 @@ if $run_traj; then
 
     echo '- run traj'
 
+    rm -rf ./traj
+    rm -rf ./lpt
+
     for n in `seq $2 $3`
     do
 
@@ -57,9 +62,9 @@ if $run_traj; then
 
 	ln -sf ./res.$n ./lpt
 
-	exit
-
 	time ./lpt_post
+
+	exit
 
 	mv ./res/peak.dat          ./res.$n/
 	mv ./res/pt_eject_nse.dat  ./res.$n/
