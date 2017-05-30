@@ -13,7 +13,6 @@ subroutine fini_out(io, istg, ti, ist_pt, id, dma, &
   !..local
   integer:: ipt
 
-
   !..for next stage
   write(io,'("#", 10x, "time", 6x, "step")')
   write(io,'("#", 1p, e14.7, i10)') ti, istg

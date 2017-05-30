@@ -223,7 +223,7 @@ program lagpat
   write(*,'(a20,i10)') 'calculation step:', istg
   write(*,'(a20,i10)') 'output:', n_anim_out
 
-  call fini_out(41, ihyd, ti, ist_pt(:), id(:,:), dma(:), &
+  call fini_out(41, ihyd - 1, ti, ist_pt(:), id(:,:), dma(:), &
        & x_pt(:,:), v_pt(:,:), d_pt(:), t_pt(:), ye_pt(:), s_pt(:))
 
   close(41)

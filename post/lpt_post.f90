@@ -11,10 +11,12 @@ program lpt_post
   !..main
   integer:: istg, ndt, npt
   double precision:: dt, dt_ex
-  integer, allocatable:: ist_pt(:,:), ndt_pt(:)
+
+  integer, allocatable:: i_pt(:,:), ist_pt(:,:), ndt_pt(:)
   double precision, allocatable:: ti(:), &
        & de_pt(:,:), te_pt(:,:), en_pt(:,:), &
        & ye_pt(:,:), x_pt(:,:,:), v_pt(:,:,:), rma_pt(:)
+
   double precision:: ti0, de0, te0, en0, ye0, rd0, vr0
   double precision:: ti_ex(1:ndt_ex), de_ex, te_ex, en_ex, ye_ex, rd_ex
 
@@ -66,33 +68,24 @@ program lpt_post
   read(52,*) ch, r2, i2
 
   ndt = i2 - i1 + 1
-  print *, ndt
-  stop 'db'
 
-  ndt = 0
+  npt = 0
+  read(51,*)
   do
-     read(52,iostat=ier)
-     if (ier /= 0) exit
-     read(52)
-     ndt = ndt + 1
-  end do
-
-  npt = -3
-  do
-     read(53,*,iostat=ier)
+     read(51,*,iostat=ier) i1
      if (ier /= 0) exit
      npt = npt + 1
   end do
 
   write(*,'("npt =", i10, 5x, "ndt =", i10)') npt, ndt
 
+  rewind(51)
   rewind(52)
-  rewind(53)
 
   allocate(de_in(1:npt), te_in(1:npt), en_in(1:npt), ye_in(1:npt), &
        & x_in(1:ndim,1:npt), v_in(1:ndim,1:npt))
 
-  allocate(ti(1:ndt), ist_pt(1:npt,1:ndt), ndt_pt(1:npt), &
+  allocate(ti(1:ndt), i_pt(1:ndim,1:npt), ist_pt(1:npt,1:ndt), ndt_pt(1:npt), &
        & de_pt(1:npt,1:ndt), te_pt(1:npt,1:ndt), &
        & en_pt(1:npt,1:ndt), ye_pt(1:npt,1:ndt), &
        & x_pt(1:ndim,1:npt,1:ndt), v_pt(1:ndim,1:npt,1:ndt), rma_pt(1:npt))
@@ -100,26 +93,25 @@ program lpt_post
   !     set parameters                                                 !
   ! ------------------------------------------------------------------ !
 
-
-  read(53,*)
-  read(53,*)
-  read(53,*)
+  read(51,*)
+  read(51,*)
+  read(51,*)
   do ipt = 1, npt
-     read(53,*) ii(1:5), rma_pt(ipt), rr(1:10)
+     read(51,*) ii(1:5), rma_pt(ipt), rr(1:10)
   end do
 
   write(*,'("- reading tracer data", i10, " Steps")') ndt
 
-  do idt = 1, ndt
+
+  lp_step: do idt = 1, ndt
+     write(ofile,"('./lpt/lpt/traj_', i6.6, '.lpt')") idt
+     open(50, file = ofile, form = 'unformatted', action = 'read')
 
      read(50) istg, ti_in, dt_in
-     read(50) x_in(1:ndim,1:npt), v_in(1:ndim,1:npt)
-
-     read(51) istg, ti_in, dt_in
-     read(51) de_in(1:npt), te_in(1:npt), en_in(1:npt), ye_in(1:npt)
-
-     read(52) istg, ti_in, dt_in
-     read(52) ist_pt(1:npt,idt)
+     read(50) i_pt(1:ndim,1:npt), ist_pt(1:npt,idt), &
+          & x_in(1:ndim,1:npt), v_in(1:ndim,1:npt), &
+          & de_in(1:npt), te_in(1:npt), en_in(1:npt), ye_in(1:npt)
+     close(50)
 
      !..convert real(4) to double precision
      ti(idt) = dble(ti_in)
@@ -134,13 +126,12 @@ program lpt_post
      if (mod(istg,1000) == 0 .or. idt <= 10) &
           & write(*,'(i10, f8.1, "  ms")') istg, ti(idt) *1000.0
 
-  end do
-  close(51)
-
+  end do lp_step
 
   deallocate(de_in, te_in, en_in, ye_in)
 
   write(*,'("- end reading tracer data")')
+
 
   ndt_pt(1:npt) = ndt
   do ipt = 1, npt

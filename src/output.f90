@@ -31,10 +31,11 @@ subroutine output(istg, ti, dt, ipt, &
           & convert = 'little_endian', action = 'write')
 
      !..lpt data
-     write(60) istg, ti, dt
+     write(60) istg, real(ti), real(dt)
      write(60) ipt(1:ndim,1:npt), ist_pt(1:npt), &
-          & x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), &
-          & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt)
+          & real(x_pt(1:ndim,1:npt)), real(v_pt(1:ndim,1:npt)), &
+          & real(d_pt(1:npt)), real(t_pt(1:npt)), &
+          & real(s_pt(1:npt)), real(ye_pt(1:npt))
 
   end if out_cond
 
