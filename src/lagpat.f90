@@ -121,7 +121,6 @@ program lagpat
 
 
   main_lp: do ihyd = n_init + 1, n_fini - 1
-!  main_lp: do ihyd = n_init, n_fini - 1
 
      ! --------------------------------------------------------------- !
      !     update                                                      !
@@ -224,7 +223,7 @@ program lagpat
   write(*,'(a20,i10)') 'calculation step:', istg
   write(*,'(a20,i10)') 'output:', n_anim_out
 
-  call fini_out(41, istg + 1, ti, ist_pt(:), id(:,:), dma(:), &
+  call fini_out(41, ihyd, ti, ist_pt(:), id(:,:), dma(:), &
        & x_pt(:,:), v_pt(:,:), d_pt(:), t_pt(:), ye_pt(:), s_pt(:))
 
   close(41)

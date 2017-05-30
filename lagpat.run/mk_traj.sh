@@ -5,11 +5,12 @@ if [ $# -ne 3 ]; then
     exit
 fi
 
-run_lagpat=false
-run_traj=true
-run_eject=false
-run_abund=false
-run_ntwk_file=false
+if [ ! -e ./mk_traj.in ]; then
+    echo "no mk_traj.in file!!"
+    exit
+fi
+
+. ./mk_traj.in
 
 #----- run lagpat ------------------------------------------ #
 if $run_lagpat; then
