@@ -65,8 +65,6 @@ if $run_traj; then
 
 	time ./lpt_post
 
-	exit
-
 	mv ./res/peak.dat          ./res.$n/
 	mv ./res/pt_eject_nse.dat  ./res.$n/
 	mv ./res/bad_traj.dat      ./res.$n/
