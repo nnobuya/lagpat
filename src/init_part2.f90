@@ -74,7 +74,7 @@ subroutine init_part2(d_fld, id, dma, x_pt)
   !   write(100,'(*(es12.3))') x_pt(1:ndim, i), log10(d_pt(i))
   !end do
 
-  dma(1:npt) = vol(1:npt) *d_pt(1:npt)
+  dma(1:npt) = vol(1:npt) *d_pt(1:npt) /rm_sol
 
 
 
