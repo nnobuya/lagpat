@@ -80,8 +80,7 @@ if $run_eject; then
 
     ./ejecta_sawai.py $2 $3
 
-    rm -f ./pt_eject.dat
-    ln -s ./pt_eject_nse.dat ./pt_eject.dat
+    ln -sf ./pt_eject_nse.dat ./pt_eject.dat
 
     ./yes_map.py $1
 
