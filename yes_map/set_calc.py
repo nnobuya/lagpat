@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import numpy as np
 import sys
@@ -27,12 +27,13 @@ for mdl in range(len(list)):
     for line in open(list[mdl]):
 
         dat = line.split()
-        ndat = (len(dat) - 6) /2
+        ndat = int((len(dat) - 6) /2)
 
         ye_pt.append(float(dat[2]))
         en_pt.append(float(dat[3]))
 
         n_in = []; f_in = []
+
         for i in range(ndat):
             n_in.append(  int(dat[6 + 2*i    ]))
             f_in.append(float(dat[6 + 2*i + 1]))
