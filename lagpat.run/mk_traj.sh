@@ -78,7 +78,7 @@ fi
 
 if $run_eject; then
 
-    ./ejecta_sawai.py $2 $3
+    ./ejecta_fujib.py $2 $3
 
     ln -sf ./pt_eject_nse.dat ./pt_eject.dat
 
