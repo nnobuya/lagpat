@@ -9,6 +9,9 @@ rm -f pt_eject.dat
 rm -f pt_list_*.dat
 rm -f large.dat
 
+rm -rf hydro.in.?
+rm -rf abund.in.?
+
 # renewal directory
 rm -rf  ./res*  ./anim* ./traj* ./eject
 

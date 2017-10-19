@@ -12,7 +12,10 @@ else:
     print('bad arguments')
     exit()
 
-print('Set nselec = ' + str(nselec))
+if nselec == 0:
+    print('Select all tracer data')
+else:
+    print('Set nselec = ' + str(nselec))
 
 
 list = ['./large.dat']

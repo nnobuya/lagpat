@@ -76,22 +76,6 @@ if $run_traj; then
 fi
 
 
-if $run_eject; then
-
-    ./ejecta_fujib.py $2 $3
-
-    ln -sf ./pt_eject_nse.dat ./pt_eject.dat
-
-    ./yes_map.py $1
-
-    for no in `seq 1 3`
-    do
-	./set_calc.py  $no
-	mv  ./pt_list.dat  ./pt_list_$no.dat 
-    done
-fi
-
-
 if $run_abund; then
 
     rm -rf ./inicomp
@@ -118,9 +102,25 @@ if $run_abund; then
 fi
 
 
+if $run_eject; then
+
+    ./ejecta_fujib.py $2 $3
+
+    ln -sf ./pt_eject_nse.dat ./pt_eject.dat
+
+    ./yes_map.py $1
+
+    for no in `seq 0 3`
+    do
+	./set_calc.py  $no
+	mv  ./pt_list.dat  ./pt_list_$no.dat 
+    done
+fi
+
+
 if $run_ntwk_file; then
 
-    for no in `seq 1 3`
+    for no in `seq 0 3`
     do
 	rm -rf ./hydro.in ./abund.in ./hydro.in.$no ./abund.in.$no
 	mkdir  ./hydro.in ./abund.in

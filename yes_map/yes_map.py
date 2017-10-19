@@ -26,12 +26,12 @@ else:
 
 ## grid setting
 nye = 111
-ns  = 99
+ns  = 281
 
 fac_cut = 1.e-5
 
 ye_grid = np.linspace(0.0,  0.55, nye)
-s_grid  = np.linspace(1.0,  50.0, ns )
+s_grid  = np.linspace(10.0,  150.0, ns )
 
 #################################################################
 ye = []; s = []; ma = []; fac = []; no = []
@@ -123,13 +123,15 @@ for mdl in range(len(mdl_list)):
 
     #plt.yticks([10, 20, 30])
     plt.xticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5])
-    plt.yticks([5, 10, 15, 20, 25, 30])
+#    plt.yticks([5, 10, 15, 20, 25, 30])
+    plt.yticks([50, 75, 100, 125, 150])
 
     #plt.xlim(0.1, 0.5)
     #plt.ylim(5  , 25)
 
     plt.xlim(0.05, 0.55)
-    plt.ylim(2.5  , 27.5)
+    #plt.ylim(2.5, 27.5)
+    plt.ylim(10  , 150)
 
     plt.grid(which = 'major', color = 'black', linestyle = ':', linewidth = 1.5)
 
@@ -186,7 +188,7 @@ plt.xticks([10, 20, 30, 40])
 
 plt.xlabel('Entropy')
 plt.ylabel('Mass fraction')
-plt.xlim(0, 30)
+plt.xlim(10, 150)
 plt.ylim(1.e-4,1)
 plt.yscale('log')
 #plt.legend(loc=1)

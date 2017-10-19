@@ -152,7 +152,7 @@ contains
             & ut_in(1:nx1,1:nx3), qb_in(1:nx1,1:nx3), en_in(1:nx1,1:nx3), &
             & v1(1:nx1,1:nx3) , v2(1:nx1,1:nx3), v3(1:nx1,1:nx3)
 
-       ti = 1.d-3 *dble(ti_in)
+       ti = 1.d-3 *dble(ti_in) !! ms --> s
 
        j = 1
        d_fld(1:nx1,j,1:nx3)  = dble(de_in(1:nx1,1:nx3))

@@ -1,5 +1,5 @@
 subroutine output(istg, ti, dt, ipt, &
-     & ist_pt, x_pt, d_pt, t_pt, s_pt, ye_pt, v_pt, n_anim_out)
+     & ist_pt, x_pt, d_pt, t_pt, s_pt, ye_pt, v_pt, dma, n_anim_out)
 
   use mod_set , only: nout_lpt, n_anim, npt, ndim, mode_run
 
@@ -9,7 +9,7 @@ subroutine output(istg, ti, dt, ipt, &
   integer, intent(in):: istg, ist_pt(1:npt), ipt(1:ndim,1:npt)
   real(8), intent(in):: ti, dt, &
        & x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), &
-       & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt)
+       & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt), dma(1:npt)
   integer, intent(inout):: n_anim_out
 
   !..local
@@ -43,11 +43,11 @@ subroutine output(istg, ti, dt, ipt, &
 
      close(66)
 
-     write(f_name, '("./res/anim/anim_", i4.4, ".dat")') istg
+     write(f_name, '("./res/anim/anim_", i6.6, ".dat")') istg
      open(66, file = f_name, action = 'write')
 
      write(66,'("#", 3x, "X", 9x, "Y", 9x,  "de", 8x, &
-          & "te", 8x, "s", 8x, "ye", 8x, "rd")')
+          & "te", 8x, "s", 8x, "ye", 8x, "rd", 8x, "Mass")')
      do i = 1, npt
         if (ist_pt(i) /= 0) cycle
 
@@ -63,10 +63,10 @@ subroutine output(istg, ti, dt, ipt, &
         end if
 
         write(66,'(*(es10.2))') &
-             & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i), vr
+             & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i), vr, dma(i)
      end do
 
-     write(65,'(i10, 1p, e15.7)') istg, ti *1000.0
+     write(65,'(i10, es15.7)') istg, ti
      n_anim_out = n_anim_out + 1
 
   end if

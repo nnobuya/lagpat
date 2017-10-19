@@ -93,7 +93,8 @@ program lagpat
   dt = 0.d0
 
   call output(n_init, ti, dt, ipt(:,:), ist_pt(:), x_pt(:,:), &
-       & d_pt(:), t_pt(:), s_pt(:), ye_pt(:), v_pt(:,:), n_anim_out)
+       & d_pt(:), t_pt(:), s_pt(:), ye_pt(:), v_pt(:,:), dma(:), &
+       & n_anim_out)
 
   dt0 = dt_max
   dt  = dt_max
@@ -187,7 +188,8 @@ program lagpat
      ! --------------------------------------------------------------- !
 
      call output(ihyd, ti, dt, ipt(:,:), ist_pt(:), x_pt(:,:), &
-          & d_pt(:), t_pt(:), s_pt(:), ye_pt(:), v_pt(:,:), n_anim_out)
+          & d_pt(:), t_pt(:), s_pt(:), ye_pt(:), v_pt(:,:), dma(:), &
+          & n_anim_out)
      !    in: others
      ! inout: n_anim_out
 
