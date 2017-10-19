@@ -50,7 +50,7 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
              & ut_in(1:nx1,1:nx3), qb_in(1:nx1,1:nx3), en_in(1:nx1,1:nx3), &
              & v1(1:nx1,1:nx3) , v2(1:nx1,1:nx3), v3(1:nx1,1:nx3)
 
-        time = dble(ti_in)
+        time = 1.d-3 *dble(ti_in)
 
         d_fld(1:nx1,1,1:nx3) = qb_in(1:nx1,1:nx3)
 
