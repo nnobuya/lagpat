@@ -2,7 +2,7 @@ subroutine hokan_main(mode, dt, ist_pt, ipt, x_pt, &
      & d_fld, t_fld, s_fld, ye_fld, v0_fld, v_fld, &
      & d_pt, t_pt, s_pt, ye_pt, v_pt, v_pt_p)
 
-  use mod_set , only: nx1, nx2, nx3, int_t, npt, ndim, mode_run
+  use mod_set , only: nx1, nx2, nx3, int_t, npt, ndim, mode_run, x_fld
 
 
   implicit none
@@ -37,7 +37,6 @@ subroutine hokan_main(mode, dt, ist_pt, ipt, x_pt, &
      call hokan_vel( ipt(:,i), fac(:,i), v0_fld(:,:,:,:), v_pt(:,i) )
      ! out: v_pt
 
-
      ! ------------------------------------------------------------------ !
      !..for Heun's
      ipt_p(1:ndim,i) = ipt(1:ndim,i)
@@ -56,7 +55,7 @@ subroutine hokan_main(mode, dt, ist_pt, ipt, x_pt, &
 
      else if ( int_t == 2 ) then
 
-        if      (mode_run == 1) then
+        if      (mode_run == 1 .or. mode_run == 3) then
            x_pt_p(1,i) = x_pt(1,i) + 0.5d0 *dt *v_pt(1,i)
            x_pt_p(2,i) = x_pt(2,i) + 0.5d0 *dt *v_pt(2,i) /x_pt_p(1,i)
            x_pt_p(3,i) = 0d0
@@ -64,6 +63,9 @@ subroutine hokan_main(mode, dt, ist_pt, ipt, x_pt, &
            x_pt_p(1,i) = x_pt(1,i) + 0.5d0 *dt *v_pt(1,i)
            x_pt_p(2,i) = 0.d0
            x_pt_p(3,i) = x_pt(3,i) + 0.5d0 *dt *v_pt(3,i)
+        else
+           write(*,*) 'ERROR: bad mode_run =', mode_run
+           stop
         end if
 
         call search( mode, x_pt_p(:,i), v_pt(:,i), fac_p(:,i), ipt_p(:,i) )

@@ -5,12 +5,9 @@ path=$HOME/code/lagpat/
 echo 'all clean'
 
 # clean files
-rm -f pt_eject.dat
-rm -f pt_list_*.dat
-rm -f large.dat
+rm -f pt_eject.dat pt_list_*.dat large.dat
 
-rm -rf hydro.in.?
-rm -rf abund.in.?
+rm -rf hydro.in.? abund.in.?
 
 # renewal directory
 rm -rf  ./res*  ./anim* ./traj* ./eject

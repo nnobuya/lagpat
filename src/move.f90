@@ -47,7 +47,7 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
         stop 'error: no method'
      end if
 
-     if (mode_run == 1) then
+     if (mode_run == 1 .or. mode_run == 3) then
         x_pt(1,i) = x_pt(1,i) + v_comb(1) *dt
         if ( nx2 >= 2 ) x_pt(2,i) = x_pt(2,i) + v_comb(2) /x_pt(1,i) *dt
         if ( nx3 >= 2 ) x_pt(3,i) = x_pt(3,i) + v_comb(3) /x_pt(1,i) *dt
@@ -67,6 +67,7 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
         else if( x_pt(2,i) > the_max ) then
            x_pt(2,i) = 2.d0 *the_max - x_pt(2,i)
         end if
+
      else if (mode_run == 2) then
         theta = atan(x_pt(1,i) /x_pt(3,i))
         !rd    = sqrt(x_pt(1,i) *x_pt(1,i) + x_pt(3,i) *x_pt(3,i))

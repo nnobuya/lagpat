@@ -85,6 +85,13 @@ contains
        f_name = trim(adjustl(path)) // '/hydro_' // trim(adjustl(no)) // '.dat'
        open(50, file = f_name, form = 'unformatted', &
             & convert = 'big_endian', action = 'read')
+    else if (mode_run == 3) then
+       write(no,'(i6.6)') ihyd + 1
+       f_name = trim(adjustl(path)) // '/hydro_' // trim(adjustl(no)) // '.dat'
+       open(50, file = f_name, form = 'unformatted', action = 'read')
+    else
+       write(*,*) 'ERROR: bad mode_run =', mode_run
+       stop
     end if
 
     !..density & temperature
@@ -126,10 +133,12 @@ contains
     real(8):: lnue, lnue_, enue, enue_, dummy(1:9)
     integer:: i, j, k, i1, i2, i3
 
-    real:: ti_in, x1(1:nx1), x3(1:nx3), &
-         & de_in(1:nx1,1:nx3), ye_in(1:nx1,1:nx3), te_in(1:nx1,1:nx3), &
-         & ut_in(1:nx1,1:nx3), qb_in(1:nx1,1:nx3), en_in(1:nx1,1:nx3), &
-         & v1(1:nx1,1:nx3) , v2(1:nx1,1:nx3), v3(1:nx1,1:nx3)
+    real:: ti_in, x1(1:nx1), x2(1:nx2), x3(1:nx3), &
+         & de_in(1:nx1,1:nx2,1:nx3), ye_in(1:nx1,1:nx2,1:nx3), &
+         & te_in(1:nx1,1:nx2,1:nx3), ut_in(1:nx1,1:nx2,1:nx3), &
+         & qb_in(1:nx1,1:nx2,1:nx3), en_in(1:nx1,1:nx2,1:nx3), &
+         & v1(1:nx1,1:nx2,1:nx3)   , v2(1:nx1,1:nx2,1:nx3)   , &
+         & v3(1:nx1,1:nx2,1:nx3)
 
 
     if (mode_run == 1) then
@@ -147,26 +156,54 @@ contains
        end do
        close(50)
     else if (mode_run == 2) then
+       if (nx2 /= 1 ) then
+          write(*,*) 'ERROR: check nx2'
+          stop
+       end if
        read(50) ti_in, x1(1:nx1), x3(1:nx3), &
-            & de_in(1:nx1,1:nx3), ye_in(1:nx1,1:nx3), te_in(1:nx1,1:nx3), &
-            & ut_in(1:nx1,1:nx3), qb_in(1:nx1,1:nx3), en_in(1:nx1,1:nx3), &
-            & v1(1:nx1,1:nx3) , v2(1:nx1,1:nx3), v3(1:nx1,1:nx3)
+            & de_in(1:nx1,1:nx2,1:nx3), ye_in(1:nx1,1:nx2,1:nx3), &
+            & te_in(1:nx1,1:nx2,1:nx3), ut_in(1:nx1,1:nx2,1:nx3), &
+            & qb_in(1:nx1,1:nx2,1:nx3), en_in(1:nx1,1:nx2,1:nx3), &
+            & v1(1:nx1,1:nx2,1:nx3)   , v2(1:nx1,1:nx2,1:nx3)   , &
+            & v3(1:nx1,1:nx2,1:nx3)
 
        ti = 1.d-3 *dble(ti_in) !! ms --> s
 
        j = 1
-       d_fld(1:nx1,j,1:nx3)  = dble(de_in(1:nx1,1:nx3))
-       ye_fld(1:nx1,j,1:nx3) = dble(ye_in(1:nx1,1:nx3))
-       t_fld(1:nx1,j,1:nx3)  = dble(te_in(1:nx1,1:nx3))
-       s_fld(1:nx1,j,1:nx3)  = dble(en_in(1:nx1,1:nx3))
+       d_fld( 1:nx1,j,1:nx3) = dble(de_in(1:nx1,j,1:nx3))
+       ye_fld(1:nx1,j,1:nx3) = dble(ye_in(1:nx1,j,1:nx3))
+       t_fld( 1:nx1,j,1:nx3) = dble(te_in(1:nx1,j,1:nx3))
+       s_fld( 1:nx1,j,1:nx3) = dble(en_in(1:nx1,j,1:nx3))
 
-       v_fld(1,1:nx1,j,1:nx3)  = dble(v1(1:nx1,1:nx3))
-       v_fld(2,1:nx1,j,1:nx3)  = dble(v2(1:nx1,1:nx3))
-       v_fld(3,1:nx1,j,1:nx3)  = dble(v3(1:nx1,1:nx3))
+       v_fld(1,1:nx1,j,1:nx3)  = dble(v1(1:nx1,j,1:nx3))
+       v_fld(2,1:nx1,j,1:nx3)  = dble(v2(1:nx1,j,1:nx3))
+       v_fld(3,1:nx1,j,1:nx3)  = dble(v3(1:nx1,j,1:nx3))
 
        t_fld(1:nx1,j,1:nx3)        = r_mev *t_fld(1:nx1,j,1:nx3)
        v_fld(1:ndim,1:nx1,j,1:nx3) =   v_c *v_fld(1:ndim,1:nx1,j,1:nx3)
 
+    else if (mode_run == 3) then
+       !..majin
+       read(50) ti_in, x1(1:nx1), x2(1:nx2), &
+            & v1(1:nx1,1:nx2,1), v2(1:nx1,1:nx2,1), &
+            & de_in(1:nx1,nx2,1), ye_in(1:nx1,nx2,1), te_in(1:nx1,nx2,1), &
+            & te_in(1:nx1,nx2,1)
+
+       ti = dble(ti_in)
+       
+       k = 1
+       d_fld( 1:nx1, 1:nx2, k) = dble(de_in(1:nx1,1:nx2,k))
+       ye_fld(1:nx1, 1:nx2, k) = dble(ye_in(1:nx1,1:nx2,k))
+       t_fld( 1:nx1, 1:nx2, k) = dble(te_in(1:nx1,1:nx2,k))
+       s_fld( 1:nx1, 1:nx2, k) = dble(en_in(1:nx1,1:nx2,k))
+
+       v_fld(1, 1:nx1, 1:nx2, k)  = dble(v1(1:nx1,1:nx2,k))
+       v_fld(2, 1:nx1, 1:nx2, k)  = dble(v2(1:nx1,1:nx2,k))
+       v_fld(3, 1:nx1, 1:nx2, k)  = 0.d0
+
+    else
+       write(*,*) 'ERROR: bad mode_run =', mode_run
+       stop
     end if
 
     return

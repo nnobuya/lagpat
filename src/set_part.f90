@@ -10,12 +10,15 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
 
   !..local
   real   :: ti_in
-  real(8):: total_mass
-  real(8):: d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3), dummy(1:14)
+  double precision:: total_mass
+  double precision:: dummy(1:14), &
+       & d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3)
 
-  real, allocatable:: x1(:), x3(:)
-  real, dimension(:,:), allocatable:: de_in, ye_in, te_in, ut_in, qb_in, en_in, v1, v2, v3
+  real, allocatable:: x1(:), x2(:), x3(:)
+  real, dimension(:,:), allocatable:: de_in, ye_in, te_in, ut_in, &
+       & qb_in, en_in, v1, v2, v3
 
+  double precision:: dr(1:nx1), dr_vol(1:nx1),pi
   integer:: i, j, k, i_tmp, j_tmp, ier, i1, i2, i3
 
 
@@ -55,7 +58,46 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
         d_fld(1:nx1,1,1:nx3) = qb_in(1:nx1,1:nx3)
 
         deallocate(x1, x3, de_in, ye_in, te_in, ut_in, qb_in, en_in, v1, v2, v3)
+     else if (mode_run == 3) then
 
+        allocate(x1(1:nx1), x2(1:nx2), &
+             & de_in(1:nx1,1:nx2), ye_in(1:nx1,1:nx2), &
+             & te_in(1:nx1,1:nx2), &
+             & en_in(1:nx1,1:nx2), v1(1:nx1,1:nx2) , &
+             & v2(1:nx1,1:nx2), v3(1:nx1,1:nx2))
+
+        read(50) ti_in, x1(1:nx1), x2(1:nx2), &
+             & v1(1:nx1,1:nx2), v2(1:nx1,1:nx2), &
+             & de_in(1:nx1,1:nx2), ye_in(1:nx1,1:nx2), te_in(1:nx1,1:nx2), &
+             & te_in(1:nx1,1:nx2)
+
+        d_fld(1:nx1,1:nx2,1) = dble(de_in(1:nx1,1:nx2))
+
+        pi = 4.d0 *atan(1.d0)
+
+        dr(1) = x1(1) - 1.d8
+        do i = 2, nx1
+           dr(i) = x1(i) - x1(i-1)
+        end do
+
+        do i = 1, nx1
+           dr_vol(i) = 4.d0 *pi * x1(i)**2 *dr(i)
+        end do
+
+        do k = 1, nx3
+           do j = 1, nx2
+              do i = 1, nx1
+                 dvol(i,j,k) = dr_vol(i) /dble(nx2)
+              end do
+           end do
+        end do
+
+        !print *, sum(dr_vol(1:nx1)), sum(dvol), 4.d0 /3.d0 *pi *x1(nx1)**3
+
+        deallocate(x1, x2, de_in, ye_in, te_in, en_in, v1, v2, v3)
+     else
+        write(*,*) 'ERROR: undefined mode_run =', mode_run
+        stop
      end if
 
      rewind(50)
@@ -64,7 +106,7 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
      istage = 0
      istat_pt(1:npt) = 0
 
-     if (mode_run == 1) then
+     if (mode_run == 1 .or. mode_run == 3) then
         call init_part(d_fld(:,:,:), dvol(:,:,:), id(:,:), dma(:), x_pt(:,:))
         !   in: d_fld, dvol
         !  out: dma, rad_pt, the_pt

@@ -24,8 +24,9 @@ module mod_set
   real(8), allocatable:: d_fld(:,:,:), t_fld(:,:,:), s_fld(:,:,:), ye_fld(:,:,:)
   real(8), allocatable:: dx_fld(:,:)
   real(8), dimension(:,:,:,:), allocatable:: x_fld, v_fld, v0_fld
-  real, allocatable:: x1(:), x3(:)
-  real, dimension(:,:), allocatable:: de_in, ye_in, te_in, ut_in, qb_in, en_in, v1, v2, v3
+  real, allocatable:: x1(:), x2(:), x3(:)
+  real, dimension(:,:), allocatable:: de_in, ye_in, te_in, ut_in, qb_in, &
+       & en_in, v1, v2, v3
 
 contains
 
@@ -101,7 +102,8 @@ contains
 
     nx_max = max(max( nx1, nx2 ), nx3)
 
-    allocate(x1(1:nx1), x3(1:nx3), de_in(1:nx1,1:nx3), ye_in(1:nx1,1:nx3), &
+    allocate(x1(1:nx1), x2(1:nx2), x3(1:nx3), &
+         & de_in(1:nx1,1:nx3), ye_in(1:nx1,1:nx3), &
          & te_in(1:nx1,1:nx3), ut_in(1:nx1,1:nx3), qb_in(1:nx1,1:nx3), &
          & en_in(1:nx1,1:nx3), v1(1:nx1,1:nx3) , v2(1:nx1,1:nx3), v3(1:nx1,1:nx3))
 
@@ -116,6 +118,7 @@ contains
 
     x_fld(1:3,1:nx1,1:nx2,1:nx3) = 0.d0
     if (mode_run == 1) then
+       !..Sawai format
        !..ti, lnue, lnue_, enue, enue_
        read(50)
        do k = 1, nx3
@@ -126,6 +129,7 @@ contains
           end do
        end do
     else if (mode_run == 2) then
+       !..fujib format
        read(50) ti_in, x1(1:nx1), x3(1:nx3), &
             & de_in(1:nx1,1:nx3), ye_in(1:nx1,1:nx3), te_in(1:nx1,1:nx3), &
             & ut_in(1:nx1,1:nx3), qb_in(1:nx1,1:nx3), en_in(1:nx1,1:nx3), &
@@ -139,6 +143,21 @@ contains
              end do
           end do
        end do
+    else if (mode_run == 3) then
+       !..majin format
+       read(50) ti_in, x1(1:nx1), x2(1:nx2)
+
+       k = 1
+       do j = 1, nx2
+          do i = 1, nx1
+             x_fld(1,i,j,k) = dble(x1(i))
+             x_fld(2,i,j,k) = dble(x2(j))
+          end do
+       end do
+       x_fld(3,1:nx1,1:nx2,1:nx3) = 0.d0
+    else
+       write(*,*) 'ERROR: invalid mode_run =', mode_run
+       stop
     end if
 
     rewind(50)

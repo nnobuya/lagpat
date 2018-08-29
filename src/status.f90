@@ -17,10 +17,13 @@ subroutine status(x_pt, ist_pt)
   do i = 1, npt
      if( ist_pt(i) /= 0 ) cycle
 
-     if (mode_run == 1) then
+     if (mode_run == 1 .or. mode_run == 3) then
         rd = x_pt(1,i)
      else if (mode_run == 2) then
         rd = sqrt(x_pt(1,i) *x_pt(1,i) + x_pt(3,i) *x_pt(3,i))
+     else
+        write(*,*) 'ERROR: undefined mode_run =', mode_run
+        stop
      end if
 
      if      ( rd > bound_out ) then

@@ -51,7 +51,7 @@ subroutine output(istg, ti, dt, ipt, &
      do i = 1, npt
         if (ist_pt(i) /= 0) cycle
 
-        if (mode_run == 1) then
+        if (mode_run == 1 .or. mode_run == 3) then
            x = x_pt(1,i) *sin(x_pt(2,i))
            y = x_pt(1,i) *cos(x_pt(2,i))
            vr = v_pt(1,i)
@@ -60,6 +60,9 @@ subroutine output(istg, ti, dt, ipt, &
            y = x_pt(3,i)
            vr = sqrt(v_pt(1,i) *v_pt(1,i) + v_pt(3,i) *v_pt(3,i))
            if (v_pt(1,i) < 0 .and. v_pt(3,i) < 0) vr = - vr
+        else
+           write(*,*) 'ERROR: bad mode_run =', mode_run
+           stop
         end if
 
         write(66,'(*(es10.2))') &

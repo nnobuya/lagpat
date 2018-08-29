@@ -24,15 +24,15 @@ if $run_lagpat; then
 	echo $n
 
 	rm -rf ./res.$n
-	mkdir  ./res.$n
-	mkdir  ./res.$n/anim
-	mkdir  ./res.$n/lpt
+	mkdir -p ./res.$n/anim ./res.$n/anim ./res.$n/lpt
 
 	ln -sf ./res.$n ./res
 
 	cd ./in
 	ln -sf  ./lagpat.in.$n  ./lagpat.in
 	cd ../
+
+	exit
 
 	time ./lagpat
 

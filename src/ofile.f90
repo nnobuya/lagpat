@@ -16,17 +16,24 @@ subroutine ofile
 
   close(15)
 
-  if (mode_run == 1) then
+  if      (mode_run == 1) then
      write(no,'(i4.4)') n_init
      f_name = trim(adjustl(path)) // '/rpr'  // trim(adjustl(no)) // '.dat'
   else if (mode_run == 2) then
      write(no,'(i6.6)') n_init
      f_name = trim(adjustl(path)) // '/hydro_' // trim(adjustl(no)) // '.dat'
+  else if (mode_run == 3) then
+     write(no,'(i6.6)') n_init
+     f_name = trim(adjustl(path)) // '/hydro_' // trim(adjustl(no)) // '.dat'
+  else
+     print *, 'ERROR: wrong mode_run =', mode_run
+     stop
   end if
 
   !..hydro results (initial)
-  open(50, file = f_name, form = 'unformatted', convert = 'big_endian', &
-       & action = 'read')
+  !open(50, file = f_name, form = 'unformatted', convert = 'big_endian', &
+  !     & action = 'read')
+  open(50, file = f_name, form = 'unformatted', action = 'read')
 
   !     input                                                          !
   ! ------------------------------------------------------------------ !
