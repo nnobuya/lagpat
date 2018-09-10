@@ -6,13 +6,14 @@ module mod_set
   public:: k_zoku, i_test, last_lp, int_t, int_x, nin, nou, &
        & nout_lpt, n_anim, n_init, n_fini, &
        & r_in, r_out, bound_in, bound_out, set_param, nx1, nx2, nx3, &
-       & d_fld, t_fld, s_fld, ye_fld, x_fld, dx_fld, v_fld, v0_fld, &
+       & d_fld, t_fld, s_fld, ye_fld, pr_fld, x_fld, dx_fld, &
+       & f_fld, v_fld, v0_fld, &
        & set_data, path, mode_run, npt, ndim, npt_rad, npt_the
 
   integer:: n_init, n_fini, mode_run
   integer:: k_zoku, i_test, last_lp, int_t, int_x, nin, nou
   integer:: nout_lpt, n_anim
-  real(8):: r_in, r_out, bound_in, bound_out
+  double precision:: r_in, r_out, bound_in, bound_out
   character:: path*100
 
   !..main
@@ -21,9 +22,11 @@ module mod_set
 
   !..Grid & field data (hydro results)
 
-  real(8), allocatable:: d_fld(:,:,:), t_fld(:,:,:), s_fld(:,:,:), ye_fld(:,:,:)
-  real(8), allocatable:: dx_fld(:,:)
-  real(8), dimension(:,:,:,:), allocatable:: x_fld, v_fld, v0_fld
+  double precision, dimension(:,:,:), allocatable:: &
+       & d_fld, t_fld, s_fld, ye_fld, pr_fld
+  double precision, allocatable:: dx_fld(:,:)
+  double precision, dimension(:,:,:,:), allocatable:: &
+       & x_fld, f_fld, v_fld, v0_fld
   real, allocatable:: x1(:), x2(:), x3(:)
   real, dimension(:,:), allocatable:: de_in, ye_in, te_in, ut_in, qb_in, &
        & en_in, v1, v2, v3
@@ -90,7 +93,7 @@ contains
 
     implicit none
 
-    real(8):: dummy(1:14)
+    double precision:: dummy(1:14)
     integer:: nx_max, i, j, k, ier, i1, i2, i3
     real:: ti_in
 
@@ -105,11 +108,13 @@ contains
     allocate(x1(1:nx1), x2(1:nx2), x3(1:nx3), &
          & de_in(1:nx1,1:nx3), ye_in(1:nx1,1:nx3), &
          & te_in(1:nx1,1:nx3), ut_in(1:nx1,1:nx3), qb_in(1:nx1,1:nx3), &
-         & en_in(1:nx1,1:nx3), v1(1:nx1,1:nx3) , v2(1:nx1,1:nx3), v3(1:nx1,1:nx3))
+         & en_in(1:nx1,1:nx3), &
+         & v1(1:nx1,1:nx3) , v2(1:nx1,1:nx3), v3(1:nx1,1:nx3))
 
     allocate(x_fld(ndim,nx1,nx2,nx3), dx_fld(ndim,nx_max), &
          & d_fld(nx1,nx2,nx3), t_fld(nx1,nx2,nx3), &
          & s_fld(nx1,nx2,nx3), ye_fld(nx1,nx2,nx3), &
+         & pr_fld(nx1,nx2,nx3), f_fld(1:3,nx1,nx2,nx3), &
          & v_fld(ndim,nx1,nx2,nx3), v0_fld(ndim,nx1,nx2,nx3), &
          & stat = ier)
 
@@ -187,7 +192,8 @@ contains
 
 
     !..message
-    write(*,'(" --------------------- grid information ----------------------")')
+    write(*,'(" --------------------- grid information", &
+         & " ----------------------")')
 
     if      (mode_run == 1) then
        write(*,'("   Spherical Coordinate")')
@@ -214,7 +220,8 @@ contains
             & '(', 180.0 /pi *x_fld(3,1,1,1), &
             & '->', 180.0/pi *x_fld(3,nx1,nx2,nx3), ')'
     end if
-    write(*,'(" -------------------------------------------------------------")')
+    write(*,'(" --------------------------------", &
+         & "-----------------------------")')
     write(*,*)
 
 

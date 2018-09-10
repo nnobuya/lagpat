@@ -32,8 +32,6 @@ if $run_lagpat; then
 	ln -sf  ./lagpat.in.$n  ./lagpat.in
 	cd ../
 
-	exit
-
 	time ./lagpat
 
     done

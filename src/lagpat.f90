@@ -24,7 +24,7 @@ program lagpat
 
   use mod_set , only: npt, ndim, &
        & int_t, i_test, last_lp, n_init, n_fini, &
-       & d_fld, t_fld, s_fld, ye_fld, v_fld, v0_fld, set_data
+       & d_fld, t_fld, s_fld, ye_fld, pr_fld, f_fld, v_fld, v0_fld, set_data
   use mod_fld , only: dt_max, fld
 
   implicit none
@@ -79,7 +79,8 @@ program lagpat
   ! ------------------------------------------------------------------ !
 
   call fld(n_init, d_fld(:,:,:), t_fld(:,:,:), s_fld(:,:,:), &
-       & ye_fld(:,:,:), v_fld(:,:,:,:), v0_fld(:,:,:,:) )
+       & ye_fld(:,:,:), pr_fld(:,:,:), f_fld(:,:,:,:), &
+       & v_fld(:,:,:,:), v0_fld(:,:,:,:) )
   ! out: all
 
   call hokan_main(1, dt_max, ist_pt(:), ipt(:,:), x_pt(:,:), &
@@ -147,7 +148,8 @@ program lagpat
      ! --------------------------------------------------------------- !
 
      call fld(ihyd, d_fld(:,:,:), t_fld(:,:,:), s_fld(:,:,:), &
-          & ye_fld(:,:,:), v_fld(:,:,:,:), v0_fld(:,:,:,:))
+          & ye_fld(:,:,:), pr_fld(:,:,:), f_fld(:,:,:,:), &
+          & v_fld(:,:,:,:), v0_fld(:,:,:,:))
      !  out: all
 
      !if( ier /= 0 .or. (last_lp > 0 .and. istg > last_lp) ) exit main_lp

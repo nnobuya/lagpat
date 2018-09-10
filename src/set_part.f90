@@ -9,7 +9,7 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
   real(8), intent(out):: time, x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), dma(1:npt)
 
   !..local
-  real   :: ti_in
+  real   :: ti_in, dvol_in(1:nx1,1:nx2,1:nx3)
   double precision:: total_mass
   double precision:: dummy(1:14), &
        & d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3)
@@ -59,6 +59,7 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
 
         deallocate(x1, x3, de_in, ye_in, te_in, ut_in, qb_in, en_in, v1, v2, v3)
      else if (mode_run == 3) then
+        !..majin
 
         allocate(x1(1:nx1), x2(1:nx2), &
              & de_in(1:nx1,1:nx2), ye_in(1:nx1,1:nx2), &
@@ -66,10 +67,9 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
              & en_in(1:nx1,1:nx2), v1(1:nx1,1:nx2) , &
              & v2(1:nx1,1:nx2), v3(1:nx1,1:nx2))
 
-        read(50) ti_in, x1(1:nx1), x2(1:nx2), &
+        read(50) ti_in, x1(1:nx1), x2(1:nx2), dvol_in(1:nx1,1:nx2,1:nx3),&
              & v1(1:nx1,1:nx2), v2(1:nx1,1:nx2), &
-             & de_in(1:nx1,1:nx2), ye_in(1:nx1,1:nx2), te_in(1:nx1,1:nx2), &
-             & te_in(1:nx1,1:nx2)
+             & de_in(1:nx1,1:nx2), te_in(1:nx1,1:nx2)
 
         d_fld(1:nx1,1:nx2,1) = dble(de_in(1:nx1,1:nx2))
 
@@ -88,9 +88,15 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
            do j = 1, nx2
               do i = 1, nx1
                  dvol(i,j,k) = dr_vol(i) /dble(nx2)
+                 write(200,'(*(es14.5))') &
+                      & x1(i) *sin(x2(j)), x1(i) *cos(x2(j)), &
+                      & dvol(i,j,k), dvol_in(i,j,k)*1.e30
               end do
            end do
         end do
+
+        !write(*,'(*(es14.5))') 4.d0 /3.d0 *pi *(x1(nx1)**3 - x1(1)**3), &
+        !     & sum(dvol), sum(dvol_in*1.e30)
 
         !print *, sum(dr_vol(1:nx1)), sum(dvol), 4.d0 /3.d0 *pi *x1(nx1)**3
 
