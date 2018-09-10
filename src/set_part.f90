@@ -88,9 +88,9 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
            do j = 1, nx2
               do i = 1, nx1
                  dvol(i,j,k) = dr_vol(i) /dble(nx2)
-                 write(200,'(*(es14.5))') &
-                      & x1(i) *sin(x2(j)), x1(i) *cos(x2(j)), &
-                      & dvol(i,j,k), dvol_in(i,j,k)*1.e30
+                 !write(200,'(*(es14.5))') &
+                 !     & x1(i) *sin(x2(j)), x1(i) *cos(x2(j)), &
+                 !     & dvol(i,j,k), dvol_in(i,j,k)*1.e30
               end do
            end do
         end do

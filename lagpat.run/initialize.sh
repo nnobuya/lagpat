@@ -26,7 +26,7 @@ ln -sf $path/yes_map/yes_map.py
 ln -sf $path/yes_map/set_calc.py
 
 ### mk_traj.in
-echo 'mk_lagpat=false'      >  ./mk_traj.in
+echo 'run_lagpat=false'      >  ./mk_traj.in
 echo 'run_traj=false'       >> ./mk_traj.in
 echo 'run_abund=false'      >> ./mk_traj.in
 echo 'run_eject=false'      >> ./mk_traj.in

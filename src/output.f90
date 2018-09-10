@@ -1,5 +1,6 @@
 subroutine output(istg, ti, dt, ipt, &
-     & ist_pt, x_pt, d_pt, t_pt, s_pt, ye_pt, v_pt, dma, n_anim_out)
+     & ist_pt, x_pt, d_pt, t_pt, s_pt, ye_pt, pr_pt, f_pt, v_pt, &
+     & dma, n_anim_out)
 
   use mod_set , only: nout_lpt, n_anim, npt, ndim, mode_run
 
@@ -8,8 +9,9 @@ subroutine output(istg, ti, dt, ipt, &
   !..io
   integer, intent(in):: istg, ist_pt(1:npt), ipt(1:ndim,1:npt)
   real(8), intent(in):: ti, dt, &
-       & x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), &
-       & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt), dma(1:npt)
+       & x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), f_pt(1:3,1:npt), &
+       & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt), pr_pt(1:npt), &
+       & dma(1:npt)
   integer, intent(inout):: n_anim_out
 
   !..local
@@ -35,7 +37,8 @@ subroutine output(istg, ti, dt, ipt, &
      write(60) ipt(1:ndim,1:npt), ist_pt(1:npt), &
           & real(x_pt(1:ndim,1:npt)), real(v_pt(1:ndim,1:npt)), &
           & real(d_pt(1:npt)), real(t_pt(1:npt)), &
-          & real(s_pt(1:npt)), real(ye_pt(1:npt))
+          & real(s_pt(1:npt)), real(ye_pt(1:npt)), &
+          & real(pr_pt(1:npt)), real(f_pt(1:3,1:npt))
 
   end if out_cond
 
@@ -47,7 +50,8 @@ subroutine output(istg, ti, dt, ipt, &
      open(66, file = f_name, action = 'write')
 
      write(66,'("#", 3x, "X", 9x, "Y", 9x,  "de", 8x, &
-          & "te", 8x, "s", 8x, "ye", 8x, "rd", 8x, "Mass")')
+          & "te", 8x, "s", 8x, "ye", 8x, "rd", 8x, "Mass", 6x, &
+          & "Pr", 8x, "f1", 8x, "f2", 8x, "f3")')
      do i = 1, npt
         if (ist_pt(i) /= 0) cycle
 
@@ -66,7 +70,8 @@ subroutine output(istg, ti, dt, ipt, &
         end if
 
         write(66,'(*(es10.2))') &
-             & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i), vr, dma(i)
+             & x, y, d_pt(i), t_pt(i), s_pt(i), ye_pt(i), &
+             & vr, dma(i), pr_pt(i), f_pt(1:3,i)
      end do
 
      write(65,'(i10, es15.7)') istg, ti

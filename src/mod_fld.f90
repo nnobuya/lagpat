@@ -174,6 +174,7 @@ contains
           write(*,*) 'ERROR: check nx2'
           stop
        end if
+
        read(50) ti_in, x1(1:nx1), x3(1:nx3), &
             & de_in(1:nx1,1:nx2,1:nx3), ye_in(1:nx1,1:nx2,1:nx3), &
             & te_in(1:nx1,1:nx2,1:nx3), ut_in(1:nx1,1:nx2,1:nx3), &
@@ -199,11 +200,16 @@ contains
     else if (mode_run == 3) then
 
        !..majin
+
+
+       en_in(1:nx1,1:nx2,1) = 10.0
+       ye_in(1:nx1,1:nx2,1) = 0.5
+
        read(50) ti_in, x1(1:nx1), x2(1:nx2), vol_in(1:nx1,1:nx2,1), &
             & v1(1:nx1,1:nx2,1), v2(1:nx1,1:nx2,1), &
             & de_in(1:nx1,1:nx2,1), pr_in(1:nx1,1:nx2,1), &
             & te_in(1:nx1,1:nx2,1), &
-            & f_in(1:3,1:nx1,1:nx2,1)
+            & ( f_in(j,1:nx1,1:nx2,1), j = 1, 3 )
 
        ti = dble(ti_in)
        
