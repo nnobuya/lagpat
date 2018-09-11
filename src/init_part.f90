@@ -1,4 +1,4 @@
-subroutine init_part(d_fld, dvol, id, dma, x_pt)
+subroutine init_part(mode, d_fld, dvol, id, dma, x_pt)
 
   use mod_cnst, only: pi, rm_sol
   use mod_set , only: r_in, r_out, nx1, nx2, nx3, x_fld,npt, &
@@ -7,28 +7,29 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
   implicit none
 
   !..io
-  real(8), intent(in) :: d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3)
+  integer, intent(in) :: mode
+  double precision, intent(in) :: &
+       & d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3)
   integer, intent(out):: id(1:ndim,1:npt)
-  real(8), intent(out):: dma(1:npt), x_pt(1:ndim,1:npt)
+  double precision, intent(out):: dma(1:npt), x_pt(1:ndim,1:npt)
 
   !..local
-  real(8):: &
+  double precision:: &
        & dma_in(npt_rad,npt_the), rad_pt(npt_rad,npt_the), &
        & the_pt(npt_rad, npt_the),&
        & vol_pt(npt_rad,npt_the), d_pt(npt_rad,npt_the), &
        & cell_rd(npt_rad,npt_the,1:4), cell_the(npt_rad,npt_the,1:4)
-  real(8):: vol_dr(1:npt_rad)
-  real(8):: rad_pt0(0:npt_rad), rma_pt0(0:npt_rad), &
-       & the_in, the_out, rma_in, rma_ou, dr, dthe, total_mass, &
+  double precision:: vol_dr(1:npt_rad), dr(1:npt_rad), rad_pt_log(1:npt_rad), dr_log
+  double precision:: rad_pt0(0:npt_rad), rma_pt0(0:npt_rad), &
+       & the_in, the_out, rma_in, rma_ou, dthe, total_mass, &
        & rad_in(1:nx1), dens(1:nx1), rma(1:nx1), &
        & x, y, h
   integer:: ipt(1:ndim), i1(1:2), i2(1:2), i3(1:2)
-  real(8):: x_cell(1:4), y_cell(1:4), total_mass_grid, &
+  double precision:: x_cell(1:4), y_cell(1:4), total_mass_grid, &
        & vel_pt(1:ndim), fac(1:ndim), xpt(1:ndim), fld_in(1:2,1:2,1:2)
 
   !..temporaly
   integer :: i, j, k, l
-
 
 
   ! ------------------------------------------------------------------ !
@@ -40,18 +41,41 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
      rad_pt(1:npt_rad,1:npt_the) = r_out
   else if (r_out > r_in) then
 
-     dr = (r_out - r_in) /dble(npt_rad)
+     if      (mode == 1) then
+        dr(1:npt_rad) = (r_out - r_in) /dble(npt_rad)
+     else if (mode == 2) then
+        dr_log = ( log(r_out) - log(r_in) )/dble(npt_rad)
+        rad_pt_log(1) = log(r_in)
+        do j = 2, npt_rad
+           rad_pt_log(j) = rad_pt_log(j-1) + dr_log
+        end do
+
+        rad_pt_log(1:npt_rad) = exp(rad_pt_log(1:npt_rad))
+
+        do j = 1, npt_rad - 1
+           dr(j) = rad_pt_log(j + 1) - rad_pt_log(j)
+        end do
+        dr(npt_rad) = r_out - rad_pt_log(npt_rad)
+
+     else
+        write(*,*) 'init_part: error'
+        stop
+     end if
+
      do j = 1, npt_the
-        rad_pt(1,j) = r_in + 0.5 *dr
+        rad_pt(1,j) = r_in + 0.5 *dr(1)
         do i = 2, npt_rad
-           rad_pt(i,j) = rad_pt(i-1,j) + dr
+           rad_pt(i,j) = rad_pt(i-1,j) + dr(i)
         end do
      end do
+
   else
      write(*,*) 'Rin > Rout'
      stop 'error'
   end if
 
+  !write(*,'(*(es10.3))') r_in, r_out, rad_pt(npt_rad,1) + dr(npt_rad)/2.0
+  !write(*,'(*(es10.3))'), rad_pt(1:npt_rad,1)
 
   !..Theta
   the_in  = x_fld(2,  1,  1,  1)
@@ -73,10 +97,10 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
 
 
   !..cell
-  cell_rd(1:npt_rad,1:npt_the,1) = rad_pt(1:npt_rad,1:npt_the) - 0.5d0 *dr
-  cell_rd(1:npt_rad,1:npt_the,2) = rad_pt(1:npt_rad,1:npt_the) - 0.5d0 *dr
-  cell_rd(1:npt_rad,1:npt_the,3) = rad_pt(1:npt_rad,1:npt_the) + 0.5d0 *dr
-  cell_rd(1:npt_rad,1:npt_the,4) = rad_pt(1:npt_rad,1:npt_the) + 0.5d0 *dr
+  cell_rd(1:npt_rad,1:npt_the,1) = rad_pt(1:npt_rad,1:npt_the) - 0.5d0 *dr(1)
+  cell_rd(1:npt_rad,1:npt_the,2) = rad_pt(1:npt_rad,1:npt_the) - 0.5d0 *dr(1)
+  cell_rd(1:npt_rad,1:npt_the,3) = rad_pt(1:npt_rad,1:npt_the) + 0.5d0 *dr(1)
+  cell_rd(1:npt_rad,1:npt_the,4) = rad_pt(1:npt_rad,1:npt_the) + 0.5d0 *dr(1)
 
   cell_the(1:npt_rad,1:npt_the,1) = the_pt(1:npt_rad,1:npt_the) - 0.5d0 *dthe
   cell_the(1:npt_rad,1:npt_the,2) = the_pt(1:npt_rad,1:npt_the) + 0.5d0 *dthe
@@ -90,10 +114,9 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
   end do
 
 
-
   do i = 1, npt_rad
      do j = 1, npt_the
-        vol_pt(i,j) = vol_dr(i)/dble(npt_the)
+        vol_pt(i,j) = vol_dr(i) /dble(npt_the)
      end do
   end do
 
@@ -137,8 +160,6 @@ subroutine init_part(d_fld, dvol, id, dma, x_pt)
         fld_in(1:2,1:2,1:2) &
              & = d_fld(i1(1:2), i2(1:2), i3(1:2))
         call hokan(ndim, fld_in, fac(1:ndim), d_pt(i,j))
-
-        !write(100,'(1p, *(e14.5))') d_pt(i,j), d_fld(ipt(1),ipt(2),ipt(3))
 
      end do
   end do

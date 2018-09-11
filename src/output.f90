@@ -38,7 +38,7 @@ subroutine output(istg, ti, dt, ipt, &
           & real(x_pt(1:ndim,1:npt)), real(v_pt(1:ndim,1:npt)), &
           & real(d_pt(1:npt)), real(t_pt(1:npt)), &
           & real(s_pt(1:npt)), real(ye_pt(1:npt)), &
-          & real(pr_pt(1:npt)), real(f_pt(1:3,1:npt))
+          & real(pr_pt(1:npt)), ( real(f_pt(i,1:npt)), i = 1,3 )
 
   end if out_cond
 

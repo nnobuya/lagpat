@@ -46,6 +46,7 @@ subroutine ofile
   !..settings
   open(40, file = './res/part_init.dat', action = 'write')
   open(41, file = './res/part_fini.dat', action = 'write')
+  open(42, file = './res/grid_fld.dat' , action = 'write')
 
   !..movie
   if      (mode_run == 1) then

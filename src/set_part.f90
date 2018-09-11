@@ -5,21 +5,22 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
   implicit none
 
   !..io
-  integer, intent(out):: istage, id(1:ndim,1:npt), istat_pt(npt)
-  real(8), intent(out):: time, x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), dma(1:npt)
+  integer         , intent(out):: istage, id(1:ndim,1:npt), istat_pt(npt)
+  double precision, intent(out):: time, dma(1:npt), &
+       & x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt)
 
   !..local
-  real   :: ti_in, dvol_in(1:nx1,1:nx2,1:nx3)
+  real            :: ti_in, dvol_in(1:nx1,1:nx2,1:nx3)
   double precision:: total_mass
   double precision:: dummy(1:14), &
        & d_fld(1:nx1,1:nx2,1:nx3), dvol(1:nx1,1:nx2,1:nx3)
 
   real, allocatable:: x1(:), x2(:), x3(:)
-  real, dimension(:,:), allocatable:: de_in, ye_in, te_in, ut_in, &
-       & qb_in, en_in, v1, v2, v3
+  real, dimension(:,:), allocatable:: &
+       & de_in, ye_in, te_in, ut_in, qb_in, en_in, v1, v2, v3
 
   double precision:: dr(1:nx1), dr_vol(1:nx1),pi
-  integer:: i, j, k, i_tmp, j_tmp, ier, i1, i2, i3
+  integer         :: i, j, k, i_tmp, j_tmp, ier, i1, i2, i3
 
 
   !..initial position
@@ -112,12 +113,21 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
      istage = 0
      istat_pt(1:npt) = 0
 
-     if (mode_run == 1 .or. mode_run == 3) then
-        call init_part(d_fld(:,:,:), dvol(:,:,:), id(:,:), dma(:), x_pt(:,:))
+     if (mode_run == 1) then
+        call init_part(1, d_fld(:,:,:), dvol(:,:,:), &
+             & id(:,:), dma(:), x_pt(:,:))
         !   in: d_fld, dvol
         !  out: dma, rad_pt, the_pt
      else if (mode_run == 2) then
         call init_part2(d_fld(:,:,:), id(:,:), dma(:), x_pt(:,:))
+     else if (mode_run == 3) then
+        call init_part(2, d_fld(:,:,:), dvol(:,:,:), &
+             & id(:,:), dma(:), x_pt(:,:))
+        !   in: d_fld, dvol
+        !  out: dma, rad_pt, the_pt
+     else
+        write(*,*) 'ERROR: undefined mode_run =', mode_run
+        stop
      end if
 
   else if( k_zoku == 1 ) then

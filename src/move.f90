@@ -11,17 +11,20 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
   double precision, intent(in)   :: v_pt_p(1:ndim,0:4,1:npt)
   double precision, intent(inout):: x_pt(ndim,npt)
 
-  double precision:: c1, c2, c3, c4
-  double precision:: the_min, the_max, v_comb(1:ndim), theta, rd
+  double precision, save:: the_min, the_max
+  double precision:: c1, c2, c3, c4, v_comb(1:ndim), theta, rd
   integer:: i
 
 
-  if (mode_run == 1) then
+  if (mode_run == 1 .or. mode_run == 3) then
      the_min = minval( x_fld(2,1:nx1,1:nx2,1:nx3) )
      the_max = maxval( x_fld(2,1:nx1,1:nx2,1:nx3) )
-  else if (mode_run == 1) then
+  else if (mode_run == 2) then
      the_min = 0.d0
      the_max = pi /2.d0
+  else
+     write(*,*) 'ERROR: bad mode_run =', mode_run
+     stop
   end if
 
   do i = 1, npt
@@ -59,7 +62,7 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
 
 
      !..avoid negative r
-     if (mode_run == 1) then
+     if (mode_run == 1 .or. mode_run == 3) then
         x_pt(1,i) = max(0.d0, x_pt(1,i))
 
         if     ( x_pt(2,i) < the_min ) then
@@ -69,6 +72,10 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
         end if
 
      else if (mode_run == 2) then
+
+        write(*,*) 'WARNING: please check this part once more ' &
+             & // 'to use fujib model'
+        
         theta = atan(x_pt(1,i) /x_pt(3,i))
         !rd    = sqrt(x_pt(1,i) *x_pt(1,i) + x_pt(3,i) *x_pt(3,i))
         if (theta < the_min) then

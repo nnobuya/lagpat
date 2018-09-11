@@ -190,6 +190,13 @@ contains
        dx_fld(3,1:nx3) = 0.d0
     end if
 
+    write(42,'("#", 3a10)') 'nx1,', 'nx2,', 'nx3,'
+    write(42,'(3i10)') nx1, nx2, nx3
+    write(42,'(*(es18.10))') x_fld(1,1:nx1,1,1)
+    write(42,'(*(es18.10))') x_fld(2,1,1:nx2,1)
+    write(42,'(*(es18.10))') x_fld(3,1,1,1:nx3)
+
+    close(42)
 
     !..message
     write(*,'(" --------------------- grid information", &

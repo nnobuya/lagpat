@@ -45,8 +45,7 @@ if $run_traj; then
 
     echo '- run traj'
 
-    rm -rf ./traj
-    rm -rf ./lpt
+    rm -rf  ./traj  ./lpt
 
     for n in `seq $2 $3`
     do
@@ -68,8 +67,7 @@ if $run_traj; then
 	mv ./res/bad_traj.dat      ./res.$n/
     done
 
-    rm -f  ./lpt
-    rm -rf ./res
+    rm -rf  ./lpt ./res
 
 fi
 
