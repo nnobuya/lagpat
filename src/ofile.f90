@@ -23,7 +23,7 @@ subroutine ofile
      write(no,'(i6.6)') n_init
      f_name = trim(adjustl(path)) // '/hydro_' // trim(adjustl(no)) // '.dat'
   else if (mode_run == 3) then
-     write(no,'(i4.4)') n_init
+     write(no,'(i5.5)') n_init
      f_name = trim(adjustl(path)) // '/file' // trim(adjustl(no)) // '.data'
   else
      print *, 'ERROR: wrong mode_run =', mode_run

@@ -3,7 +3,7 @@
 import subprocess
 import sys
 
-n_total_set = 40000
+n_total_set = 100000
 
 if len(sys.argv) == 2:
     nlist = int(sys.argv[1])
