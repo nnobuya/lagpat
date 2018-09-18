@@ -11,8 +11,13 @@ rm -rf ./hydro.in.? ./abund.in. ./res*  ./anim* ./traj* ./eject
 
 rm -rf ./in
 mkdir  ./in
-cp $path/lagpat.run/in/lagpat.in.org ./in/
 
+if [ $1 = 'majin' ]
+then
+    cp $path/lagpat.run/in/lagpat.in.majin ./in/lagpat.in.org
+else
+    cp $path/lagpat.run/in/lagpat.in.org   ./in/
+fi
 
 
 ## execute
