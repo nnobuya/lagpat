@@ -15,7 +15,8 @@ subroutine output(istg, ti, dt, ipt, &
   integer, intent(inout):: n_anim_out
 
   !..local
-  integer, save:: iout = 0
+  integer, save:: iout    = 0
+  integer, save:: lpt_out = 0
   integer:: npt_in, npt_out, npt_num
   integer:: i
   real(8):: x, y, vr
@@ -28,7 +29,9 @@ subroutine output(istg, ti, dt, ipt, &
 
      close(60)
 
-     write(f_name, '("./res/lpt/traj_", i6.6, ".lpt")') istg
+     lpt_out = lpt_out + 1
+
+     write(f_name, '("./res/lpt/traj_", i6.6, ".lpt")') lpt_out
      open(60, file = f_name, form = 'unformatted', &
           & convert = 'little_endian', action = 'write')
 
