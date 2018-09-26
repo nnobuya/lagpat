@@ -1,6 +1,6 @@
 subroutine output(istg, ti, dt, ipt, &
      & ist_pt, x_pt, d_pt, t_pt, s_pt, ye_pt, pr_pt, f_pt, v_pt, &
-     & dma, n_anim_out)
+     & dma, lpt_out, n_anim_out)
 
   use mod_set , only: nout_lpt, n_anim, npt, ndim, mode_run
 
@@ -8,15 +8,14 @@ subroutine output(istg, ti, dt, ipt, &
 
   !..io
   integer, intent(in):: istg, ist_pt(1:npt), ipt(1:ndim,1:npt)
-  real(8), intent(in):: ti, dt, &
+  double precision, intent(in):: ti, dt, &
        & x_pt(1:ndim,1:npt), v_pt(1:ndim,1:npt), f_pt(1:3,1:npt), &
        & d_pt(1:npt), t_pt(1:npt), s_pt(1:npt), ye_pt(1:npt), pr_pt(1:npt), &
        & dma(1:npt)
-  integer, intent(inout):: n_anim_out
+  integer, intent(inout):: lpt_out, n_anim_out
 
   !..local
-  integer, save:: iout    = 0
-  integer, save:: lpt_out = 0
+  integer, save:: iout = 0
   integer:: npt_in, npt_out, npt_num
   integer:: i
   real(8):: x, y, vr

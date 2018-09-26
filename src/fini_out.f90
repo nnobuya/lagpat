@@ -1,4 +1,4 @@
-subroutine fini_out(io, istg, ti, ist_pt, id, dma, &
+subroutine fini_out(io, lpt_out, ti, ist_pt, id, dma, &
      & x_pt, v_pt, d_pt, t_pt, ye_pt, en_pt)
 
   use mod_set, only: npt, ndim
@@ -6,8 +6,8 @@ subroutine fini_out(io, istg, ti, ist_pt, id, dma, &
   implicit none
 
   !..io
-  integer, intent(in):: io, istg, ist_pt(npt), id(1:ndim,1:npt)
-  real(8), intent(in):: ti, dma(1:npt), x_pt(ndim,npt), v_pt(ndim,npt), &
+  integer         , intent(in):: io, lpt_out, ist_pt(npt), id(1:ndim,1:npt)
+  double precision, intent(in):: ti, dma(1:npt), x_pt(ndim,npt), v_pt(ndim,npt), &
        & d_pt(1:npt), t_pt(1:npt), ye_pt(1:npt), en_pt(1:npt)
 
   !..local
@@ -15,7 +15,7 @@ subroutine fini_out(io, istg, ti, ist_pt, id, dma, &
 
   !..for next stage
   write(io,'("#", 10x, "time", 6x, "step")')
-  write(io,'("#", 1p, e14.7, i10)') ti, istg
+  write(io,'("#", 1p, e14.7, i10)') ti, lpt_out
   write(io,'(a1, a9, 4a7, *(a18))') &
        & '#', 'npt', 'x1', 'x2', 'x3', 'stat', &
        & 'Mass', 'x(1)', 'x(2)', 'x(3)', 'v(1)', 'v(2)', 'v(3)',&

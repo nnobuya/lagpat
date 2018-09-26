@@ -38,7 +38,7 @@ program lagpat
        & v_pt_p(:,:,:)
 
   !..local
-  integer:: istg, ihyd, n_anim_out = 0
+  integer:: istg, ihyd, lpt_out = 0, n_anim_out = 0
   integer:: i, ier
   double precision:: ti, dt0, dt_in, dt = 0.d0
 
@@ -99,7 +99,7 @@ program lagpat
 
   call output(n_init, ti, dt, ipt(:,:), ist_pt(:), x_pt(:,:), &
        & d_pt(:), t_pt(:), s_pt(:), ye_pt(:), pr_pt(:), f_pt(:,:), &
-       & v_pt(:,:), dma(:), n_anim_out)
+       & v_pt(:,:), dma(:), lpt_out, n_anim_out)
 
   dt0 = dt_max
   dt  = dt_max
@@ -110,7 +110,7 @@ program lagpat
   !   write(100,'(1p, *(e15.7))') ye_pt(i), dma(i), dma(i)/total
   !end do
 
-  call fini_out(40, istg + 1, ti, ist_pt(:), id(:,:), dma(:), &
+  call fini_out(40, lpt_out + 1, ti, ist_pt(:), id(:,:), dma(:), &
        & x_pt(:,:), v_pt(:,:), f_pt(:,:), &
        & d_pt(:), t_pt(:), ye_pt(:), s_pt(:), pr_pt(:))
   close(40)
@@ -198,9 +198,9 @@ program lagpat
 
      call output(ihyd, ti, dt, ipt(:,:), ist_pt(:), x_pt(:,:), &
           & d_pt(:), t_pt(:), s_pt(:), ye_pt(:), pr_pt(:), f_pt(:,:), &
-          & v_pt(:,:), dma(:), n_anim_out)
+          & v_pt(:,:), dma(:), lpt_out, n_anim_out)
      !    in: others
-     ! inout: n_anim_out
+     ! inout: lpt_out, n_anim_out
 
 
      !     output                                                      !
@@ -234,7 +234,7 @@ program lagpat
   write(*,'(a20,i10)') 'calculation step:', istg
   write(*,'(a20,i10)') 'output:', n_anim_out
 
-  call fini_out(41, ihyd - 1, ti, ist_pt(:), id(:,:), dma(:), &
+  call fini_out(41, lpt_out, ti, ist_pt(:), id(:,:), dma(:), &
        & x_pt(:,:), v_pt(:,:), f_pt(:,:), &
        & d_pt(:), t_pt(:), ye_pt(:), s_pt(:), pr_pt(:))
 
