@@ -95,7 +95,7 @@ contains
        open(50, file = f_name, form = 'unformatted', &
             & convert = 'big_endian', action = 'read')
     else if (mode_run == 3) then
-       write(no,'(i5.5)') ihyd + 1
+       write(no,'(i6.6)') ihyd + 1
        f_name = trim(adjustl(path)) // '/file' // trim(adjustl(no)) // '.data'
        open(50, file = f_name, form = 'unformatted', action = 'read')
     else
