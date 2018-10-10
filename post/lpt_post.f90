@@ -7,10 +7,11 @@ program lpt_post
   integer, parameter:: ndt_ex = 100
   double precision, parameter:: ti_ini = 1.d-2, ti_fin = 1.d4
   double precision, parameter:: te_nse_cond = 9.d9
+  logical, parameter:: debug = .false.
 
   !..main
   integer:: istg, ndt, npt
-  double precision:: dt, dt_ex
+  double precision:: dt, dt_ex, tau_exp
 
   integer, allocatable:: i_pt(:,:), ist_pt(:,:), ndt_pt(:)
   double precision, allocatable:: ti(:), &
@@ -32,6 +33,11 @@ program lpt_post
   double precision:: rr(1:10), r1, r2
   integer:: i, ier, ipt, idt, ii(1:5), i1, i2
 
+  if (debug) then
+     write(*,*) '----------------------------------------'
+     write(*,*) '     Debug Mode!!!'
+     write(*,*) '----------------------------------------'
+  end if
 
   !..make dt ext
   dt_ex = (log10(ti_fin) - log10(ti_ini)) /real(ndt_ex - 1)
@@ -77,6 +83,11 @@ program lpt_post
      npt = npt + 1
   end do
 
+  if (debug) then
+     ndt = 4000
+     !npt = 100
+  end if
+
   write(*,'("npt =", i10, 5x, "ndt =", i10)') npt, ndt
 
   rewind(51)
@@ -100,8 +111,7 @@ program lpt_post
      read(51,*) ii(1:5), rma_pt(ipt), rr(1:10)
   end do
 
-  write(*,'("- reading tracer data", i10, " Steps")') ndt
-
+  write(*,'(/, "--- reading tracer data", i10, " Steps ---", /)') ndt
 
   lp_step: do idt = 1, ndt
      write(ofile,"('./lpt/lpt/traj_', i6.6, '.lpt')") idt
@@ -123,14 +133,14 @@ program lpt_post
      en_pt(1:npt,idt) = dble(en_in(1:npt))
      ye_pt(1:npt,idt) = dble(ye_in(1:npt))
 
-     if (mod(istg,1000) == 0 .or. idt <= 10) &
+     if (mod(idt,1000) == 0 .or. idt <= 5) &
           & write(*,'(i10, f8.1, "  ms")') istg, ti(idt) *1000.0
 
   end do lp_step
 
   deallocate(de_in, te_in, en_in, ye_in)
 
-  write(*,'("- end reading tracer data")')
+  write(*,'(/, "--- end reading tracer data ---", /)')
 
 
   ndt_pt(1:npt) = ndt
@@ -150,38 +160,46 @@ program lpt_post
   close(61)
 
 
-  write(*,'("- writing tracer data")')
+  write(*,'(/, "--- writing tracer data ---", /)')
 
   num_nse = 0
 
-  do ipt = 1, npt
+  loop_tp_write: do ipt = 1, npt
 
-     if (mod(ipt,5000) == 0) write(*,'(2i10)') ipt, npt
+     if (debug) then
+        if (ipt > 10)then
+           exit loop_tp_write
+        end if
+     end if
+
+     if (mod(ipt,500) == 0 .or. ( ipt <= 5 )) write(*,'(2i10)') ipt, npt
 
      !..original hydro data
      write(ofile,'("./traj/hydro_", i7.7, ".org")') ipt
      open(60, file = ofile, action = 'write')
 
+     write(60,'("#", 3x, "ti [s]", 9x, "de [g/cc]", &
+          & 6x, "te [k]", 9x, "Ye", 13x, "ra [cm]")')
+
      do idt = 1, ndt_pt(ipt)
-        write(60,'(1p, *(e15.7))') ti(idt), &
+        write(60,'(*(es15.7))') ti(idt), &
              & de_pt(ipt,idt), te_pt(ipt,idt), ye_pt(ipt,idt),&
              & x_pt(1,ipt,idt)
      end do
+
      close(60)
 
 
      if (maxval(te_pt(ipt,1:ndt_pt(idt))) < te_nse_cond) then
 
-
-        lp_te_search: do idt = ndt_pt(ipt), 1, -1
+        lp_te_search: do idt = 1, ndt_pt(ipt)
            if (te_pt(ipt,idt) >= maxval(te_pt(ipt,1:ndt_pt(idt)))) then
               n_nse = idt
               exit lp_te_search
            end if
         end do lp_te_search
 
-
-        !if (n_nse == 1)then
+        !if (n_nse == 1) then
         !   print *, 'okashiinodeha'
         !end if
 
@@ -229,15 +247,12 @@ program lpt_post
      write(ofile,'("./traj/hydro_", i7.7, ".dat")') ipt
      open(60, file = ofile, action = 'write')
 
-
-     write(60,'("#", 3x, "ti [s]", 5x, "de [g/cc]", &
-          & 5x, "te [k]", 5x, "ra [cm]")')
+     write(60,'("#", 3x, "ti [s]", 9x, "de [g/cc]", &
+          & 6x, "te [k]", 9x, "ra [cm]")')
      write(60,'(1p, *(e15.7))') ti_nse, de_nse, te_nse, rd_nse
 
-     !write(63,'(1p, *(e18.10))') ti_nse, de_nse, te_nse, ye_nse, en_nse, rd_nse
-
      do idt = n_nse + 1, ndt_pt(ipt)
-        write(60,'(1p, *(e15.7))') ti(idt), &
+        write(60,'(*(es15.7))') ti(idt), &
              & de_pt(ipt,idt), te_pt(ipt,idt), x_pt(1,ipt,idt)
      end do
 
@@ -247,17 +262,24 @@ program lpt_post
      en0 = en_pt(ipt,ndt_pt(ipt))
      ye0 = ye_pt(ipt,ndt_pt(ipt))
      rd0 = x_pt(1,ipt,ndt_pt(ipt))
-     vr0 = v_pt(1,ipt,ndt_pt(ipt))
+     vr0 = v_pt(1,ipt,ndt_pt(ipt))     
 
      t9_chk = 0.d0
+
+     tau_exp = 446.d0 /sqrt(de0)
 
      do idt = 1, ndt_ex
 
         rd_ex = rd0 + vr0 *ti_ex(idt)
 
-        de_ex = max(2.e1, de0 *(rd0/rd_ex)**3)
-        te_ex = max(2.e6, te0 *(rd0/rd_ex))
+        !de_ex = max(2.e1, de0 *(rd0 /rd_ex)**3)
+        !te_ex = max(2.e6, te0 *(rd0 /rd_ex))
+
+        de_ex = max(2.e1, de0 *exp(- ti_ex(idt) /tau_exp ))
+        te_ex = max(2.e1, te0 *exp(- ti_ex(idt) /3.d0 /tau_exp ))
+
         ye_ex = ye0 *exp(-(ti_ex(idt) - ti0))
+
         write(60,'(1p, *(e15.7))') &
              & min(ti_fin,ti0 + ti_ex(idt)), de_ex, te_ex, rd_ex
 
@@ -272,10 +294,11 @@ program lpt_post
 
      close(60)
 
-  end do
+  end do loop_tp_write
 
   close(64)
 
+  write(*,'(/, "--- writing tracer data ---", /)')
   print *, num_nse, npt
 
   stop 'normal termination'
