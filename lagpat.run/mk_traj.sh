@@ -90,7 +90,7 @@ if $run_abund; then
     ln -s $HOME/code/lagpat/inicomp/nse.cur/in/part.ame.fz4421
     cd ../
 
-    ln -s ../pt_eject_nse.dat ./table.in
+    ln -s ../res.1/pt_eject_nse.dat ./table.in
 
     ./nse
 
@@ -100,7 +100,7 @@ fi
 
 if $run_eject; then
 
-    ./ejecta_fujib.py $2 $3
+    ./ejecta.py $2 $3
 
     ln -sf ./pt_eject_nse.dat ./pt_eject.dat
 

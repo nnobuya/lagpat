@@ -1,5 +1,5 @@
 subroutine fini_out(io, lpt_out, ti, ist_pt, id, dma, &
-     & x_pt, v_pt, d_pt, t_pt, ye_pt, en_pt)
+     & x_pt, v_pt, f_pt, d_pt, t_pt, ye_pt, en_pt, pr_pt)
 
   use mod_set, only: npt, ndim
 
@@ -8,7 +8,8 @@ subroutine fini_out(io, lpt_out, ti, ist_pt, id, dma, &
   !..io
   integer         , intent(in):: io, lpt_out, ist_pt(npt), id(1:ndim,1:npt)
   double precision, intent(in):: ti, dma(1:npt), x_pt(ndim,npt), v_pt(ndim,npt), &
-       & d_pt(1:npt), t_pt(1:npt), ye_pt(1:npt), en_pt(1:npt)
+       & d_pt(1:npt), t_pt(1:npt), ye_pt(1:npt), en_pt(1:npt), f_pt(1:3,1:npt) , &
+       & pr_pt(1:npt)
 
   !..local
   integer:: ipt

@@ -31,9 +31,16 @@ subroutine ofile
   end if
 
   !..hydro results (initial)
-  !open(50, file = f_name, form = 'unformatted', convert = 'big_endian', &
-  !     & action = 'read')
-  open(50, file = f_name, form = 'unformatted', action = 'read')
+  if ( mode_run == 1 .or. mode_run == 3 ) then
+     open(50, file = f_name, form = 'unformatted', action = 'read')
+  else if ( mode_run == 2 ) then
+     open(50, file = f_name, form = 'unformatted', action = 'read', &
+          & convert = 'big_endian')
+  else
+     print *, 'ERROR: wrong mode_run =', mode_run
+     stop
+  end if
+
 
   !     input                                                          !
   ! ------------------------------------------------------------------ !

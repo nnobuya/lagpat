@@ -170,6 +170,7 @@ contains
        end do
        close(50)
     else if (mode_run == 2) then
+
        if (nx2 /= 1 ) then
           write(*,*) 'ERROR: check nx2'
           stop

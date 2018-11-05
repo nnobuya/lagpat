@@ -85,6 +85,7 @@ program lagpat
        & v_fld(:,:,:,:), v0_fld(:,:,:,:) )
   ! out: all
 
+
   call hokan_main(1, dt_max, ist_pt(:), ipt(:,:), x_pt(:,:), &
        & d_fld(:,:,:), t_fld(:,:,:), s_fld(:,:,:), ye_fld(:,:,:), &
        & pr_fld(:,:,:), f_fld(:,:,:,:), &
@@ -97,9 +98,10 @@ program lagpat
 
   dt = 0.d0
 
-  call output(n_init, ti, dt, ipt(:,:), ist_pt(:), x_pt(:,:), &
+
+  call output( n_init, ti, dt, ipt(:,:), ist_pt(:), x_pt(:,:), &
        & d_pt(:), t_pt(:), s_pt(:), ye_pt(:), pr_pt(:), f_pt(:,:), &
-       & v_pt(:,:), dma(:), lpt_out, n_anim_out)
+       & v_pt(:,:), dma(:), lpt_out, n_anim_out )
 
   dt0 = dt_max
   dt  = dt_max
@@ -114,6 +116,7 @@ program lagpat
        & x_pt(:,:), v_pt(:,:), f_pt(:,:), &
        & d_pt(:), t_pt(:), ye_pt(:), s_pt(:), pr_pt(:))
   close(40)
+
 
   if (i_test == 1) stop '### finish test  ###'
 

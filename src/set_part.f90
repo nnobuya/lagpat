@@ -42,6 +42,7 @@ subroutine set_part(istage, time, istat_pt, id, x_pt, v_pt, dma)
         end do
 
      else if (mode_run == 2) then
+        !..fujib
 
         allocate(x1(1:nx1), x3(1:nx3), &
              & de_in(1:nx1,1:nx3), ye_in(1:nx1,1:nx3), &

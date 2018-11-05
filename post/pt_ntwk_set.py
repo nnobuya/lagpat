@@ -3,7 +3,7 @@
 import subprocess
 import sys
 
-n_total_set = 100000
+n_total_set = 20000
 
 if len(sys.argv) == 2:
     nlist = int(sys.argv[1])
@@ -50,6 +50,8 @@ for i, j in enumerate(no):
     fl1 = './inicomp/abund/abund_'   + no1 + '.dat'
     fl2 = './abund.in/abund_' + no2 + '.dat'
     subprocess.call(['cp', fl1, fl2])
+
+    break
 
 
 exit()

@@ -73,8 +73,8 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
 
      else if (mode_run == 2) then
 
-        write(*,*) 'WARNING: please check this part once more ' &
-             & // 'to use fujib model'
+        !write(*,*) 'WARNING: please check this part once more ' &
+        !     & // 'to use fujib model'
         
         theta = atan(x_pt(1,i) /x_pt(3,i))
         !rd    = sqrt(x_pt(1,i) *x_pt(1,i) + x_pt(3,i) *x_pt(3,i))
