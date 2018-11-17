@@ -48,7 +48,9 @@ subroutine output(istg, ti, dt, ipt, &
 
      close(66)
 
-     write(f_name, '("./res/anim/anim_", i6.6, ".dat")') istg
+     n_anim_out = n_anim_out + 1
+
+     write(f_name, '("./res/anim/anim_", i6.6, ".dat")') n_anim_out
      open(66, file = f_name, action = 'write')
 
      write(66,'("#", 3x, "X", 9x, "Y", 9x,  "de", 8x, &
@@ -77,7 +79,6 @@ subroutine output(istg, ti, dt, ipt, &
      end do
 
      write(65,'(i10, es15.7)') istg, ti
-     n_anim_out = n_anim_out + 1
 
   end if
 

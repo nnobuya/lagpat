@@ -70,9 +70,7 @@ subroutine move( dt, dt0, ist_pt, v_pt, v_pt_p, x_pt )
         else if( x_pt(2,i) > the_max ) then
            x_pt(2,i) = 2.d0 *the_max - x_pt(2,i)
         end if
-
      else if (mode_run == 2) then
-
         !write(*,*) 'WARNING: please check this part once more ' &
         !     & // 'to use fujib model'
         

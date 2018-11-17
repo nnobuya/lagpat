@@ -54,22 +54,29 @@ subroutine ofile
   open(40, file = './res/part_init.dat', action = 'write')
   open(41, file = './res/part_fini.dat', action = 'write')
   open(42, file = './res/grid_fld.dat' , action = 'write')
-
   !..movie
   if      (mode_run == 1) then
-     write(f_name,'("./res/lpt/traj_", i4.4, ".lpt")') n_init
-  else if (mode_run == 2) then
-     write(f_name,'("./res/lpt/traj_", i6.6, ".lpt")') n_init
+     write(f_name,'("./res/lpt/traj_", i4.4, ".lpt")') 1
+  else if (mode_run == 2 .or. mode_run == 3) then
+     write(f_name,'("./res/lpt/traj_", i6.6, ".lpt")') 1
+  else
+     print *, 'ERROR: wrong mode_run =', mode_run
+     stop
   end if
+
   open(60, file = f_name, form = 'unformatted', action = 'write')
 
   open(65, file = './res/anim_set.dat', action = 'write')
 
   if      (mode_run == 1) then
-     write(f_name,'("./res/anim/anim_", i4.4, ".dat")') n_init
-  else if (mode_run == 2) then
-     write(f_name,'("./res/anim/anim_", i6.6, ".dat")') n_init
+     write(f_name,'("./res/anim/anim_", i4.4, ".dat")') 1
+  else if (mode_run == 2 .or. mode_run == 3) then
+     write(f_name,'("./res/anim/anim_", i6.6, ".dat")') 1
+  else
+     print *, 'ERROR: wrong mode_run =', mode_run
+     stop
   end if
+
   open(66, file = f_name, action = 'write')
 
 
