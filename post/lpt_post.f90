@@ -187,7 +187,7 @@ program lpt_post
      close(60)
 
 
-     if (maxval(te_pt(ipt,1:ndt_pt(idt))) < te_nse_cond) then
+     if (maxval(te_pt(ipt,1:ndt_pt(ipt))) < te_nse_cond) then
 
         lp_te_search: do idt = 1, ndt_pt(ipt)
            if (te_pt(ipt,idt) >= maxval(te_pt(ipt,1:ndt_pt(idt)))) then
