@@ -5,6 +5,7 @@ program lpt_post
   !..param.
   integer, parameter:: ndim = 3
   integer, parameter:: ndt_ex = 100
+  integer, parameter:: ndt_lim = 1000, npt_lim = 1000
   double precision, parameter:: ti_ini = 1.d-2, ti_fin = 1.d4
   double precision, parameter:: te_nse_cond = 9.d9
   logical, parameter:: debug = .false.
@@ -83,11 +84,6 @@ program lpt_post
      npt = npt + 1
   end do
 
-  if (debug) then
-     ndt = 4000
-     !npt = 100
-  end if
-
   write(*,'("npt =", i10, 5x, "ndt =", i10)') npt, ndt
 
   rewind(51)
@@ -114,6 +110,9 @@ program lpt_post
   write(*,'(/, "--- reading tracer data", i10, " Steps ---", /)') ndt
 
   lp_step: do idt = 1, ndt
+
+     if (debug .and. idt >= ndt_lim) exit lp_step
+
      write(ofile,"('./lpt/lpt/traj_', i6.6, '.lpt')") idt
      open(50, file = ofile, form = 'unformatted', action = 'read')
 
@@ -133,8 +132,9 @@ program lpt_post
      en_pt(1:npt,idt) = dble(en_in(1:npt))
      ye_pt(1:npt,idt) = dble(ye_in(1:npt))
 
-     if (mod(idt,1000) == 0 .or. idt <= 5) &
-          & write(*,'(i10, f8.1, "  ms")') istg, ti(idt) *1000.0
+     if (mod(idt,500) == 0 .or. idt <= 5) &
+          & write(*,'(i7, "/", i7, i10, f8.1, "  ms")') &
+          & idt, ndt, istg, ti(idt) *1000.0
 
   end do lp_step
 
@@ -166,13 +166,10 @@ program lpt_post
 
   loop_tp_write: do ipt = 1, npt
 
-     if (debug) then
-        if (ipt > 10)then
-           exit loop_tp_write
-        end if
-     end if
+     if (debug .and. idt >= npt_lim) exit loop_tp_write
 
-     if (mod(ipt,500) == 0 .or. ( ipt <= 5 )) write(*,'(2i10)') ipt, npt
+     if (mod(ipt,500) == 0 .or. ( ipt <= 5 )) &
+          & write(*,'(i10, "/", i10)') ipt, npt
 
      !..original hydro data
      write(ofile,'("./traj/hydro_", i7.7, ".org")') ipt
@@ -275,8 +272,8 @@ program lpt_post
         !de_ex = max(2.e1, de0 *(rd0 /rd_ex)**3)
         !te_ex = max(2.e6, te0 *(rd0 /rd_ex))
 
-        de_ex = max(2.e1, de0 *exp(- ti_ex(idt) /tau_exp ))
-        te_ex = max(2.e1, te0 *exp(- ti_ex(idt) /3.d0 /tau_exp ))
+        de_ex = max(2.e1, de0 *exp(-ti_ex(idt) /tau_exp) )
+        te_ex = max(2.e1, te0 *exp(-ti_ex(idt) /tau_exp /3.d0) )
 
         ye_ex = ye0 *exp(-(ti_ex(idt) - ti0))
 

@@ -2,7 +2,7 @@ subroutine output(istg, ti, dt, ipt, &
      & ist_pt, x_pt, d_pt, t_pt, s_pt, ye_pt, pr_pt, f_pt, v_pt, &
      & dma, lpt_out, n_anim_out)
 
-  use mod_set , only: nout_lpt, n_anim, npt, ndim, mode_run
+  use mod_set, only: nout_lpt, n_anim, npt, ndim, mode_run, n_init, n_fini
 
   implicit none
 
@@ -18,7 +18,7 @@ subroutine output(istg, ti, dt, ipt, &
   integer, save:: iout = 0
   integer:: npt_in, npt_out, npt_num
   integer:: i
-  real(8):: x, y, vr
+  double precision:: x, y, vr
   character:: f_name*100
 
 
@@ -98,8 +98,8 @@ subroutine output(istg, ti, dt, ipt, &
      write(*,'(" -----------------------------------", &
      & "----------------------------------")')
   end if
-  if( mod(iout,100) == 0 .or. iout <= 10 ) &
-       & write(*,'(i10,1p2e12.4,3i10)') &
+  if( mod(iout, int( (n_fini - n_init) /100 ) ) == 0 .or. iout <= 10 ) &
+       & write(*,'(i10, 2es12.4, 3i10)') &
        & istg, ti, dt, npt_num, npt_in, npt_out
 
   return
