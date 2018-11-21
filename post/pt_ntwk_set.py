@@ -45,13 +45,9 @@ for i, j in enumerate(no):
 
     subprocess.call(['cp', fl1, fl2])
 
-
     # initial abund
     fl1 = './inicomp/abund/abund_'   + no1 + '.dat'
     fl2 = './abund.in/abund_' + no2 + '.dat'
     subprocess.call(['cp', fl1, fl2])
-
-    break
-
 
 exit()

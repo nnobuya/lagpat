@@ -1,7 +1,7 @@
-#! /bin/sh
+#! /bin/bash
 
-if [ $# -ne 3 ]; then
-    echo 'Type start # to finish #: e.g., ./run_all.sh L1.00 1 2'
+if [ $# -ne 4 ]; then
+    echo 'Type start # to finish #: e.g., ./run_all.sh sawai L1.00 1 2'
     exit
 fi
 
@@ -19,7 +19,7 @@ if $run_lagpat; then
 
     rm -rf ./res
 
-    for n in `seq $2 $3`
+    for n in `seq $3 $4`
     do
 	echo $n
 
@@ -47,18 +47,18 @@ if $run_traj; then
 
     rm -rf  ./traj  ./lpt
 
-    for n in `seq $2 $3`
+    for n in `seq $3 $4`
     do
 
 	rm  -rf ./traj.$n
 	mkdir   ./traj.$n
 
-	ln -sf ./traj.$n ./traj
+	ln -snf ./traj.$n ./traj
 
 	rm -rf ./res
 	mkdir  ./res
 
-	ln -sf ./res.$n ./lpt
+	ln -snf ./res.$n ./lpt
 
 	time ./lpt_post
 
@@ -100,11 +100,11 @@ fi
 
 if $run_eject; then
 
-    ./ejecta.py $2 $3
+    ./ejecta.py $1 $3 $4
 
     ln -sf ./pt_eject_nse.dat ./pt_eject.dat
 
-    ./yes_map.py $1
+    ./yes_map.py $2
 
     for no in `seq 0 3`
     do
