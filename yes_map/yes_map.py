@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import sys
 
 
-Plot = True
+Plot = False
 
 if True:
     if len(sys.argv) >= 2:

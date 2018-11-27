@@ -162,6 +162,8 @@ program lpt_post
 
   write(*,'(/, "--- writing tracer data ---", /)')
 
+  write(62,'("#")')
+
   num_nse = 0
 
   loop_tp_write: do ipt = 1, npt
@@ -177,7 +179,6 @@ program lpt_post
 
      write(60,'("#", 3x, "ti [s]", 9x, "de [g/cc]", &
           & 6x, "te [k]", 9x, "Ye", 13x, "ra [cm]")')
-     write(62,'("#")')
 
      do idt = 1, ndt_pt(ipt)
         write(60,'(*(es15.7))') ti(idt), &

@@ -15,7 +15,7 @@ fi
 #----- run lagpat ------------------------------------------ #
 if $run_lagpat; then
 
-    echo '- run lagpat'
+    echo ' ========== run lagpat ==========='
 
     rm -rf ./res
 
@@ -26,7 +26,7 @@ if $run_lagpat; then
 	rm -rf ./res.$n
 	mkdir -p ./res.$n/anim ./res.$n/anim ./res.$n/lpt
 
-	ln -sf ./res.$n ./res
+	ln -nsf ./res.$n ./res
 
 	cd ./in
 	ln -sf  ./lagpat.in.$n  ./lagpat.in
@@ -36,14 +36,15 @@ if $run_lagpat; then
 
     done
 
+    rm -rf ./res
     rm ./in/lagpat.in
 fi
 
 
-#----- run lagpat ------------------------------------------ #
+#----- run traj ------------------------------------------ #
 if $run_traj; then
 
-    echo '- run traj'
+    echo ' ========== run traj ==========='
 
     rm -rf  ./traj  ./lpt
 
@@ -53,7 +54,7 @@ if $run_traj; then
 	rm  -rf ./traj.$n
 	mkdir   ./traj.$n
 
-	ln -snf ./traj.$n ./traj
+	ln -nsf ./traj.$n ./traj
 
 	rm -rf ./res
 	mkdir  ./res
@@ -73,6 +74,8 @@ fi
 
 
 if $run_abund; then
+
+    echo ' ========== run abund ==========='
 
     rm -rf ./inicomp
     mkdir  ./inicomp
@@ -100,21 +103,81 @@ fi
 
 if $run_eject; then
 
-    ./ejecta.py $1 $3 $4
+    echo ' ========== run eject ==========='
 
-    ln -sf ./pt_eject_nse.dat ./pt_eject.dat
+    eject_pt=true
+    pt_ntwk=true
 
-    ./yes_map.py $2
+    if $eject_pt; then
+	echo ' - calculates ejecta particles: '$3' to '$4
+	echo ''
 
-    for no in `seq 0 3`
-    do
-	./set_calc.py  $no
-	mv  ./pt_list.dat  ./pt_list_$no.dat 
-    done
+	echo ' - individual set'
+	for j in `seq $3 $4`
+	do
+	    echo '   set '$j':'
+
+	    ./ejecta.py $1 $j $j
+
+	    mv ./pt_eject_fini.dat ./pt_list/pt_eject_fini_$j.dat
+	    mv ./pt_eject_nse.dat  ./pt_list/pt_eject_nse_$j.dat
+	    echo ''
+	done
+	
+        ### total adjust
+	echo ' - total set --------'
+	./ejecta.py $1 $3 $4
+
+	mv ./pt_eject_fini.dat ./pt_list/pt_eject_fini_all.dat
+	mv ./pt_eject_nse.dat  ./pt_list/pt_eject_nse_all.dat
+    fi
+
+
+    if $pt_ntwk; then
+
+	echo ' - calculates pt list for nucleosynthesis: '$3' to '$4
+	echo ''
+	echo '   - individual'
+
+	for j in `seq $3 $4`
+	do
+	    ln -sf ./pt_list/pt_eject_nse_$j.dat ./pt_eject.dat
+
+	    ./yes_map.py $2
+
+	    for no in `seq 1 3`
+	    do
+		./set_calc.py  $no
+		mv  ./pt_list.dat  ./pt_list/pt_list_${j}_${no}.dat 
+	    done
+
+	    mv ./large.dat    ./pt_list/large_$j.dat
+	done
+
+	echo '   - total'
+
+	ln -sf ./pt_list/pt_eject_nse_all.dat ./pt_eject.dat
+
+	./yes_map.py $2
+	
+	for no in `seq 0 2`
+	do
+	    ./set_calc.py  $no
+	    mv  ./pt_list.dat  ./pt_list/pt_list_all_${no}.dat 
+	done
+
+	mv ./large.dat    ./pt_list/large_all_$j.dat
+
+	rm -rf ./pt_eject.dat
+
+    fi
+    
 fi
 
 
 if $run_ntwk_file; then
+
+    echo ' ========== run ntwk files ==========='
 
     for no in `seq 0 3`
     do
