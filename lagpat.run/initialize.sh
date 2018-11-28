@@ -13,6 +13,7 @@ rm -rf ./hydro.in.? ./abund.in. ./res*  ./anim* ./traj* ./eject
 
 rm -rf ./in
 mkdir  ./in
+mkdir ntwk_data
 
 if [ $1 = 'majin' ]
 then

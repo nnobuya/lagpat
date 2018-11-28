@@ -93,9 +93,34 @@ if $run_abund; then
     ln -s $HOME/code/lagpat/inicomp/nse.cur/in/part.ame.fz4421
     cd ../
 
-    ln -s ../res.1/pt_eject_nse.dat ./table.in
+    for n in `seq $3 $4`
+    do
+	echo 'Phase:'$n
 
-    ./nse
+	ln -sf ../res.$n/pt_eject_nse.dat ./table.in
+
+	num=`cat ./table.in | wc -l`
+	num=$(( $num - 1 ))
+
+	jen=0
+	ndiv=$(( 1 + $num / 12 ))
+	for j in `seq 1 12`
+	do
+	    jst=$(( $jen + 1 ))
+	    jen=$(( $j *$ndiv))
+	    if [ $jen -gt $num ]; then
+		jen=$num
+	    fi
+	    ./nse $jst $jen &
+	done
+
+	wait
+
+	rm -rf  ../inicomp.$n
+	mv ./abund ../inicomp.$n
+
+	mkdir abund
+    done
 
     cd ../
 fi
@@ -179,15 +204,20 @@ if $run_ntwk_file; then
 
     echo ' ========== run ntwk files ==========='
 
-    for no in `seq 0 3`
+    for iphase in `seq $3 $4`
     do
-	rm -rf ./hydro.in ./abund.in ./hydro.in.$no ./abund.in.$no
-	mkdir  ./hydro.in ./abund.in
+	rm -rf ./hydro.in ./abund.in \
+	    ./ntwk_data/hydro.${iphase}_$no \
+	    ./ntwk_data/abund.${iphase}_$no
+	for no in `seq 0 3`
+	do
+	    mkdir  ./hydro.in ./abund.in
 
-	./pt_ntwk_set.py $no
+	    ./pt_ntwk_set.py $iphase $no
 
-	mv ./hydro.in ./hydro.in.$no
-	mv ./abund.in ./abund.in.$no
+	    mv ./hydro.in ./ntwk_data/hydro.${iphase}_$no
+	    mv ./abund.in ./ntwk_data/abund.${iphase}_$no
+	done
     done
 fi
 

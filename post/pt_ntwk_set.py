@@ -1,16 +1,17 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import subprocess
 import sys
 
 n_total_set = 20000
 
-if len(sys.argv) == 2:
-    nlist = int(sys.argv[1])
+iphase = int(sys.argv[1])
+if len(sys.argv) == 3:
+    nlist = int(sys.argv[2])
 else:
     nlist = 1
 
-infile = './pt_list_' + str(nlist) + '.dat'
+infile = './pt_list/pt_list_' + str(iphase) + '_' + str(nlist) + '.dat'
 
 print(' adopt ' + infile)
 
@@ -46,7 +47,7 @@ for i, j in enumerate(no):
     subprocess.call(['cp', fl1, fl2])
 
     # initial abund
-    fl1 = './inicomp/abund/abund_'   + no1 + '.dat'
+    fl1 = './inicomp.' + str(iphase) + '/abund_'   + no1 + '.dat'
     fl2 = './abund.in/abund_' + no2 + '.dat'
     subprocess.call(['cp', fl1, fl2])
 
