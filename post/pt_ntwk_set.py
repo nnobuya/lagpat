@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
-import subprocess
 import sys
+import shutil
 
 n_total_set = 20000
 
@@ -44,11 +44,11 @@ for i, j in enumerate(no):
     fl1 = './traj.1/hydro_'   + no1 + '.dat'
     fl2 = './hydro.in/hydro_' + no2 + '.dat'
 
-    subprocess.call(['cp', fl1, fl2])
+    shutil.copy2(fl1, fl2)
 
     # initial abund
     fl1 = './inicomp.' + str(iphase) + '/abund_'   + no1 + '.dat'
     fl2 = './abund.in/abund_' + no2 + '.dat'
-    subprocess.call(['cp', fl1, fl2])
+    shutil.copy2(fl1, fl2)
 
 exit()
